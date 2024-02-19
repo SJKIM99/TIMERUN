@@ -5,6 +5,92 @@
 void ATIMERUNPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+    instance = Cast<UTIMERUNGameInstance>(GetWorld()->GetGameInstance());
+
+    client_socket = instance->GetSocketMgr()->GetSocket();
+
+    CS_LOGIN_PACKET packet;
+    packet.size = sizeof CS_LOGIN_PACKET;
+    packet.type = CS_LOGIN;
+    
+    strcpy_s(packet.id, "asd");
+
+    int ret = send(*client_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
+}
+
+void ATIMERUNPlayerController::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+    RecvPacket();
+}
+
+void ATIMERUNPlayerController::RecvPacket()
+{
+    char buf[BUF_SIZE];
+    int ret = recv(*client_socket, reinterpret_cast<char*>(&buf), BUF_SIZE, 0);
+    if (ret <= 0) {
+        UE_LOG(LogTemp, Warning, TEXT("Recv Fail"));
+        return;
+    }
+    else if (ret > BUF_SIZE - prev_remain_data) {
+        UE_LOG(LogTemp, Warning, TEXT("overflow data, recv data size: %d"), ret);
+        prev_remain_data = 0;
+        return;
+    }
+
+    if (prev_remain_data > 0) {
+        UE_LOG(LogTemp, Warning, TEXT("exist prev remin data"));
+        memcpy(prev_packet_buf + prev_remain_data, buf, ret);
+    }
+    else {
+        memcpy(prev_packet_buf, buf, ret);
+    }
+
+    int remain_data = ret + prev_remain_data;
+    char* p = prev_packet_buf;
+    while (remain_data > 0) {
+        int packet_size = p[0];
+        if (packet_size == 0) {
+            prev_remain_data = 0;
+            return;
+        }
+        if (packet_size <= remain_data) {
+            ProcessPakcet(p);
+            p += packet_size;
+            remain_data -= packet_size;
+        }
+        else break;
+    }
+    prev_remain_data = remain_data;
+    if (remain_data > 0) {
+        memcpy(prev_packet_buf, p, remain_data);
+    }
+}
+
+void ATIMERUNPlayerController::ProcessPakcet(char* packet)
+{
+    switch (packet[1]) {
+    case SC_LOGIN_SUCCESS: {
+        SC_LOGIN_SUCCESS_PACKET* packet = new SC_LOGIN_SUCCESS_PACKET;
+        UE_LOG(LogTemp, Warning, TEXT("Recv SC_LOGIN_SUCESS_PACKET"));
+        
+    }
+                         break;
+    case SC_LOGIN_FAIL: {
+
+    }
+                      break;
+    case SC_SIGNUP: {
+        SC_SIGNUP_PACKET* packet = new SC_SIGNUP_PACKET;
+        UE_LOG(LogTemp, Warning, TEXT("Recv SC_SIGNUP_PACKET"));
+    }
+                  break;
+    }
+}
+
+void ATIMERUNPlayerController::SendMovePacket(direction direction)
+{
 }
 
 void ATIMERUNPlayerController::SetupInputComponent()
