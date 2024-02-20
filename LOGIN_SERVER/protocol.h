@@ -1,0 +1,114 @@
+#pragma once
+
+#define	BUF_SIZE		4096
+#define MAX_CLIENTS		100
+#define LOGIN_SERVERIP "127.0.0.1"
+
+#define INGAME_SERVERIP "127.0.0.2"
+
+enum COMP_TYPE {
+	OP_ACCEPT,
+	OP_RECV, OP_SEND,
+};
+
+enum direction { forward, back, left, right };
+
+struct vector_d3 {
+	double x;
+	double y;
+	double z;
+	
+	vector_d3() : x(-1.f), y(-1.f), z(-1.f) {}
+	vector_d3(double x, double y, double z) {
+		this->x = x;
+		this->y = y;
+		this->z = z;
+	}
+};
+
+constexpr int NAMESIZE = 20;
+constexpr int IDSIZE = 20;
+constexpr int PASSWDSIZE = 20;
+constexpr int IPSIZE = 20;
+
+constexpr int MAX_USER = 3000;
+constexpr int MAX_CHANNEL_USER = 300;
+
+//C2S
+constexpr char CS_LOGIN = 0;
+constexpr char CS_SIGNUP = 1;
+constexpr char CS_MOVE = 2;
+constexpr char CS_SELECT_CHANNEL = 3;
+
+//S2C
+constexpr char SC_LOGIN_SUCCESS = 1;
+constexpr char SC_LOGIN_FAIL = 2;
+constexpr char SC_SIGNUP = 3;
+constexpr char SC_SIGNUP_SUCCESS = 4;
+
+
+#pragma pack (push, 1)
+
+//C2S
+struct CS_LOGIN_PACKET {
+	unsigned char size;
+	char type;
+	char id[IDSIZE];
+	char passwd[PASSWDSIZE];
+};
+
+struct CS_SIGNUP_PACKET {
+	unsigned char size;
+	char type;
+	char id[IDSIZE];
+	char passwd[PASSWDSIZE];
+	char nickname[NAMESIZE];
+};
+
+struct CS_MOVE_PACKET {
+	unsigned char size;
+	char type;
+	direction direction;
+	double yaw;
+	vector_d3 location;
+};
+
+struct CS_SELECT_CHANNEL_PACKET {
+	unsigned char size;
+	char type;
+	int channel;
+};
+//S2C
+struct SC_SIGNUP_PACKET {
+	unsigned char size;
+	char type;
+};
+
+struct SC_SIGNUP_SUCCESS_PACKET {
+	unsigned char size;
+	char type;
+};
+
+struct SC_LOGIN_SUCCESS_PACKET {
+	unsigned char size;
+	char type;
+	int id;
+	char nickname[NAMESIZE];
+	char INGAMESERVER_IP[IPSIZE];
+};
+
+struct SC_MOVE_PACKET {
+	unsigned char size;
+	char type;
+	int	 id;
+	direction direction;
+	double yaw;
+	vector_d3 location;
+};
+
+struct SC_LOGIN_FAIL {
+	unsigned char size;
+	char type;
+};
+
+#pragma pack(pop)
