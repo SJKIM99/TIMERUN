@@ -13,14 +13,15 @@ ATIMERUNCharacter::ATIMERUNCharacter()
     SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
     SpringArm->SetupAttachment(RootComponent);
     SpringArm->TargetArmLength = 300.0f; // 카메라와 캐릭터 사이의 거리
-    SpringArm->SetRelativeRotation(FRotator(-20.f, 0.f, 0.f)); // 카메라 각도 조절
+    SpringArm->SetRelativeRotation(FRotator(0.f, 0.f, 0.f)); // 카메라 각도 조절
+    SpringArm->bUsePawnControlRotation = true; // 스프링암이 캐릭터의 회전을 따르도록 설정
 
     // 카메라 생성 및 설정
     Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
     Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
-    Camera->bUsePawnControlRotation = true; // 카메라가 캐릭터의 회전을 따르지 않도록 설정
+    Camera->bUsePawnControlRotation = false; // 카메라가 캐릭터의 회전을 따르지 않도록 설정
 
-    GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f), FRotator(0.0f, -90.0f, 0.0f));
+    GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FRotator(0.0f, -90.0f, 0.0f));
 
     static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Game/Player/Resource/Male_Rigged"));
     if (MeshAsset.Succeeded()) {

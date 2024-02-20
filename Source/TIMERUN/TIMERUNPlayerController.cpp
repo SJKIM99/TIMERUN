@@ -2,6 +2,8 @@
 
 #include "TIMERUNPlayerController.h"
 
+#define mouse_sensivity 100.f
+
 void ATIMERUNPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -114,13 +116,13 @@ void ATIMERUNPlayerController::SetupInputComponent()
 void ATIMERUNPlayerController::Turn(float NewAxisValue)
 {
     float delta_time = GetWorld()->GetDeltaSeconds();
-    AddYawInput(delta_time * NewAxisValue * 20.0f);
+    AddYawInput(delta_time * NewAxisValue * mouse_sensivity);
 }
 
 void ATIMERUNPlayerController::LookUp(float NewAxisValue)
 {
     float delta_time = GetWorld()->GetDeltaSeconds();
-    AddPitchInput(delta_time * NewAxisValue * 20.0f);
+    AddPitchInput(delta_time * NewAxisValue * mouse_sensivity);
 }
 
 void ATIMERUNPlayerController::MoveForward(float Value)
@@ -134,8 +136,14 @@ void ATIMERUNPlayerController::MoveForward(float Value)
         // Check if the controlled pawn exists
         if (ControlledPawn)
         {
-            // Get the forward vector of the controller rotation
-            FVector ForwardVector = FRotationMatrix(GetControlRotation()).GetScaledAxis(EAxis::X);
+
+           // FRotator ControlRotation = GetControlRotation();
+            float Yaw = FMath::DegreesToRadians(GetControlRotation().Yaw); // Yaw 값을 라디안으로 변환합니다
+
+            // ForwardVector를 계산합니다
+            FVector ForwardVector = FVector(FMath::Cos(Yaw), FMath::Sin(Yaw), 0.0f);
+            ForwardVector.Normalize(); // 벡터를 단위 벡터로 정규화합니다
+
 
             // Move the pawn forward
             ControlledPawn->AddMovementInput(ForwardVector, Value);
@@ -191,7 +199,15 @@ void ATIMERUNPlayerController::MoveBack(float Value)
         if (ControlledPawn)
         {
             // Move the pawn backward
-            FVector ForwardVector = FRotationMatrix(GetControlRotation()).GetScaledAxis(EAxis::X);
+           // FVector ForwardVector = FRotationMatrix(GetControlRotation()).GetScaledAxis(EAxis::X);
+
+             // FRotator ControlRotation = GetControlRotation();
+            float Yaw = FMath::DegreesToRadians(GetControlRotation().Yaw); // Yaw 값을 라디안으로 변환합니다
+
+            // ForwardVector를 계산합니다
+            FVector ForwardVector = FVector(FMath::Cos(Yaw), FMath::Sin(Yaw), 0.0f);
+            ForwardVector.Normalize(); // 벡터를 단위 벡터로 정규화합니다
+
             ControlledPawn->AddMovementInput(-ForwardVector, Value); // Negate the ForwardVector to move backward
         }
     }
