@@ -22,11 +22,16 @@ public:
 	SocketMgr();
 	~SocketMgr();
 private:
-	SOCKET client_socket;
+	SOCKET login_socket;
+	SOCKET ingame_socket;
 public:
-	SOCKET* GetSocket() {
-		return &client_socket;
+	SOCKET* GetLoginSocket() {
+		return &login_socket;
+	}
+	SOCKET* GetIngameSocket() {
+		return &ingame_socket;
 	}
 public:
-	bool ConnectServer();
+	bool ConnectLoginServer();
+	bool ConnectIngameServer();
 };

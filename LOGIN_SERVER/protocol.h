@@ -1,6 +1,6 @@
 #pragma once
 
-#define	BUF_SIZE		4096
+#define	BUF_SIZE		2048
 #define MAX_CLIENTS		100
 #define LOGIN_SERVERIP "127.0.0.1"
 
@@ -94,7 +94,6 @@ struct SC_LOGIN_SUCCESS_PACKET {
 	char type;
 	int id;
 	char nickname[NAMESIZE];
-	char INGAMESERVER_IP[IPSIZE];
 };
 
 struct SC_MOVE_PACKET {

@@ -30,6 +30,7 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
 		switch (ex_over->comp_type) {
 		case OP_ACCEPT: {
 			int client_id = get_new_client_id();
+			std::cout << client_id << "번 클라이언트가 입장했습니다." << std::endl;
 			if (client_id != -1) {
 				{
 					std::lock_guard<std::mutex> ll{ clients[client_id].m_state_lock };

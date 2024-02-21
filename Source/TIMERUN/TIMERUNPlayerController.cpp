@@ -2,33 +2,48 @@
 
 #include "TIMERUNPlayerController.h"
 
+ATIMERUNPlayerController::ATIMERUNPlayerController() :
+    location(0.f, 0.f, 0.f),
+    prev_remain_data(0),
+    prev_packet_size(0)
+{
+    memset(prev_packet_buf, 0, sizeof prev_packet_buf);
+    Player.SetNumZeroed(3000);
+}
+
+ATIMERUNPlayerController::~ATIMERUNPlayerController()
+{
+}
+
 void ATIMERUNPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
     instance = Cast<UTIMERUNGameInstance>(GetWorld()->GetGameInstance());
+    
+    instance->GetSocketMgr()->ConnectLoginServer();
 
-    client_socket = instance->GetSocketMgr()->GetSocket();
+    login_socket = instance->GetSocketMgr()->GetLoginSocket();
 
     CS_LOGIN_PACKET packet;
     packet.size = sizeof CS_LOGIN_PACKET;
     packet.type = CS_LOGIN;
+    strcpy_s(packet.id, "sungjun4264");
+    strcpy_s(packet.passwd, "wkd5306s");
     
-    strcpy_s(packet.id, "asd");
-
-    int ret = send(*client_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
+    int ret = send(*login_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 }
 
 void ATIMERUNPlayerController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    RecvPacket();
+    RecvPacketFromLoginServer();
 }
 
-void ATIMERUNPlayerController::RecvPacket()
+void ATIMERUNPlayerController::RecvPacketFromLoginServer()
 {
     char buf[BUF_SIZE];
-    int ret = recv(*client_socket, reinterpret_cast<char*>(&buf), BUF_SIZE, 0);
+    int ret = recv(*login_socket, reinterpret_cast<char*>(&buf), BUF_SIZE, 0);
     if (ret <= 0) {
         UE_LOG(LogTemp, Warning, TEXT("Recv Fail"));
         return;
@@ -40,7 +55,7 @@ void ATIMERUNPlayerController::RecvPacket()
     }
 
     if (prev_remain_data > 0) {
-        UE_LOG(LogTemp, Warning, TEXT("exist prev remin data"));
+        UE_LOG(LogTemp, Warning, TEXT("exist prev remain data"));
         memcpy(prev_packet_buf + prev_remain_data, buf, ret);
     }
     else {
@@ -57,7 +72,7 @@ void ATIMERUNPlayerController::RecvPacket()
         }
         if (packet_size <= remain_data) {
             ProcessPakcet(p);
-            p += packet_size;
+            p = p + packet_size;
             remain_data -= packet_size;
         }
         else break;
@@ -68,13 +83,22 @@ void ATIMERUNPlayerController::RecvPacket()
     }
 }
 
+
 void ATIMERUNPlayerController::ProcessPakcet(char* packet)
 {
     switch (packet[1]) {
     case SC_LOGIN_SUCCESS: {
-        SC_LOGIN_SUCCESS_PACKET* packet = new SC_LOGIN_SUCCESS_PACKET;
-        UE_LOG(LogTemp, Warning, TEXT("Recv SC_LOGIN_SUCESS_PACKET"));
-        
+        SC_LOGIN_SUCCESS_PACKET* p = reinterpret_cast<SC_LOGIN_SUCCESS_PACKET*>(packet);
+        my_id = p->id;
+
+        Player[my_id].m_id = p->id;
+        memcpy(Player[my_id].m_nickname, p->nickname,sizeof p->nickname);
+       
+        instance = Cast<UTIMERUNGameInstance>(GetWorld()->GetGameInstance());
+
+        instance->GetSocketMgr()->ConnectIngameServer();
+
+        UE_LOG(LogTemp, Warning, TEXT("Connect Ingame Server"));
     }
                          break;
     case SC_LOGIN_FAIL: {

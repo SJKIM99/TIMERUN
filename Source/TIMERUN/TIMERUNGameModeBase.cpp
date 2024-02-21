@@ -8,10 +8,6 @@
 ATIMERUNGameModeBase::ATIMERUNGameModeBase()
 {
 	DefaultPawnClass = ATIMERUNCharacter::StaticClass();
-	DefaultPawnClass = ATIMERUNCharacter::StaticClass();
-
-	//static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Player/BP_TIMERUNCharacter"));
-	//DefaultPawnClass = PlayerPawnBPClass.Class;
 	PlayerControllerClass = ATIMERUNPlayerController::StaticClass();
 }
  

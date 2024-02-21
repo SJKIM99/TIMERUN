@@ -42,7 +42,6 @@ void Session::send_login_success_packet(PlayerInfo playerinfo)
 	packet.type = SC_LOGIN_SUCCESS;
 	packet.id = playerinfo.player_id;
 	strcpy_s(packet.nickname, playerinfo.player_nickname);
-	strcpy_s(packet.INGAMESERVER_IP, INGAME_SERVERIP);
 	SendPacket(&packet);
 }
 
