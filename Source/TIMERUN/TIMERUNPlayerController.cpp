@@ -2,6 +2,8 @@
 
 #include "TIMERUNPlayerController.h"
 
+#define MOUSE_SENSITIVE 100.f
+
 ATIMERUNPlayerController::ATIMERUNPlayerController() :
     location(0.f, 0.f, 0.f),
     prev_remain_data(0),
@@ -138,13 +140,13 @@ void ATIMERUNPlayerController::SetupInputComponent()
 void ATIMERUNPlayerController::Turn(float NewAxisValue)
 {
     float delta_time = GetWorld()->GetDeltaSeconds();
-    AddYawInput(delta_time * NewAxisValue * 20.0f);
+    AddYawInput(delta_time * NewAxisValue * MOUSE_SENSITIVE);
 }
 
 void ATIMERUNPlayerController::LookUp(float NewAxisValue)
 {
     float delta_time = GetWorld()->GetDeltaSeconds();
-    AddPitchInput(delta_time * NewAxisValue * 20.0f);
+    AddPitchInput(delta_time * NewAxisValue * MOUSE_SENSITIVE);
 }
 
 void ATIMERUNPlayerController::MoveForward(float Value)
@@ -158,11 +160,15 @@ void ATIMERUNPlayerController::MoveForward(float Value)
         // Check if the controlled pawn exists
         if (ControlledPawn)
         {
-            // Get the forward vector of the controller rotation
-            FVector ForwardVector = FRotationMatrix(GetControlRotation()).GetScaledAxis(EAxis::X);
+            // Extract the yaw value
+            float Yaw = GetControlRotation().Yaw;
 
-            // Move the pawn forward
-            ControlledPawn->AddMovementInput(ForwardVector, Value);
+            // Convert the yaw value to a rotation matrix to get the forward vector
+            FRotator Rotation(0.f, Yaw, 0.f);
+            FVector ForwardVector = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
+
+            // Move the pawn backward
+            ControlledPawn->AddMovementInput(ForwardVector, Value); // Negate the ForwardVector to move backward
         }
     }
 }
@@ -214,8 +220,14 @@ void ATIMERUNPlayerController::MoveBack(float Value)
         // Check if the controlled pawn exists
         if (ControlledPawn)
         {
+            // Extract the yaw value
+            float Yaw = GetControlRotation().Yaw;
+
+            // Convert the yaw value to a rotation matrix to get the forward vector
+            FRotator Rotation(0.f, Yaw, 0.f);
+            FVector ForwardVector = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
+
             // Move the pawn backward
-            FVector ForwardVector = FRotationMatrix(GetControlRotation()).GetScaledAxis(EAxis::X);
             ControlledPawn->AddMovementInput(-ForwardVector, Value); // Negate the ForwardVector to move backward
         }
     }
