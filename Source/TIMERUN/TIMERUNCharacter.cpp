@@ -2,12 +2,14 @@
 
 
 #include "TIMERUNCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ATIMERUNCharacter::ATIMERUNCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
 
     // Spring Arm 생성
     SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
@@ -23,12 +25,29 @@ ATIMERUNCharacter::ATIMERUNCharacter()
 
     GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FRotator(0.0f, -90.0f, 0.0f));
 
+    // 메쉬 불러오기
     static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Game/Player/Resource/Male_Rigged"));
     if (MeshAsset.Succeeded()) {
         UE_LOG(LogTemp, Warning, TEXT("SkeletMesh Spawn Success"));
         TIMERUNMesh = MeshAsset.Object;
         GetMesh()->SetSkeletalMesh(TIMERUNMesh);
     }
+
+    //애니메이션 블루프린터 연결
+    static ConstructorHelpers::FClassFinder<UAnimInstance> AnimationClass(TEXT("/Game/Player/Resource/Animation/BP_PlayerAnimation"));
+    if (AnimationClass.Succeeded())
+    {
+        // 애니메이션 블루프린트 클래스를 가져와서 설정
+        GetMesh()->SetAnimInstanceClass(AnimationClass.Class);
+    }
+    
+    //캐릭터 기본 세팅
+    bUseControllerRotationPitch = false;
+    bUseControllerRotationYaw = false;
+    bUseControllerRotationRoll = false;
+
+    // Configure character movement
+    GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
 }
 
 // Called when the game starts or when spawned
