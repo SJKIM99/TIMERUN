@@ -16,6 +16,7 @@ void ATIMERUNCharacterVer2::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	HaveGravityGun = false;
 }
 
 // Called every frame
