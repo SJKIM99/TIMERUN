@@ -45,6 +45,7 @@ constexpr char SC_LOGIN_SUCCESS = 1;
 constexpr char SC_LOGIN_FAIL = 2;
 constexpr char SC_SIGNUP = 3;
 constexpr char SC_SIGNUP_SUCCESS = 4;
+constexpr char SC_MOVE_PLAYER = 5;
 
 
 #pragma pack (push, 1)
@@ -100,7 +101,7 @@ struct SC_MOVE_PACKET {
 	unsigned char size;
 	char type;
 	int	 id;
-	direction direction;
+	//direction direction;
 	double yaw;
 	vector_d3 location;
 };

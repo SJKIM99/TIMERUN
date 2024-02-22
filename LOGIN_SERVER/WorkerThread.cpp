@@ -54,19 +54,19 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
 			int remain_data = num_bytes + clients[key].m_prev_remain_data;
 			char* p = ex_over->send_buf;
 			while (remain_data > 0) {
-				if (remain_data < sizeof(int)) {
-					break;
-				}
 				int packet_size = p[0];
 				if (packet_size <= remain_data) {
-					ProcessPakcet(static_cast<int>(key), p);
-					p += packet_size;
-					remain_data -= packet_size;
+					ProcessPacket(static_cast<int>(key), p);
+					p = p + packet_size;
+					remain_data = remain_data - packet_size;
 				}
-				else {
-					break;
-				}
+				else break;
 			}
+			clients[key].m_prev_remain_data = remain_data;
+			if (remain_data > 0) {
+				memcpy(ex_over->send_buf, p, remain_data);
+			}
+			clients[key].RecvPacket();
 		}
 					break;
 		case OP_SEND: {
@@ -96,7 +96,7 @@ void WorkerThread::InitPlayerInfo(int player_id)
 	clients[player_id].m_online = true;
 }
 
-void WorkerThread::ProcessPakcet(int c_id, char* packet)
+void WorkerThread::ProcessPacket(int c_id, char* packet)
 {
 	switch (packet[1]) {
 	case CS_LOGIN: {

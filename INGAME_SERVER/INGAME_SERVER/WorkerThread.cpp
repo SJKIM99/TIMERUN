@@ -52,19 +52,19 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
 			int remain_data = num_bytes + clients[key].m_prev_remain_data;
 			char* p = ex_over->send_buf;
 			while (remain_data > 0) {
-				if (remain_data < sizeof(int)) {
-					break;
-				}
 				int packet_size = p[0];
 				if (packet_size <= remain_data) {
-					ProcessPakcet(static_cast<int>(key), p);
-					p += packet_size;
-					remain_data -= packet_size;
+					ProcessPacket(static_cast<int>(key), p);
+					p = p + packet_size;
+					remain_data = remain_data - packet_size;
 				}
-				else {
-					break;
-				}
+				else break;
 			}
+			clients[key].m_prev_remain_data = remain_data;
+			if (remain_data > 0) {
+				memcpy(ex_over->send_buf, p, remain_data);
+			}
+			clients[key].RecvPacket();
 		}
 					break;
 		case OP_SEND: {
@@ -106,57 +106,41 @@ void WorkerThread::InitPlayerInfo(int player_id)
 	clients[player_id].m_client_in_channel_id = -1;
 }
 
-void WorkerThread::ProcessPakcet(int c_id, char* packet)
+void WorkerThread::ProcessPacket(int c_id, char* packet)
 {
 	switch (packet[1]) {
-	case CS_SELECT_CHANNEL: {//선택한 채널을 이어주고, 해당채널에 ID를 설정한다.
-		CS_SELECT_CHANNEL_PACKET* p = reinterpret_cast<CS_SELECT_CHANNEL_PACKET*>(packet);
-		int selected_channel = p->channel;
-		clients[c_id].m_channel = selected_channel;
-		clients[c_id].m_client_in_channel_id = get_new_client_in_channel_id();
-
-		if (selected_channel >= 0 && selected_channel < channels.size()) {
-			channels[selected_channel].push(clients[c_id]);
-		}
-	}
-						  break;
 	case CS_MOVE: {
 		CS_MOVE_PACKET* p = reinterpret_cast<CS_MOVE_PACKET*>(packet);
-		/*	clients[c_id].m_location = p->location;
-			clients[c_id].m_yaw = p->yaw;*/
 
-		int client_channel = clients[c_id].m_channel;
-		int client_in_channel_id = clients[c_id].m_client_in_channel_id;
+		switch (p->direction) {
 
-		if (client_channel >= 0 && client_channel < channels.size()) {
-			std::queue<Session>& channel_queue = channels[client_channel];
-			for (int i = 0; i < channel_queue.size(); ++i) {
-				Session& client_in_channel = channel_queue.front();
-				if (client_in_channel.m_id == client_in_channel_id) {
-					client_in_channel.m_location = p->location;
-					client_in_channel.m_yaw = p->yaw;
-
-					switch (p->direction) {
-					case direction::right: {
-
-					}
-					case direction::left: {
-
-					}
-					case direction::forward: {
-
-					}
-					case direction::back: {
-
-					}
-										break;
-					}
-				}
-				channel_queue.push(client_in_channel);
-				channel_queue.pop();
-			}
+		case direction::right: {
+			std::cout << "move right" << std::endl;
 		}
+							 break;
+		case direction::left: {
+			std::cout << "move left" << std::endl;
+		}
+							break;
+		case direction::forward: {
+			clients[c_id].m_location.x = p->location.x;
+			clients[c_id].m_location.y = p->location.y;
+			clients[c_id].m_location.z = p->location.z;
+
+			clients[c_id].m_yaw = p->yaw;
+
+			for (auto& pl : clients) {
+				pl.send_move_packet(pl.m_id);
+			}
+			std::cout << "move forward" << std::endl;
+		}
+							   break;
+		case direction::back: {
+			std::cout << "move back" << std::endl;
+		}
+							break;
+		}
+		break;
 	}
-				break;
 	}
 }

@@ -5,6 +5,19 @@ std::array<Session, MAX_USER> clients;
 
 std::vector<std::queue<Session>> channels(10);
 
+void Session::send_move_packet(int c_id)
+{
+	SC_MOVE_PACKET packet;
+	packet.id = c_id;
+	packet.size = sizeof SC_MOVE_PACKET;
+	packet.type = SC_MOVE_PLAYER;
+	packet.location.x = clients[c_id].m_location.x;
+	packet.location.y = clients[c_id].m_location.y;
+	packet.location.z = clients[c_id].m_location.z;
+	packet.yaw = clients[c_id].m_yaw;
+	SendPacket(&packet);
+}
+
 void Session::SendPacket(void* packet)
 {
 	OVER_EXP* SendData = new OVER_EXP{ reinterpret_cast<char*>(packet) };

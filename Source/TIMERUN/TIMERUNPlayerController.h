@@ -4,7 +4,9 @@
 
 #include "C:/Users/user/Desktop/TIMERUN/LOGIN_SERVER/protocol.h"
 
+#include "SocketMgr.h"
 #include "TIMERUNGameInstance.h"
+#include "TIMERUNCharacter.h"
 
 #include "Windows/AllowWindowsPlatformTypes.h"
 #include "Windows/prewindowsapi.h"
@@ -37,28 +39,28 @@ protected:
 private:
 	SOCKET* login_socket;
 	SOCKET* ingame_socket;
-	vector_d3 location;
-	int id;
-
+public:
 	virtual void Tick(float DeltaTime) override;
 	void RecvPacketFromLoginServer();
+	void RecvPacketFromIngameServer();
 	void ProcessPakcet(char* packet);
-	void SendMovePacket(direction direction);
+	void SendMovePacket(direction direction, APawn* pawn);
 
 	UTIMERUNGameInstance* instance;
+	//RecvFromLoginn
+	int login_prev_remain_data;
+	int login_prev_packet_size;
+	char login_prev_packet_buf[10000];
 
-	int prev_remain_data;
-	int prev_packet_size;
-	char prev_packet_buf[10000];
+	//RecvFromIngame
+	int ingame_prev_remain_data;
+	int ingame_prev_packet_size;
+	char ingame_prev_packet_buf[10000];
 
 	bool IsActiveIngameSocket = false;
 public:
-	struct PlayerInfo {
-		int m_id;
-		char m_nickname[NAMESIZE];
-	};
-	TArray<PlayerInfo> Player;
 	int my_id = 0;
+	std::array<Session*, MAX_CLIENTS> players;
 public:
 	virtual void SetupInputComponent() override;
 private:

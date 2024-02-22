@@ -17,6 +17,6 @@ public:
 	void woker_thread(HANDLE h_iocp);
 	int get_new_client_id();
 	void InitPlayerInfo(int player_id);
-	void ProcessPakcet(int c_id, char* packet);
+	void ProcessPacket(int c_id, char* packet);
 };
 

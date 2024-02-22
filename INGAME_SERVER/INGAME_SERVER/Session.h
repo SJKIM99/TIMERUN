@@ -71,7 +71,7 @@ public:
 
 	~Session() {}
 public:
-	
+	void send_move_packet(int c_id);
 public:
 	void SendPacket(void* packet);
 	void RecvPacket();
