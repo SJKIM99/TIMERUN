@@ -23,7 +23,7 @@ bool SocketMgr::ConnectLoginServer()
 	SOCKADDR_IN server_addr;
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_port = htons(8000);
-	server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	server_addr.sin_addr.s_addr = inet_addr("25.52.149.86");
 
 	nRet = connect(login_socket, (sockaddr*)&server_addr, sizeof(sockaddr));
 	if (nRet == SOCKET_ERROR) return false;
@@ -47,7 +47,7 @@ bool SocketMgr::ConnectIngameServer()
 	SOCKADDR_IN server_addr;
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_port = htons(9000);
-	server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	server_addr.sin_addr.s_addr = inet_addr("25.58.12.4");
 
 	nRet = connect(ingame_socket, (sockaddr*)&server_addr, sizeof(sockaddr));
 	if (nRet == SOCKET_ERROR) return false;

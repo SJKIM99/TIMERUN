@@ -2,9 +2,9 @@
 
 #define	BUF_SIZE		2048
 #define MAX_CLIENTS		100
-#define LOGIN_SERVERIP "127.0.0.1"
+#define LOGIN_SERVERIP "25.52.149.86"
 
-#define INGAME_SERVERIP "127.0.0.2"
+#define INGAME_SERVERIP "25.58.12.4"
 
 enum COMP_TYPE {
 	OP_ACCEPT,
