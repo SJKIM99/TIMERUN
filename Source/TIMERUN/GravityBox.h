@@ -33,7 +33,7 @@ public:
 
 
 	//스테틱 메쉬 컴포넌트 선언
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* StaticMeshComponent;
 
 	////스켈레탈 메쉬 컴포넌트 선언
