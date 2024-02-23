@@ -33,6 +33,7 @@ class Session
 public:
 	SOCKET m_socket;
 	S_STATE m_state;
+	std::mutex m_container_lock;
 	std::mutex m_state_lock;
 	std::mutex m_channel_lock;
 	int m_channel;
@@ -80,7 +81,7 @@ public:
 		std::lock_guard<std::mutex> state_lock(m_state_lock);
 	}
 	void ChannelLockFun() {
-		std::lock_guard<std::mutex> state_lock(m_channel_lock);
+		std::lock_guard<std::mutex> channel_lock(m_channel_lock);
 	}
 };
 

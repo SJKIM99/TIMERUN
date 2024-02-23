@@ -262,6 +262,7 @@ void ATIMERUNPlayerController::MoveRight(float Value)
             // Move the pawn to the right
             FVector RightVector = FRotationMatrix(GetControlRotation()).GetScaledAxis(EAxis::Y);
             ControlledPawn->AddMovementInput(RightVector, Value);
+            SendMovePacket(direction::right, ControlledPawn);
         }
     }
 }
@@ -280,6 +281,7 @@ void ATIMERUNPlayerController::MoveLeft(float Value)
             // Move the pawn to the left
             FVector RightVector = FRotationMatrix(GetControlRotation()).GetScaledAxis(EAxis::Y);
             ControlledPawn->AddMovementInput(-RightVector, Value); // Negate the RightVector to move left
+            SendMovePacket(direction::left, ControlledPawn);
         }
     }
 }
@@ -304,6 +306,7 @@ void ATIMERUNPlayerController::MoveBack(float Value)
 
             // Move the pawn backward
             ControlledPawn->AddMovementInput(-ForwardVector, Value); // Negate the ForwardVector to move backward
+            SendMovePacket(direction::back, ControlledPawn);
         }
     }
 }

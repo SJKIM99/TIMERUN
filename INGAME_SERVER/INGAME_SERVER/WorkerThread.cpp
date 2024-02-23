@@ -115,28 +115,54 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 		switch (p->direction) {
 
 		case direction::right: {
-			std::cout << "move right" << std::endl;
+			{
+				std::lock_guard<std::mutex> movelock(clients[c_id].m_container_lock);
+				clients[c_id].m_location.x = p->location.x;
+				clients[c_id].m_location.y = p->location.y;
+				clients[c_id].m_location.z = p->location.z;
+
+				clients[c_id].m_yaw = p->yaw;
+			}
+			std::cout << "x :" << p->location.x << " " << "y :" << p->location.y << "z : " << p->location.z << std::endl;
 		}
 							 break;
 		case direction::left: {
-			std::cout << "move left" << std::endl;
+			{
+				std::lock_guard<std::mutex> movelock(clients[c_id].m_container_lock);
+				clients[c_id].m_location.x = p->location.x;
+				clients[c_id].m_location.y = p->location.y;
+				clients[c_id].m_location.z = p->location.z;
+
+				clients[c_id].m_yaw = p->yaw;
+			}
+			std::cout << "x :" << p->location.x << " " << "y :" << p->location.y << "z : " << p->location.z << std::endl;
 		}
 							break;
 		case direction::forward: {
-			clients[c_id].m_location.x = p->location.x;
-			clients[c_id].m_location.y = p->location.y;
-			clients[c_id].m_location.z = p->location.z;
+			{
+				std::lock_guard<std::mutex> movelock(clients[c_id].m_container_lock);
+				clients[c_id].m_location.x = p->location.x;
+				clients[c_id].m_location.y = p->location.y;
+				clients[c_id].m_location.z = p->location.z;
 
-			clients[c_id].m_yaw = p->yaw;
-
+				clients[c_id].m_yaw = p->yaw;
+			}
 			for (auto& pl : clients) {
 				pl.send_move_packet(pl.m_id);
 			}
-			std::cout << "move forward" << std::endl;
+			std::cout << "x :" << p->location.x << " " << "y :" << p->location.y << "z : " << p->location.z << std::endl;
 		}
 							   break;
 		case direction::back: {
-			std::cout << "move back" << std::endl;
+			{
+				std::lock_guard<std::mutex> movelock(clients[c_id].m_container_lock);
+				clients[c_id].m_location.x = p->location.x;
+				clients[c_id].m_location.y = p->location.y;
+				clients[c_id].m_location.z = p->location.z;
+
+				clients[c_id].m_yaw = p->yaw;
+			}
+			std::cout << "x :" << p->location.x << " " << "y :" << p->location.y << "z : " << p->location.z << std::endl;
 		}
 							break;
 		}
