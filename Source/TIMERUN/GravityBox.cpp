@@ -19,21 +19,22 @@ AGravityBox::AGravityBox()
         StaticMeshComponent->SetStaticMesh(StaticMeshAsset.Object);
     }
 
-    SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
-    SkeletalMeshComponent->SetupAttachment(StaticMeshComponent); // Attach to Static Mesh Component
+    //SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
+    //SkeletalMeshComponent->SetupAttachment(StaticMeshComponent); // Attach to Static Mesh Component
 
-    // Load Skeletal Mesh Asset
-    static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMeshAsset(TEXT("SkeletalMesh'/Game/GravityBox/Resource/GravityBox_Rigged'"));
-    if (SkeletalMeshAsset.Succeeded())
-    {
-        SkeletalMeshComponent->SetSkeletalMesh(SkeletalMeshAsset.Object);
-    }
+    //// Load Skeletal Mesh Asset
+    //static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMeshAsset(TEXT("SkeletalMesh'/Game/GravityBox/Resource/GravityBox_Rigged'"));
+    //if (SkeletalMeshAsset.Succeeded())
+    //{
+    //    SkeletalMeshComponent->SetSkeletalMesh(SkeletalMeshAsset.Object);
+    //}
 
 
 
     //기본 스테틱 메쉬 설정
     StaticMeshComponent->SetHiddenInGame(true, true);
     StaticMeshComponent->SetCastHiddenShadow(true);
+
     StaticMeshComponent->SetMassScale(NAME_None, 10.f);
     StaticMeshComponent->SetSimulatePhysics(true); // Enable physics simulation for the static mesh
     StaticMeshComponent->SetLinearDamping(1.f);
@@ -44,8 +45,7 @@ AGravityBox::AGravityBox()
 void AGravityBox::BeginPlay()
 {
 	Super::BeginPlay();
-	
-   
+
 }
 
 // Called every frame
@@ -53,10 +53,9 @@ void AGravityBox::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+    GravityBoxTransform = GetActorTransform();
+
+    if (GetVelocity() == FVector::ZeroVector) IsMoving = false;
+    else IsMoving = true;
 }
 
-bool AGravityBox::IsMoving() 
-{   
-    if (GetVelocity() == FVector::ZeroVector) return false;
-    else return true;
-}
