@@ -33,13 +33,16 @@ void ATIMERUNPlayerController::BeginPlay()
     strcpy_s(packet.passwd, "wkd5306");
     
     int ret = send(*login_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
+
+
 }
 
 void ATIMERUNPlayerController::Tick(float DeltaTime)
 {
-    Super::Tick(DeltaTime);
-    RecvPacketFromLoginServer();
-	if (IsActiveIngameSocket)
+	Super::Tick(DeltaTime);
+	if (!IsActiveIngameSocket)
+		RecvPacketFromLoginServer();
+	else
 		RecvPacketFromIngameServer();
 }
 
@@ -48,7 +51,6 @@ void ATIMERUNPlayerController::RecvPacketFromLoginServer()
     char buf[BUF_SIZE];
     int ret = recv(*login_socket, reinterpret_cast<char*>(&buf), BUF_SIZE, 0);
     if (ret <= 0) {
-        UE_LOG(LogTemp, Warning, TEXT("Recv Fail"));
         return;
     }
     else if (ret > BUF_SIZE - login_prev_remain_data) {
@@ -91,7 +93,6 @@ void ATIMERUNPlayerController::RecvPacketFromIngameServer()
     char buf[BUF_SIZE];
     int ret = recv(*ingame_socket, reinterpret_cast<char*>(&buf), BUF_SIZE, 0);
     if (ret <= 0) {
-        UE_LOG(LogTemp, Warning, TEXT("Recv Fail"));
         return;
     }
     else if (ret > BUF_SIZE - ingame_prev_remain_data) {
@@ -137,7 +138,7 @@ void ATIMERUNPlayerController::ProcessPakcet(char* packet)
         SC_LOGIN_SUCCESS_PACKET* p = reinterpret_cast<SC_LOGIN_SUCCESS_PACKET*>(packet);
         my_id = p->id;
         
-        auto player = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, p->id));
+        auto player = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
         players[my_id]->id = p->id;
         memcpy(players[my_id]->NickName, p->nickname, sizeof p->nickname);
@@ -149,8 +150,6 @@ void ATIMERUNPlayerController::ProcessPakcet(char* packet)
         ingame_socket = instance->GetSocketMgr()->GetIngameSocket();
 
         IsActiveIngameSocket = true;
-
-        UE_LOG(LogTemp, Warning, TEXT("Connect Ingame Server"));
     }
                          break;
     case SC_LOGIN_FAIL: {
@@ -159,17 +158,31 @@ void ATIMERUNPlayerController::ProcessPakcet(char* packet)
                       break;
     case SC_SIGNUP: {
 		SC_SIGNUP_PACKET* packet = new SC_SIGNUP_PACKET;
-		UE_LOG(LogTemp, Warning, TEXT("Recv SC_SIGNUP_PACKET"));
 	}
 				  break;
 	case SC_MOVE_PLAYER: {
 		SC_MOVE_PACKET* p = reinterpret_cast<SC_MOVE_PACKET*>(packet);
 
-		players[p->id]->location.x = p->location.x;
-		players[p->id]->location.y = p->location.y;
-		players[p->id]->location.z = p->location.z;
+		// 플레이어 캐릭터의 위치를 업데이트
+		if (strcmp(players[p->id]->NickName, "sungju") == 0)
+			if (players[p->id]->online == false)
+				UpdateNewPlayer(p->id);
+			else {
+				players[p->id]->location.x = p->location.x;
+				players[p->id]->location.y = p->location.y;
+				players[p->id]->location.z = p->location.z;
 
-		UE_LOG(LogTemp, Warning, TEXT("coordinate %f %f %f"), p->location.x, p->location.y, p->location.z);
+
+				// 화면에 플레이어 캐릭터의 위치를 반영
+				auto PlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, p->id));
+				if (PlayerCharacter)
+				{
+					FVector NewLocation(p->location.x, p->location.y, p->location.z);
+					PlayerCharacter->SetActorLocation(NewLocation);
+				}
+				UE_LOG(LogTemp, Warning, TEXT("Player %d moved to (%f, %f, %f)"), p->id, p->location.x, p->location.y, p->location.z);
+			}
+
 	}
 					   break;
 	}
@@ -187,7 +200,21 @@ void ATIMERUNPlayerController::SendMovePacket(direction direction, APawn* pawn)
     packet.location.z= pawn->GetActorLocation().Z;
 
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
-    UE_LOG(LogTemp, Warning, TEXT("send move packet"));
+}
+
+void ATIMERUNPlayerController::UpdateNewPlayer(int c_id)
+{
+    UWorld* const world = GetWorld();
+    
+    ATIMERUNCharacter* spawnCharacter = world->SpawnActor<ATIMERUNCharacter>();
+
+    if (spawnCharacter) {
+        Session* NewPlayerData = new Session();
+        NewPlayerData->Character = spawnCharacter;
+
+		players[c_id] = NewPlayerData;
+        players[c_id]->online = true;
+    }
 }
 
 void ATIMERUNPlayerController::SetupInputComponent()

@@ -8,7 +8,7 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
 	while (true) {
 		DWORD num_bytes;
 		ULONG_PTR key;
-		//WSAOVERLAPPED* over = nullptr;
+		WSAOVERLAPPED* over = nullptr;
 		BOOL ret = GetQueuedCompletionStatus(h_iocp, &num_bytes, &key, &over, INFINITE);
 		OVER_EXP* ex_over = reinterpret_cast<OVER_EXP*>(over);
 		if (FALSE == ret) {
@@ -43,7 +43,10 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
 			}
 			else
 				std::cout << "Max user exceeded.\n";
-			ZeroMemory(&g_over.over, sizeof(g_over.over));
+			//ZeroMemory(&g_over.over, sizeof(g_over.over));
+
+			g_over.comp_type = OP_ACCEPT;
+			g_over.wsabuf.len = BUF_SIZE;
 			int addr_size = sizeof(SOCKADDR_IN);
 			AcceptEx(g_server_socket, g_client_socket, g_over.send_buf, 0, addr_size + 16, addr_size + 16, 0, &g_over.over);
 		}
@@ -123,7 +126,11 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 
 				clients[c_id].m_yaw = p->yaw;
 			}
-			std::cout << "x :" << p->location.x << " " << "y :" << p->location.y << "z : " << p->location.z << std::endl;
+			for (auto& pl : clients) {
+				if (pl.m_state != ST_ALLOC) break;
+				pl.send_move_packet(c_id);
+			}
+			std::cout << c_id << "번 클라이언트 이동" << std::endl;
 		}
 							 break;
 		case direction::left: {
@@ -135,7 +142,11 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 
 				clients[c_id].m_yaw = p->yaw;
 			}
-			std::cout << "x :" << p->location.x << " " << "y :" << p->location.y << "z : " << p->location.z << std::endl;
+			for (auto& pl : clients) {
+				if (pl.m_state != ST_ALLOC) break;
+				pl.send_move_packet(c_id);
+			}
+			std::cout << c_id << "번 클라이언트 이동" << std::endl;
 		}
 							break;
 		case direction::forward: {
@@ -148,9 +159,10 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 				clients[c_id].m_yaw = p->yaw;
 			}
 			for (auto& pl : clients) {
-				pl.send_move_packet(pl.m_id);
+				if (pl.m_state != ST_ALLOC) break;
+				pl.send_move_packet(c_id);
 			}
-			std::cout << "x :" << p->location.x << " " << "y :" << p->location.y << "z : " << p->location.z << std::endl;
+			std::cout << c_id << "번 클라이언트 이동" << std::endl;
 		}
 							   break;
 		case direction::back: {
@@ -162,7 +174,11 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 
 				clients[c_id].m_yaw = p->yaw;
 			}
-			std::cout << "x :" << p->location.x << " " << "y :" << p->location.y << "z : " << p->location.z << std::endl;
+			for (auto& pl : clients) {
+				if (pl.m_state != ST_ALLOC) break;
+				pl.send_move_packet(c_id);
+			}
+			std::cout << c_id << "번 클라이언트 이동" << std::endl;
 		}
 							break;
 		}

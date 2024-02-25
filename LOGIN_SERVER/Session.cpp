@@ -6,7 +6,7 @@ std::array<Session, MAX_USER> clients;
 void Session::SendPacket(void* packet)
 {
 	OVER_EXP* SendData = new OVER_EXP{ reinterpret_cast<char*>(packet) };
-	WSASend(m_socket, &SendData->wsabuf, 1, 0, 0, &SendData->over,0);
+	WSASend(m_socket, &SendData->wsabuf, 1, 0, 0, &SendData->over, 0);
 }
 
 void Session::RecvPacket()

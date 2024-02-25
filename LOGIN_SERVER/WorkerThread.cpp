@@ -45,7 +45,10 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
 			}
 			else 
 				std::cout << "Max user exceeded.\n";
-			ZeroMemory(&g_over.over, sizeof(g_over.over));
+			//ZeroMemory(&g_over.over, sizeof(g_over.over));
+
+			g_over.comp_type = OP_ACCEPT;
+			g_over.wsabuf.len = BUF_SIZE;
 			int addr_size = sizeof(SOCKADDR_IN);
 			AcceptEx(g_server_socket, g_client_socket, g_over.send_buf, 0, addr_size + 16, addr_size + 16, 0, &g_over.over);
 		}

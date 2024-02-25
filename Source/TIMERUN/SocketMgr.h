@@ -9,9 +9,6 @@
 #include "Windows/AllowWindowsPlatformTypes.h"
 #include "Windows/prewindowsapi.h"
 
-#include <iostream>
-#include <array>
-
 #include <WinSock2.h>
 #pragma comment(lib, "WS2_32.lib")
 
@@ -21,15 +18,6 @@
 /**
  * 
  */
-struct Session {
-	int id;
-	char NickName[NAMESIZE];
-
-	vector_d3 location;
-	float Yaw;
-};
-
-extern std::array<Session, MAX_CLIENTS> players;
 
 class TIMERUN_API SocketMgr
 {

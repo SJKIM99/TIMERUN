@@ -18,7 +18,9 @@
 #include "Windows/HideWindowsPlatformTypes.h"
 
 #include "CoreMinimal.h"
-#include "Containers/Array.h" // TArray를 사용하기 위해 필요한 헤더
+
+#include <iostream>
+#include <array>
 
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/Character.h"
@@ -27,6 +29,16 @@
 /**
  * 
  */
+struct Session {
+	int id;
+	char NickName[NAMESIZE];
+	bool online;
+
+	vector_d3 location;
+	float Yaw;
+	ATIMERUNCharacter* Character;
+};
+
 UCLASS()
 class TIMERUN_API ATIMERUNPlayerController : public APlayerController
 {
@@ -45,6 +57,7 @@ public:
 	void RecvPacketFromIngameServer();
 	void ProcessPakcet(char* packet);
 	void SendMovePacket(direction direction, APawn* pawn);
+	void UpdateNewPlayer(int c_id);
 
 	UTIMERUNGameInstance* instance;
 	//RecvFromLoginn
