@@ -29,4 +29,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) // 에디터, 블루프린트 안에서 수정 가능
 	bool HaveGravityGun; // 중력총을 들었는지 안들었는지
+public:
+	int id;
+	char nickname[NAME_SIZE];
 };

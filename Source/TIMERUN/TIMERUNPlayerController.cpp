@@ -136,9 +136,10 @@ void ATIMERUNPlayerController::ProcessPakcet(char* packet)
 {
 	switch (packet[1]) {
 	case SC_LOGIN_SUCCESS: {
+        UE_LOG(LogTemp, Warning, TEXT("asdasdasdasdsa"));
 		SC_LOGIN_SUCCESS_PACKET* p = reinterpret_cast<SC_LOGIN_SUCCESS_PACKET*>(packet);
 
-        auto myplayer = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+        auto myplayer = Cast<ATIMERUNCharacterVer2>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
         myplayer->id = p->id;
         memcpy(myplayer->nickname, p->nickname, sizeof p->nickname);
