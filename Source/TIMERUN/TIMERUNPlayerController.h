@@ -45,10 +45,10 @@ private:
 	std::array<Session*,MAX_CLIENTS> players;
 public:
 	virtual void Tick(float DeltaTime) override;
-	//void RecvPacketFromLoginServer();
-	//void RecvPacketFromIngameServer();
-	//void ProcessPakcet(char* packet);
-	//void SendMovePacket(direction direction, APawn* pawn);
+	void RecvPacketFromLoginServer();
+	void RecvPacketFromIngameServer();
+	void ProcessPakcet(char* packet);
+	void SendMovePacket(direction direction, APawn* pawn);
 
 	UTIMERUNGameInstance* instance;
 	//RecvFromLoginn
