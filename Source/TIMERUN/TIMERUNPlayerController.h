@@ -29,16 +29,6 @@
 /**
  * 
  */
-struct Session {
-	int id;
-	char NickName[NAMESIZE];
-	bool online;
-
-	vector_d3 location;
-	float Yaw;
-	ATIMERUNCharacter* Character;
-};
-
 UCLASS()
 class TIMERUN_API ATIMERUNPlayerController : public APlayerController
 {
@@ -51,13 +41,14 @@ protected:
 private:
 	SOCKET* login_socket;
 	SOCKET* ingame_socket;
+	int my_id;
+	std::array<Session*,MAX_CLIENTS> players;
 public:
 	virtual void Tick(float DeltaTime) override;
 	void RecvPacketFromLoginServer();
 	void RecvPacketFromIngameServer();
 	void ProcessPakcet(char* packet);
 	void SendMovePacket(direction direction, APawn* pawn);
-	void UpdateNewPlayer(int c_id);
 
 	UTIMERUNGameInstance* instance;
 	//RecvFromLoginn
@@ -72,9 +63,6 @@ public:
 
 	bool IsActiveIngameSocket = false;
 public:
-	int my_id = 0;
-	std::array<Session*, MAX_CLIENTS> players;
-public:
 	virtual void SetupInputComponent() override;
 private:
 	void Turn(float NewAxisValue);
@@ -86,4 +74,9 @@ private:
 	void MoveBack(float Value);
 
 	void Jump();
+private:
+	int nPlayers;
+	bool IsEnterNewPlayer;
+	Session* NewPlayer;
+	void UpdateNewPlayer(int c_id);
 };

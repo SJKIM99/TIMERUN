@@ -112,6 +112,16 @@ void WorkerThread::InitPlayerInfo(int player_id)
 void WorkerThread::ProcessPacket(int c_id, char* packet)
 {
 	switch (packet[1]) {
+	case CS_INGAME_LOGIN: {
+		CS_INGAME_LOGIN_PACKET* p = reinterpret_cast<CS_INGAME_LOGIN_PACKET*>(packet);
+		std::cout << p->id << "번 클라이언트 인게임 로그인 성공" << std::endl;
+
+		for (auto& pl : clients) {
+			if (pl.m_state != ST_ALLOC) break;
+			pl.send_add_player_packet(c_id);
+		}
+	}
+						break;
 	case CS_MOVE: {
 		CS_MOVE_PACKET* p = reinterpret_cast<CS_MOVE_PACKET*>(packet);
 
@@ -128,6 +138,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			}
 			for (auto& pl : clients) {
 				if (pl.m_state != ST_ALLOC) break;
+				if (pl.m_id == c_id) continue;
 				pl.send_move_packet(c_id);
 			}
 			std::cout << c_id << "번 클라이언트 이동" << std::endl;
@@ -144,6 +155,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			}
 			for (auto& pl : clients) {
 				if (pl.m_state != ST_ALLOC) break;
+				if (pl.m_id == c_id) continue;
 				pl.send_move_packet(c_id);
 			}
 			std::cout << c_id << "번 클라이언트 이동" << std::endl;
@@ -160,6 +172,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			}
 			for (auto& pl : clients) {
 				if (pl.m_state != ST_ALLOC) break;
+				if (pl.m_id == c_id) continue;
 				pl.send_move_packet(c_id);
 			}
 			std::cout << c_id << "번 클라이언트 이동" << std::endl;
@@ -176,6 +189,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			}
 			for (auto& pl : clients) {
 				if (pl.m_state != ST_ALLOC) break;
+				if (pl.m_id == c_id) continue;
 				pl.send_move_packet(c_id);
 			}
 			std::cout << c_id << "번 클라이언트 이동" << std::endl;

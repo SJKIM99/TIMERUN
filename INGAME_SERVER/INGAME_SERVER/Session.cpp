@@ -5,6 +5,15 @@ std::array<Session, MAX_USER> clients;
 
 std::vector<std::queue<Session>> channels(10);
 
+void Session::send_add_player_packet(int c_id)
+{
+	SC_ADD_PLAYER_PACKET packet;
+	packet.id = c_id;
+	packet.size = sizeof SC_ADD_PLAYER_PACKET;
+	packet.type = SC_ADD_PLAYER;
+	SendPacket(&packet);
+}
+
 void Session::send_move_packet(int c_id)
 {
 	SC_MOVE_PACKET packet;

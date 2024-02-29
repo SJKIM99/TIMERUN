@@ -2,13 +2,16 @@
 
 #include "TIMERUNPlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include <string>
 
 #define MOUSE_SENSITIVE 100.f
 
 ATIMERUNPlayerController::ATIMERUNPlayerController()
 {
     for (int i = 0; i < MAX_CLIENTS; ++i) {
-        players[i] = new Session();
+        if (players[i] == nullptr) {
+            players[i] = new Session();
+        }
     }
 }
 
@@ -21,7 +24,7 @@ void ATIMERUNPlayerController::BeginPlay()
 	Super::BeginPlay();
 
     instance = Cast<UTIMERUNGameInstance>(GetWorld()->GetGameInstance());
-    
+
     instance->GetSocketMgr()->ConnectLoginServer();
 
     login_socket = instance->GetSocketMgr()->GetLoginSocket();
@@ -29,12 +32,10 @@ void ATIMERUNPlayerController::BeginPlay()
     CS_LOGIN_PACKET packet;
     packet.size = sizeof CS_LOGIN_PACKET;
     packet.type = CS_LOGIN;
-    strcpy_s(packet.id, "sungjun426");
-    strcpy_s(packet.passwd, "wkd5306");
-    
+    strcpy_s(packet.id, "sungjun4264");
+    strcpy_s(packet.passwd, "wkd5306s");
+
     int ret = send(*login_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
-
-
 }
 
 void ATIMERUNPlayerController::Tick(float DeltaTime)
@@ -133,57 +134,71 @@ void ATIMERUNPlayerController::RecvPacketFromIngameServer()
 
 void ATIMERUNPlayerController::ProcessPakcet(char* packet)
 {
-    switch (packet[1]) {
-    case SC_LOGIN_SUCCESS: {
-        SC_LOGIN_SUCCESS_PACKET* p = reinterpret_cast<SC_LOGIN_SUCCESS_PACKET*>(packet);
-        my_id = p->id;
+	switch (packet[1]) {
+	case SC_LOGIN_SUCCESS: {
+		SC_LOGIN_SUCCESS_PACKET* p = reinterpret_cast<SC_LOGIN_SUCCESS_PACKET*>(packet);
+
+        auto myplayer = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+        myplayer->id = p->id;
+        memcpy(myplayer->nickname, p->nickname, sizeof p->nickname);
         
-        auto player = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+		instance = Cast<UTIMERUNGameInstance>(GetWorld()->GetGameInstance());
 
-        players[my_id]->id = p->id;
-        memcpy(players[my_id]->NickName, p->nickname, sizeof p->nickname);
+		instance->GetSocketMgr()->ConnectIngameServer();
 
-        instance = Cast<UTIMERUNGameInstance>(GetWorld()->GetGameInstance());
+		ingame_socket = instance->GetSocketMgr()->GetIngameSocket();
 
-        instance->GetSocketMgr()->ConnectIngameServer();
+        CS_INGAME_LOGIN_PACKET packet;
+        packet.size = sizeof CS_INGAME_LOGIN_PACKET;
+        packet.type = CS_INGAME_LOGIN;
+        packet.id = p->id;
 
-        ingame_socket = instance->GetSocketMgr()->GetIngameSocket();
+        int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 
-        IsActiveIngameSocket = true;
-    }
-                         break;
+		IsActiveIngameSocket = true;
+	}
+						 break;
+
+	case SC_ADD_PLAYER: {
+        SC_ADD_PLAYER_PACKET* p = reinterpret_cast<SC_ADD_PLAYER_PACKET*>(packet);
+        
+        UpdateNewPlayer(p->id);
+	}
+					  break;
     case SC_LOGIN_FAIL: {
 
     }
                       break;
     case SC_SIGNUP: {
-		SC_SIGNUP_PACKET* packet = new SC_SIGNUP_PACKET;
+		SC_SIGNUP_PACKET* p = reinterpret_cast<SC_SIGNUP_PACKET*>(packet);
 	}
 				  break;
-	case SC_MOVE_PLAYER: {
-		SC_MOVE_PACKET* p = reinterpret_cast<SC_MOVE_PACKET*>(packet);
+    case SC_MOVE_PLAYER: {
+        SC_MOVE_PACKET* p = reinterpret_cast<SC_MOVE_PACKET*>(packet);
+        players[p->id]->location.x = p->location.x;
+        players[p->id]->location.y = p->location.y;
+        players[p->id]->location.z = p->location.z;
 
-		// 플레이어 캐릭터의 위치를 업데이트
-		if (strcmp(players[p->id]->NickName, "sungju") == 0)
-			if (players[p->id]->online == false)
-				UpdateNewPlayer(p->id);
-			else {
-				players[p->id]->location.x = p->location.x;
-				players[p->id]->location.y = p->location.y;
-				players[p->id]->location.z = p->location.z;
+        players[p->id]->Yaw = p->yaw;
 
+        FVector CharacterLocation;
+        CharacterLocation.X = p->location.x;
+        CharacterLocation.Y = p->location.y;
+        CharacterLocation.Z = p->location.z;
 
-				// 화면에 플레이어 캐릭터의 위치를 반영
-				auto PlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, p->id));
-				if (PlayerCharacter)
-				{
-					FVector NewLocation(p->location.x, p->location.y, p->location.z);
-					PlayerCharacter->SetActorLocation(NewLocation);
-				}
-				UE_LOG(LogTemp, Warning, TEXT("Player %d moved to (%f, %f, %f)"), p->id, p->location.x, p->location.y, p->location.z);
-			}
+        FRotator CharacterRotation;
+        CharacterRotation.Yaw = p->yaw;
+        CharacterRotation.Pitch = 0;
+        CharacterRotation.Roll = 0;
 
-	}
+        TArray<AActor*> spawnedCharacters;
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
+        spawnedCharacters[p->id]->SetActorLocation(CharacterLocation);
+        spawnedCharacters[p->id]->SetActorRotation(CharacterRotation);
+
+        UE_LOG(LogTemp, Warning, TEXT("Player %d moved to (%f, %f, %f)"), p->id, p->location.x, p->location.y, p->location.z);
+    }
 					   break;
 	}
 }
@@ -200,21 +215,6 @@ void ATIMERUNPlayerController::SendMovePacket(direction direction, APawn* pawn)
     packet.location.z= pawn->GetActorLocation().Z;
 
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
-}
-
-void ATIMERUNPlayerController::UpdateNewPlayer(int c_id)
-{
-    UWorld* const world = GetWorld();
-    
-    ATIMERUNCharacter* spawnCharacter = world->SpawnActor<ATIMERUNCharacter>();
-
-    if (spawnCharacter) {
-        Session* NewPlayerData = new Session();
-        NewPlayerData->Character = spawnCharacter;
-
-		players[c_id] = NewPlayerData;
-        players[c_id]->online = true;
-    }
 }
 
 void ATIMERUNPlayerController::SetupInputComponent()
@@ -354,4 +354,41 @@ void ATIMERUNPlayerController::Jump()
             ControlledCharacter->Jump();
         }
     }
+}
+
+void ATIMERUNPlayerController::UpdateNewPlayer(int c_id)
+{
+    UWorld* const world = GetWorld();
+    /*if (c_id == my_id) {
+        IsEnterNewPlayer = false;
+        NewPlayer = nullptr;
+        return;
+    }*/
+ /*   FVector spawnlocation;
+    spawnlocation.X = NewPlayer->location.x;
+    spawnlocation.Y = NewPlayer->location.y;
+    spawnlocation.Z = NewPlayer->location.z;
+
+    FRotator spawnrotation;
+    spawnrotation.Yaw = NewPlayer->Yaw;*/
+
+    /*FActorSpawnParameters spawnparams;
+    spawnparams.Owner = this;
+    spawnparams.Instigator = Instigator;*/
+
+    ATIMERUNCharacter* SpawnCharacter = world->SpawnActor<ATIMERUNCharacter>();
+    SpawnCharacter->SpawnDefaultController();
+    SpawnCharacter->id = c_id;
+    
+    if (players[c_id] != nullptr) {
+        Session player;
+        player.location.x = 0;
+        player.location.y = 0;
+        player.location.z = 0;
+
+        player.Yaw = 0;
+
+        players[c_id] = &player;
+    }
+    IsEnterNewPlayer = false;
 }
