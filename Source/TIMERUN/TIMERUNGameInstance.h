@@ -23,7 +23,6 @@ public:
 	SocketMgr* GetSocketMgr() {
 		return &socketmgr;
 	}
-	/*virtual void Init() override;*/
 	void InitLoginSocket();
 	void InitIngameSocket();
 };

@@ -136,10 +136,9 @@ void ATIMERUNPlayerController::ProcessPakcet(char* packet)
 {
 	switch (packet[1]) {
 	case SC_LOGIN_SUCCESS: {
-        UE_LOG(LogTemp, Warning, TEXT("asdasdasdasdsa"));
 		SC_LOGIN_SUCCESS_PACKET* p = reinterpret_cast<SC_LOGIN_SUCCESS_PACKET*>(packet);
 
-        auto myplayer = Cast<ATIMERUNCharacterVer2>(UGameplayStatics::GetPlayerCharacter(this, 0));
+        auto myplayer = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
         myplayer->id = p->id;
         memcpy(myplayer->nickname, p->nickname, sizeof p->nickname);
@@ -250,27 +249,18 @@ void ATIMERUNPlayerController::LookUp(float NewAxisValue)
 
 void ATIMERUNPlayerController::MoveForward(float Value)
 {
-    // Check if the value is not zero (W key is pressed)
     if (Value != 0.f)
     {
-        // Get the controlled pawn (your character)
         APawn* ControlledPawn = GetPawn();
 
-        // Check if the controlled pawn exists
         if (ControlledPawn)
         {
-           /* players[my_id].location.x = ControlledPawn->GetActorLocation().X;
-            players[my_id].location.y = ControlledPawn->GetActorLocation().Y;
-            players[my_id].location.z = ControlledPawn->GetActorLocation().Z;*/
-            // Extract the yaw value
             float Yaw = GetControlRotation().Yaw;
 
-            // Convert the yaw value to a rotation matrix to get the forward vector
             FRotator Rotation(0.f, Yaw, 0.f);
             FVector ForwardVector = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
 
-            // Move the pawn backward
-            ControlledPawn->AddMovementInput(ForwardVector, Value); // Negate the ForwardVector to move backward
+            ControlledPawn->AddMovementInput(ForwardVector, Value);
             SendMovePacket(direction::forward,ControlledPawn);
         }
     }
@@ -278,16 +268,12 @@ void ATIMERUNPlayerController::MoveForward(float Value)
 
 void ATIMERUNPlayerController::MoveRight(float Value)
 {
-    // Check if the value is not zero (D key is pressed)
     if (Value != 0.f)
     {
-        // Get the controlled pawn (your character)
         APawn* ControlledPawn = GetPawn();
 
-        // Check if the controlled pawn exists
         if (ControlledPawn)
         {
-            // Move the pawn to the right
             FVector RightVector = FRotationMatrix(GetControlRotation()).GetScaledAxis(EAxis::Y);
             ControlledPawn->AddMovementInput(RightVector, Value);
             SendMovePacket(direction::right, ControlledPawn);
@@ -297,18 +283,14 @@ void ATIMERUNPlayerController::MoveRight(float Value)
 
 void ATIMERUNPlayerController::MoveLeft(float Value)
 {
-    // Check if the value is not zero (A key is pressed)
     if (Value != 0.f)
     {
-        // Get the controlled pawn (your character)
         APawn* ControlledPawn = GetPawn();
 
-        // Check if the controlled pawn exists
         if (ControlledPawn)
         {
-            // Move the pawn to the left
             FVector RightVector = FRotationMatrix(GetControlRotation()).GetScaledAxis(EAxis::Y);
-            ControlledPawn->AddMovementInput(-RightVector, Value); // Negate the RightVector to move left
+            ControlledPawn->AddMovementInput(-RightVector, Value);
             SendMovePacket(direction::left, ControlledPawn);
         }
     }
@@ -316,24 +298,18 @@ void ATIMERUNPlayerController::MoveLeft(float Value)
 
 void ATIMERUNPlayerController::MoveBack(float Value)
 {
-    // Check if the value is not zero (S key is pressed)
     if (Value != 0.f)
     {
-        // Get the controlled pawn (your character)
         APawn* ControlledPawn = GetPawn();
 
-        // Check if the controlled pawn exists
         if (ControlledPawn)
         {
-            // Extract the yaw value
             float Yaw = GetControlRotation().Yaw;
 
-            // Convert the yaw value to a rotation matrix to get the forward vector
             FRotator Rotation(0.f, Yaw, 0.f);
             FVector ForwardVector = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
 
-            // Move the pawn backward
-            ControlledPawn->AddMovementInput(-ForwardVector, Value); // Negate the ForwardVector to move backward
+            ControlledPawn->AddMovementInput(-ForwardVector, Value);
             SendMovePacket(direction::back, ControlledPawn);
         }
     }
@@ -341,17 +317,13 @@ void ATIMERUNPlayerController::MoveBack(float Value)
 
 void ATIMERUNPlayerController::Jump()
 {
-    // Get the controlled pawn (your character)
     APawn* ControlledPawn = GetPawn();
 
-    // Check if the controlled pawn exists and is a character
     ACharacter* ControlledCharacter = Cast<ACharacter>(ControlledPawn);
     if (ControlledCharacter)
     {
-        // Check if the character can jump
         if (ControlledCharacter->CanJump())
         {
-            // Perform the jump
             ControlledCharacter->Jump();
         }
     }
@@ -360,23 +332,7 @@ void ATIMERUNPlayerController::Jump()
 void ATIMERUNPlayerController::UpdateNewPlayer(int c_id)
 {
     UWorld* const world = GetWorld();
-    /*if (c_id == my_id) {
-        IsEnterNewPlayer = false;
-        NewPlayer = nullptr;
-        return;
-    }*/
- /*   FVector spawnlocation;
-    spawnlocation.X = NewPlayer->location.x;
-    spawnlocation.Y = NewPlayer->location.y;
-    spawnlocation.Z = NewPlayer->location.z;
-
-    FRotator spawnrotation;
-    spawnrotation.Yaw = NewPlayer->Yaw;*/
-
-    /*FActorSpawnParameters spawnparams;
-    spawnparams.Owner = this;
-    spawnparams.Instigator = Instigator;*/
-
+  
     ATIMERUNCharacter* SpawnCharacter = world->SpawnActor<ATIMERUNCharacter>();
     SpawnCharacter->SpawnDefaultController();
     SpawnCharacter->id = c_id;
