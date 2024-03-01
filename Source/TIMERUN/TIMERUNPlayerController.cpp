@@ -138,7 +138,7 @@ void ATIMERUNPlayerController::ProcessPakcet(char* packet)
 	case SC_LOGIN_SUCCESS: {
 		SC_LOGIN_SUCCESS_PACKET* p = reinterpret_cast<SC_LOGIN_SUCCESS_PACKET*>(packet);
 
-        auto myplayer = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+        auto myplayer = Cast<ATIMERUNCharacterVer2>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
         myplayer->id = p->id;
         memcpy(myplayer->nickname, p->nickname, sizeof p->nickname);
@@ -193,7 +193,7 @@ void ATIMERUNPlayerController::ProcessPakcet(char* packet)
         CharacterRotation.Roll = 0;
 
         TArray<AActor*> spawnedCharacters;
-        UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacterVer2::StaticClass(), spawnedCharacters);
         spawnedCharacters[p->id]->SetActorLocation(CharacterLocation);
         spawnedCharacters[p->id]->SetActorRotation(CharacterRotation);
 
@@ -333,7 +333,7 @@ void ATIMERUNPlayerController::UpdateNewPlayer(int c_id)
 {
     UWorld* const world = GetWorld();
   
-    ATIMERUNCharacter* SpawnCharacter = world->SpawnActor<ATIMERUNCharacter>();
+    ATIMERUNCharacterVer2* SpawnCharacter = world->SpawnActor<ATIMERUNCharacterVer2>();
     SpawnCharacter->SpawnDefaultController();
     SpawnCharacter->id = c_id;
     

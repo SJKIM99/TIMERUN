@@ -118,6 +118,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 
 		for (auto& pl : clients) {
 			if (pl.m_state != ST_ALLOC) break;
+			if (pl.m_id == c_id) continue;
 			pl.send_add_player_packet(c_id);
 		}
 	}

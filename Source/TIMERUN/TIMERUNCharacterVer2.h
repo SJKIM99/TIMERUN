@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "C:/Users/user/Desktop/TIMERUN/LOGIN_SERVER/protocol.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "TIMERUNCharacterVer2.generated.h"
