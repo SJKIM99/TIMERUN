@@ -14,6 +14,14 @@ void Session::send_add_player_packet(int c_id)
 	SendPacket(&packet);
 }
 
+void Session::send_ingame_login_sucess_packet(int c_id)
+{
+	SC_INGAME_SUCCESS_PACKET packet;
+	packet.id = c_id;
+	packet.size = sizeof SC_INGAME_SUCCESS_PACKET;
+	packet.type = SC_INGAME_SUCCESS;
+	SendPacket(&packet);
+}
 void Session::send_move_packet(int c_id)
 {
 	SC_MOVE_PACKET packet;

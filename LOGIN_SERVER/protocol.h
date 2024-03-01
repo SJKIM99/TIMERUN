@@ -52,6 +52,7 @@ constexpr char SC_SIGNUP = 3;
 constexpr char SC_SIGNUP_SUCCESS = 4;
 constexpr char SC_MOVE_PLAYER = 5;
 constexpr char SC_ADD_PLAYER = 6;
+constexpr char SC_INGAME_SUCCESS = 7;
 
 
 #pragma pack (push, 1)
@@ -75,6 +76,7 @@ struct CS_SIGNUP_PACKET {
 struct CS_MOVE_PACKET {
 	unsigned char size;
 	char type;
+	int id;
 	direction direction;
 	double yaw;
 	vector_d3 location;
@@ -89,7 +91,6 @@ struct CS_SELECT_CHANNEL_PACKET {
 struct CS_INGAME_LOGIN_PACKET {
 	unsigned char size;
 	char type;
-	int id;
 };
 
 //S2C
@@ -106,7 +107,6 @@ struct SC_SIGNUP_SUCCESS_PACKET {
 struct SC_LOGIN_SUCCESS_PACKET {
 	unsigned char size;
 	char type;
-	int id;
 	char nickname[NAMESIZE];
 };
 
@@ -125,6 +125,12 @@ struct SC_LOGIN_FAIL {
 };
 
 struct SC_ADD_PLAYER_PACKET {
+	unsigned char size;
+	char type;
+	int id;
+};
+
+struct SC_INGAME_SUCCESS_PACKET {
 	unsigned char size;
 	char type;
 	int id;

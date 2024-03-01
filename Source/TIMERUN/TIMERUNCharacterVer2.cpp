@@ -9,6 +9,8 @@ ATIMERUNCharacterVer2::ATIMERUNCharacterVer2()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	SetActorHiddenInGame(false);
+	UE_LOG(LogTemp, Warning, TEXT("SkeletMesh Spawn Success"));
 }
 
 // Called when the game starts or when spawned
