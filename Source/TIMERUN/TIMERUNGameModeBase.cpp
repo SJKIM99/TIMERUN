@@ -17,7 +17,12 @@ ATIMERUNGameModeBase::ATIMERUNGameModeBase()
 	
 	//DefaultPawnClass = ATIMERUNCharacter::StaticClass();
 
-	PlayerControllerClass = ATIMERUNPlayerController::StaticClass();
+	static ConstructorHelpers::FClassFinder<AController> PlayerControllerBPClass(TEXT("/Game/Player/BP_TIMERUNController_Ver2"));
+	if (PlayerControllerBPClass.Class != NULL)
+	{
+		PlayerControllerClass = PlayerControllerBPClass.Class;
+	}
+	//PlayerControllerClass = ATIMERUNPlayerController::StaticClass();
 
 }
  
