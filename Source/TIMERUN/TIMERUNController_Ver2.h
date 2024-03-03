@@ -6,7 +6,7 @@
 
 #include "SocketMgr.h"
 #include "TIMERUNGameInstance.h"
-#include "TIMERUNCharacter.h"
+#include "TIMERUNCharacter_Ver2.h"
 
 #include "Windows/AllowWindowsPlatformTypes.h"
 #include "Windows/prewindowsapi.h"

@@ -137,7 +137,7 @@ void ATIMERUNController_Ver2::ProcessPakcet(char* packet)
     case SC_LOGIN_SUCCESS: {
         SC_LOGIN_SUCCESS_PACKET* p = reinterpret_cast<SC_LOGIN_SUCCESS_PACKET*>(packet);
 
-        auto myplayer = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+        auto myplayer = Cast<ATIMERUNCharacter_Ver2>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
         memcpy(myplayer->nickname, p->nickname, sizeof p->nickname);
 
@@ -160,7 +160,7 @@ void ATIMERUNController_Ver2::ProcessPakcet(char* packet)
         SC_INGAME_SUCCESS_PACKET* p = reinterpret_cast<SC_INGAME_SUCCESS_PACKET*>(packet);
         my_id = p->id;
 
-        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+        ATIMERUNCharacter_Ver2* MyPlayerCharacter = Cast<ATIMERUNCharacter_Ver2>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
         MyPlayerCharacter->id = my_id;
 
@@ -176,7 +176,7 @@ void ATIMERUNController_Ver2::ProcessPakcet(char* packet)
         myCharacterRotation.Pitch = 0;
         myCharacterRotation.Roll = 0;
 
-        auto myplayer = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+        auto myplayer = Cast<ATIMERUNCharacter_Ver2>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
         myplayer->SetActorLocation(myCharacterLocation);
         myplayer->SetActorRotation(myCharacterRotation);
@@ -202,7 +202,7 @@ void ATIMERUNController_Ver2::ProcessPakcet(char* packet)
     case SC_MOVE_PLAYER: {
         SC_MOVE_PACKET* p = reinterpret_cast<SC_MOVE_PACKET*>(packet);
 
-        UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter_Ver2::StaticClass(), spawnedCharacters);
         //위 함수는 spawnCharacters에 world에 생성된 객체를 넣지만, 월드에 스폰된 순서로 들어가기에 아이디를 사용한 오름차순 정렬이 필요하다.
         SortPlayerIndex();
 
@@ -248,7 +248,7 @@ void ATIMERUNController_Ver2::UpdateNewPlayer(int c_id)
 {
     UWorld* const world = GetWorld();
 
-    ATIMERUNCharacter* SpawnCharacter = world->SpawnActor<ATIMERUNCharacter>();
+    ATIMERUNCharacter_Ver2* SpawnCharacter = world->SpawnActor<ATIMERUNCharacter_Ver2>();
 
     SpawnCharacter->SpawnDefaultController();
     SpawnCharacter->id = c_id;
@@ -260,8 +260,8 @@ void ATIMERUNController_Ver2::UpdateNewPlayer(int c_id)
 void ATIMERUNController_Ver2::SortPlayerIndex()
 {
     auto CompareByPlayerId = [](const AActor& A, const AActor& B) {
-        const ATIMERUNCharacter* CharacterA = Cast<ATIMERUNCharacter>(&A);
-        const ATIMERUNCharacter* CharacterB = Cast<ATIMERUNCharacter>(&B);
+        const ATIMERUNCharacter_Ver2* CharacterA = Cast<ATIMERUNCharacter_Ver2>(&A);
+        const ATIMERUNCharacter_Ver2* CharacterB = Cast<ATIMERUNCharacter_Ver2>(&B);
         if (CharacterA && CharacterB) {
             return CharacterA->id < CharacterB->id;
         }
