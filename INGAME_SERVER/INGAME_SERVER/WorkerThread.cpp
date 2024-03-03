@@ -135,78 +135,21 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 	case CS_MOVE: {
 		CS_MOVE_PACKET* p = reinterpret_cast<CS_MOVE_PACKET*>(packet);
 
-		switch (p->direction) {
+		{
+			std::lock_guard<std::mutex> movelock(clients[c_id].m_container_lock);
+			clients[p->id].m_location.x = p->location.x;
+			clients[p->id].m_location.y = p->location.y;
+			clients[p->id].m_location.z = p->location.z;
 
-		case direction::right: {
-			{
-				std::lock_guard<std::mutex> movelock(clients[c_id].m_container_lock);
-				clients[p->id].m_location.x = p->location.x;
-				clients[p->id].m_location.y = p->location.y;
-				clients[p->id].m_location.z = p->location.z;
-
-				clients[p->id].m_yaw = p->yaw;
-			}
-			for (auto& pl : clients) {
-				if (pl.m_state != ST_ALLOC) break;
-				if (pl.m_id == c_id) continue;
-				pl.send_move_packet(c_id);
-			}
-			std::cout << p->id << "번 클라이언트 이동" << std::endl;
+			clients[p->id].m_yaw = p->yaw;
 		}
-							 break;
-		case direction::left: {
-			{
-				std::lock_guard<std::mutex> movelock(clients[c_id].m_container_lock);
-				clients[p->id].m_location.x = p->location.x;
-				clients[p->id].m_location.y = p->location.y;
-				clients[p->id].m_location.z = p->location.z;
-
-				clients[p->id].m_yaw = p->yaw;
-			}
-			for (auto& pl : clients) {
-				if (pl.m_state != ST_ALLOC) break;
-				if (pl.m_id == c_id) continue;
-				pl.send_move_packet(c_id);
-			}
-			std::cout << p->id << "번 클라이언트 이동" << std::endl;
+		for (auto& pl : clients) {
+			if (pl.m_state != ST_ALLOC) break;
+			if (pl.m_id == c_id) continue;
+			pl.send_move_packet(c_id);
 		}
-							break;
-		case direction::forward: {
-			{
-				std::lock_guard<std::mutex> movelock(clients[c_id].m_container_lock);
-				clients[p->id].m_location.x = p->location.x;
-				clients[p->id].m_location.y = p->location.y;
-				clients[p->id].m_location.z = p->location.z;
-
-				clients[p->id].m_yaw = p->yaw;
-			}
-			for (auto& pl : clients) {
-				if (pl.m_state != ST_ALLOC) break;
-				if (pl.m_id == c_id) continue;
-				pl.send_move_packet(c_id);
-			}
-			std::cout << p->id << "번 클라이언트 이동" << std::endl;
-		}
-							   break;
-		case direction::back: {
-			{
-				std::lock_guard<std::mutex> movelock(clients[c_id].m_container_lock);
-				clients[p->id].m_location.x = p->location.x;
-				clients[p->id].m_location.y = p->location.y;
-				clients[p->id].m_location.z = p->location.z;
-
-				clients[p->id].m_yaw = p->yaw;
-			}
-			for (auto& pl : clients) {
-				if (pl.m_state != ST_ALLOC) break;
-				if (pl.m_id == c_id) continue;
-				pl.send_move_packet(c_id);
-			}
-			std::cout << p->id << "번 클라이언트 이동" << std::endl;
-		}
-							break;
-		}
-		break;
+		std::cout << p->id << "번 클라이언트 이동" << std::endl;
 	}
+				break;
 	}
 }
