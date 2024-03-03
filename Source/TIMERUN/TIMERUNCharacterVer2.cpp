@@ -9,8 +9,13 @@ ATIMERUNCharacterVer2::ATIMERUNCharacterVer2()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	SetActorHiddenInGame(false);
-	UE_LOG(LogTemp, Warning, TEXT("SkeletMesh Spawn Success"));
+	// 메쉬 불러오기
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Game/Player/Resource/Male_Rigged"));
+	if (MeshAsset.Succeeded()) {
+		UE_LOG(LogTemp, Warning, TEXT("SkeletMesh Spawn Success"));
+		TIMERUNMesh = MeshAsset.Object;
+		GetMesh()->SetSkeletalMesh(TIMERUNMesh);
+	}
 }
 
 // Called when the game starts or when spawned

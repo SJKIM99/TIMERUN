@@ -31,6 +31,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) // 에디터, 블루프린트 안에서 수정 가능
 	bool HaveGravityGun; // 중력총을 들었는지 안들었는지
+private:
+	UPROPERTY(EditAnywhere)
+	USkeletalMesh* TIMERUNMesh; // 외부에서 가져온 메시를 저장하기 위한 변수
 public:
 	int id;
 	char nickname[NAME_SIZE];

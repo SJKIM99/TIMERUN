@@ -44,7 +44,6 @@ private:
 	SOCKET* ingame_socket;
 	int my_id;
 	int other_id;
-	std::array<Session*,MAX_CLIENTS> players;
 	TArray<AActor*> spawnedCharacters;
 public:
 	virtual void Tick(float DeltaTime) override;

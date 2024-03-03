@@ -8,11 +8,6 @@
 
 ATIMERUNPlayerController::ATIMERUNPlayerController()
 {
-    for (int i = 0; i < MAX_CLIENTS; ++i) {
-        if (players[i] == nullptr) {
-            players[i] = new Session();
-        }
-    }
 }
 
 ATIMERUNPlayerController::~ATIMERUNPlayerController()
@@ -141,7 +136,7 @@ void ATIMERUNPlayerController::ProcessPakcet(char* packet)
 	case SC_LOGIN_SUCCESS: {
 		SC_LOGIN_SUCCESS_PACKET* p = reinterpret_cast<SC_LOGIN_SUCCESS_PACKET*>(packet);
 
-        auto myplayer = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+        auto myplayer = Cast<ATIMERUNCharacterVer2>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
         memcpy(myplayer->nickname, p->nickname, sizeof p->nickname);
         
@@ -162,17 +157,9 @@ void ATIMERUNPlayerController::ProcessPakcet(char* packet)
 						 break;
     case SC_INGAME_SUCCESS: {
         SC_INGAME_SUCCESS_PACKET* p = reinterpret_cast<SC_INGAME_SUCCESS_PACKET*>(packet);
-
-       /* UWorld* const world = GetWorld();
-
-        ATIMERUNCharacter* SpawnCharacter = world->SpawnActor<ATIMERUNCharacter>();
-
-        SpawnCharacter->SpawnDefaultController();*/
-
         my_id = p->id;
-        UE_LOG(LogTemp, Warning, TEXT("My id %d"), my_id);
         
-        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+        ATIMERUNCharacterVer2* MyPlayerCharacter = Cast<ATIMERUNCharacterVer2>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
         MyPlayerCharacter->id = my_id;
 
@@ -182,19 +169,13 @@ void ATIMERUNPlayerController::ProcessPakcet(char* packet)
         myCharacterLocation.Y = 0;
         myCharacterLocation.Z = 0;
 
-        players[my_id]->location.x = myCharacterLocation.X;
-        players[my_id]->location.y = myCharacterLocation.Y;
-        players[my_id]->location.z = myCharacterLocation.Z;
-
         FRotator myCharacterRotation;
 
 		myCharacterRotation.Yaw = 0;
 		myCharacterRotation.Pitch = 0;
 		myCharacterRotation.Roll = 0;
 
-		players[my_id]->Yaw = myCharacterRotation.Yaw;
-
-        auto myplayer = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+        auto myplayer = Cast<ATIMERUNCharacterVer2>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
         myplayer->SetActorLocation(myCharacterLocation);
         myplayer->SetActorRotation(myCharacterRotation);
@@ -219,13 +200,9 @@ void ATIMERUNPlayerController::ProcessPakcet(char* packet)
 				  break;
     case SC_MOVE_PLAYER: {
 		SC_MOVE_PACKET* p = reinterpret_cast<SC_MOVE_PACKET*>(packet);
-		players[p->id]->location.x = p->location.x;
-		players[p->id]->location.y = p->location.y;
-		players[p->id]->location.z = p->location.z;
 
-		players[p->id]->Yaw = p->yaw;
-
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacterVer2::StaticClass(), spawnedCharacters);
+        //위 함수는 spawnCharacters에 world에 생성된 객체를 넣지만, 월드에 스폰된 순서로 들어가기에 아이디를 사용한 오름차순 정렬이 필요하다.
         SortPlayerIndex();
 
 		FVector CharacterLocation;
@@ -241,16 +218,11 @@ void ATIMERUNPlayerController::ProcessPakcet(char* packet)
         if (p->id == my_id) {
 			spawnedCharacters[my_id]->SetActorLocation(CharacterLocation);
 			spawnedCharacters[my_id]->SetActorRotation(CharacterRotation);
-			//UE_LOG(LogTemp, Warning, TEXT("My player move :  %d"), spawnedCharacters[p->id]);
 		}
 		else {
 			spawnedCharacters[p->id]->SetActorLocation(CharacterLocation);
 			spawnedCharacters[p->id]->SetActorRotation(CharacterRotation);
-			//UE_LOG(LogTemp, Warning, TEXT("Other player move :  %d"), p->id);
 		}
-
-       // UE_LOG(LogTemp, Warning, TEXT("Player %d moved to (%f, %f, %f)"), p->id, p->location.x, p->location.y, p->location.z);
-
     }
 					   break;
 	}
@@ -387,36 +359,24 @@ void ATIMERUNPlayerController::UpdateNewPlayer(int c_id)
 {
     UWorld* const world = GetWorld();
   
-    ATIMERUNCharacter* SpawnCharacter = world->SpawnActor<ATIMERUNCharacter>();
+    ATIMERUNCharacterVer2* SpawnCharacter = world->SpawnActor<ATIMERUNCharacterVer2>();
 
     SpawnCharacter->SpawnDefaultController();
     SpawnCharacter->id = c_id;
 
     UE_LOG(LogTemp, Warning, TEXT("Enter NewPlayer %d"), c_id);
- /*   if (players[c_id] != nullptr) {
-        Session* player = new Session;
-        player->location.x = 0;
-        player->location.y = 0;
-        player->location.z = 0;
-
-        player->Yaw = 0;
-
-        players[c_id] = player;
-    }*/
-
-    //spawnedCharacters.Add(SpawnCharacter);
     IsEnterNewPlayer = false;
 }
 
 void ATIMERUNPlayerController::SortPlayerIndex()
 {
     auto CompareByPlayerId = [](const AActor& A, const AActor& B) {
-        const ATIMERUNCharacter* CharacterA = Cast<ATIMERUNCharacter>(&A);
-        const ATIMERUNCharacter* CharacterB = Cast<ATIMERUNCharacter>(&B);
+        const ATIMERUNCharacterVer2* CharacterA = Cast<ATIMERUNCharacterVer2>(&A);
+        const ATIMERUNCharacterVer2* CharacterB = Cast<ATIMERUNCharacterVer2>(&B);
         if (CharacterA && CharacterB) {
             return CharacterA->id < CharacterB->id;
         }
-        // A 또는 B가 ATIMERUNCharacter가 아닌 경우에는 정렬하지 않음
+        // A 또는 B가 ATIMERUNCharacterVer2가 아닌 경우에는 정렬하지 않음
         return false;
     };
     spawnedCharacters.Sort(CompareByPlayerId);
