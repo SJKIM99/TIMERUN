@@ -1,18 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "TIMERUNController_Ver2.h"
+#include "TIMERUNController.h"
 #include "Kismet/GameplayStatics.h"
 
-ATIMERUNController_Ver2::ATIMERUNController_Ver2()
+ATIMERUNController::ATIMERUNController()
 {
 }
 
-ATIMERUNController_Ver2::~ATIMERUNController_Ver2()
+ATIMERUNController::~ATIMERUNController()
 {
 }
 
-void ATIMERUNController_Ver2::BeginPlay()
+void ATIMERUNController::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -31,7 +31,7 @@ void ATIMERUNController_Ver2::BeginPlay()
 	int ret = send(*login_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 }
 
-void ATIMERUNController_Ver2::Tick(float DeltaTime)
+void ATIMERUNController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if (!IsActiveIngameSocket)
@@ -47,7 +47,7 @@ void ATIMERUNController_Ver2::Tick(float DeltaTime)
 		UpdateNewPlayer(other_id);
 }
 
-void ATIMERUNController_Ver2::RecvPacketFromLoginServer()
+void ATIMERUNController::RecvPacketFromLoginServer()
 {
     char buf[BUF_SIZE];
     int ret = recv(*login_socket, reinterpret_cast<char*>(&buf), BUF_SIZE, 0);
@@ -89,7 +89,7 @@ void ATIMERUNController_Ver2::RecvPacketFromLoginServer()
     }
 }
 
-void ATIMERUNController_Ver2::RecvPacketFromIngameServer()
+void ATIMERUNController::RecvPacketFromIngameServer()
 {
     char buf[BUF_SIZE];
     int ret = recv(*ingame_socket, reinterpret_cast<char*>(&buf), BUF_SIZE, 0);
@@ -131,13 +131,13 @@ void ATIMERUNController_Ver2::RecvPacketFromIngameServer()
     }
 }
 
-void ATIMERUNController_Ver2::ProcessPakcet(char* packet)
+void ATIMERUNController::ProcessPakcet(char* packet)
 {
     switch (packet[1]) {
     case SC_LOGIN_SUCCESS: {
         SC_LOGIN_SUCCESS_PACKET* p = reinterpret_cast<SC_LOGIN_SUCCESS_PACKET*>(packet);
 
-        auto myplayer = Cast<ATIMERUNCharacter_Ver2>(UGameplayStatics::GetPlayerCharacter(this, 0));
+        auto myplayer = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
         memcpy(myplayer->nickname, p->nickname, sizeof p->nickname);
 
@@ -160,7 +160,7 @@ void ATIMERUNController_Ver2::ProcessPakcet(char* packet)
         SC_INGAME_SUCCESS_PACKET* p = reinterpret_cast<SC_INGAME_SUCCESS_PACKET*>(packet);
         my_id = p->id;
 
-        ATIMERUNCharacter_Ver2* MyPlayerCharacter = Cast<ATIMERUNCharacter_Ver2>(UGameplayStatics::GetPlayerCharacter(this, 0));
+        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
         MyPlayerCharacter->id = my_id;
 
@@ -176,7 +176,7 @@ void ATIMERUNController_Ver2::ProcessPakcet(char* packet)
         myCharacterRotation.Pitch = 0;
         myCharacterRotation.Roll = 0;
 
-        auto myplayer = Cast<ATIMERUNCharacter_Ver2>(UGameplayStatics::GetPlayerCharacter(this, 0));
+        auto myplayer = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
         myplayer->SetActorLocation(myCharacterLocation);
         myplayer->SetActorRotation(myCharacterRotation);
@@ -202,7 +202,7 @@ void ATIMERUNController_Ver2::ProcessPakcet(char* packet)
     case SC_MOVE_PLAYER: {
         SC_MOVE_PACKET* p = reinterpret_cast<SC_MOVE_PACKET*>(packet);
 
-        UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter_Ver2::StaticClass(), spawnedCharacters);
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
         //위 함수는 spawnCharacters에 world에 생성된 객체를 넣지만, 월드에 스폰된 순서로 들어가기에 아이디를 사용한 오름차순 정렬이 필요하다.
         SortPlayerIndex();
 
@@ -229,7 +229,7 @@ void ATIMERUNController_Ver2::ProcessPakcet(char* packet)
     }
 }
 
-void ATIMERUNController_Ver2::SendMovePacket(/*direction direction,*/ APawn* pawn)
+void ATIMERUNController::SendMovePacket(/*direction direction,*/ APawn* pawn)
 {
     CS_MOVE_PACKET packet;
     packet.size = sizeof CS_MOVE_PACKET;
@@ -244,11 +244,11 @@ void ATIMERUNController_Ver2::SendMovePacket(/*direction direction,*/ APawn* paw
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 
-void ATIMERUNController_Ver2::UpdateNewPlayer(int c_id)
+void ATIMERUNController::UpdateNewPlayer(int c_id)
 {
     UWorld* const world = GetWorld();
 
-    ATIMERUNCharacter_Ver2* SpawnCharacter = world->SpawnActor<ATIMERUNCharacter_Ver2>();
+    ATIMERUNCharacter* SpawnCharacter = world->SpawnActor<ATIMERUNCharacter>();
 
     SpawnCharacter->SpawnDefaultController();
     SpawnCharacter->id = c_id;
@@ -257,11 +257,11 @@ void ATIMERUNController_Ver2::UpdateNewPlayer(int c_id)
     IsEnterNewPlayer = false;
 }
 
-void ATIMERUNController_Ver2::SortPlayerIndex()
+void ATIMERUNController::SortPlayerIndex()
 {
     auto CompareByPlayerId = [](const AActor& A, const AActor& B) {
-        const ATIMERUNCharacter_Ver2* CharacterA = Cast<ATIMERUNCharacter_Ver2>(&A);
-        const ATIMERUNCharacter_Ver2* CharacterB = Cast<ATIMERUNCharacter_Ver2>(&B);
+        const ATIMERUNCharacter* CharacterA = Cast<ATIMERUNCharacter>(&A);
+        const ATIMERUNCharacter* CharacterB = Cast<ATIMERUNCharacter>(&B);
         if (CharacterA && CharacterB) {
             return CharacterA->id < CharacterB->id;
         }

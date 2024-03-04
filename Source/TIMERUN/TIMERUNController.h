@@ -6,7 +6,7 @@
 
 #include "SocketMgr.h"
 #include "TIMERUNGameInstance.h"
-#include "TIMERUNCharacter_Ver2.h"
+#include "TIMERUNCharacter.h"
 
 #include "Windows/AllowWindowsPlatformTypes.h"
 #include "Windows/prewindowsapi.h"
@@ -23,18 +23,18 @@
 
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/Character.h"
-#include "TIMERUNController_Ver2.generated.h"
+#include "TIMERUNController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TIMERUN_API ATIMERUNController_Ver2 : public APlayerController
+class TIMERUN_API ATIMERUNController : public APlayerController
 {
 	GENERATED_BODY()
 	
-	ATIMERUNController_Ver2();
-	~ATIMERUNController_Ver2();
+	ATIMERUNController();
+	~ATIMERUNController();
 protected:
 	virtual void BeginPlay() override;
 private:
