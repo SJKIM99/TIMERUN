@@ -25,6 +25,13 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool HaveGravityGun;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IsGrabbingObject;
+
 public:
 	int id;
 	char nickname[NAME_SIZE];

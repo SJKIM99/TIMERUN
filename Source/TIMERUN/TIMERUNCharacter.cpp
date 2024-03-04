@@ -2,6 +2,7 @@
 
 
 #include "TIMERUNCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ATIMERUNCharacter::ATIMERUNCharacter()
@@ -16,6 +17,16 @@ ATIMERUNCharacter::ATIMERUNCharacter()
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FRotator(0.0f, -90.0f, 0.0f));
 	}
 	
+
+	//캐릭터 기본 세팅
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	//변수 초기화
+	HaveGravityGun = false;
+	IsGrabbingObject = false;
 }
 
 // Called when the game starts or when spawned
