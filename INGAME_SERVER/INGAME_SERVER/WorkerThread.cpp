@@ -1,7 +1,16 @@
 #include "pch.h"
 #include "WorkerThread.h"
+#include "IngameMain.h"
 
 OVER_EXP g_over;
+
+WorkerThread::WorkerThread()
+{
+}
+
+WorkerThread::~WorkerThread()
+{
+}
 
 void WorkerThread::woker_thread(HANDLE h_iocp)
 {
@@ -78,6 +87,58 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
 	}
 }
 
+void WorkerThread::timer_thread()
+{
+	IngameMain ingameMain{};
+
+	while (true) {
+		TIMER_EVENT event;
+		auto current_time = std::chrono::system_clock::now();
+		if (true == timer_queue.try_pop(event)) {
+			if (event.wakeup_time > current_time) {
+				timer_queue.push(event);
+				continue;
+			}
+			switch (event.event) {
+			
+			}
+			continue;
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
+}
+
+void WorkerThread::world_update_thread()
+{
+	SC_MOVE_PACKET packet;
+	packet.size = sizeof SC_MOVE_PACKET;
+	packet.type = SC_MOVE;
+
+	std::chrono::steady_clock::time_point last_send_time = std::chrono::steady_clock::now();
+	while (true) {
+		auto current_time = std::chrono::steady_clock::now();
+		auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - last_send_time).count();
+
+		if (elapsed_time >= 1000 / 33) {
+			for (auto& cl : clients) {
+				if (cl.m_state == ST_FREE) continue;
+				packet.id = cl.m_id;
+				packet.location.x = cl.m_location.x;
+				packet.location.y = cl.m_location.y;
+				packet.location.z = cl.m_location.z;
+				packet.yaw = cl.m_yaw;
+			}
+			for (auto& cl : clients) {
+				std::lock_guard<std::mutex> lock(cl.m_container_lock);
+				if (cl.m_state != ST_FREE) {
+					cl.SendPacket(&packet);
+				}
+			}
+		}
+		last_send_time = current_time;
+	}
+}
+
 int WorkerThread::get_new_client_id()
 {
 	for (int i = 0; i < MAX_USER; ++i) {
@@ -143,12 +204,12 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 
 			clients[p->id].m_yaw = p->yaw;
 		}
-		for (auto& pl : clients) {
+		/*for (auto& pl : clients) {
 			if (pl.m_state != ST_ALLOC) break;
 			if (pl.m_id == c_id) continue;
 			pl.send_move_packet(c_id);
 		}
-		std::cout << p->id << "번 클라이언트 이동" << std::endl;
+		std::cout << p->id << "번 클라이언트 이동" << std::endl;*/
 	}
 				break;
 	}

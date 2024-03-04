@@ -6,10 +6,15 @@ class WorkerThread
 private:
 	WSAOVERLAPPED* over = nullptr;
 public:
-	WorkerThread() {};
-	~WorkerThread() {};
+	WorkerThread();
+	~WorkerThread();
+
+private:
+	concurrency::concurrent_priority_queue<TIMER_EVENT> timer_queue;
 public:
 	void woker_thread(HANDLE h_iocp);
+	void timer_thread();
+	void world_update_thread();
 	int get_new_client_id();
 	int get_new_client_in_channel_id();
 	void InitPlayerInfo(int player_id);

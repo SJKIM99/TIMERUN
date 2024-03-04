@@ -35,6 +35,7 @@ void Session::send_move_packet(int c_id)
 	SendPacket(&packet);
 }
 
+
 void Session::SendPacket(void* packet)
 {
 	OVER_EXP* SendData = new OVER_EXP{ reinterpret_cast<char*>(packet) };

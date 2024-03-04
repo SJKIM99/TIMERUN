@@ -12,7 +12,8 @@
 
 enum COMP_TYPE {
 	OP_ACCEPT,
-	OP_RECV, OP_SEND,
+	OP_RECV, OP_SEND, 
+	OP_WORLD_UPDATE
 };
 
 enum direction { forward, back, left, right };
@@ -35,7 +36,7 @@ constexpr int IDSIZE = 20;
 constexpr int PASSWDSIZE = 20;
 constexpr int IPSIZE = 20;
 
-constexpr int MAX_USER = 3000;
+constexpr int MAX_USER = 10;
 constexpr int MAX_CHANNEL_USER = 300;
 
 //C2S
@@ -53,6 +54,7 @@ constexpr char SC_SIGNUP_SUCCESS = 4;
 constexpr char SC_MOVE_PLAYER = 5;
 constexpr char SC_ADD_PLAYER = 6;
 constexpr char SC_INGAME_SUCCESS = 7;
+constexpr char SC_WORLD_UPDATE = 8;
 
 
 #pragma pack (push, 1)
@@ -134,6 +136,14 @@ struct SC_INGAME_SUCCESS_PACKET {
 	unsigned char size;
 	char type;
 	int id;
+};
+
+struct SC_WORLD_UPDATE_PACKET {
+	unsigned char size;
+	char type;
+	int id;
+	double yaw;
+	vector_d3 location;
 };
 
 #pragma pack(pop)
