@@ -45,6 +45,7 @@ constexpr char CS_SIGNUP = 1;
 constexpr char CS_MOVE = 2;
 constexpr char CS_SELECT_CHANNEL = 3;
 constexpr char CS_INGAME_LOGIN = 4;
+constexpr char CS_PLAYER_UPDATE= 5;
 
 //S2C
 constexpr char SC_LOGIN_SUCCESS = 1;
@@ -95,6 +96,14 @@ struct CS_INGAME_LOGIN_PACKET {
 	char type;
 };
 
+struct CS_PLAYER_UPDATE_PACKET {
+	unsigned char size;
+	char type;
+	int id;
+	double yaw;
+	vector_d3 location;
+};
+
 //S2C
 struct SC_SIGNUP_PACKET {
 	unsigned char size;
@@ -116,7 +125,6 @@ struct SC_MOVE_PACKET {
 	unsigned char size;
 	char type;
 	int	 id;
-	//direction direction;
 	double yaw;
 	vector_d3 location;
 };
@@ -136,6 +144,8 @@ struct SC_INGAME_SUCCESS_PACKET {
 	unsigned char size;
 	char type;
 	int id;
+	vector_d3 location;
+	double yaw;
 };
 
 struct SC_WORLD_UPDATE_PACKET {

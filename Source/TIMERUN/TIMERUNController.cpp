@@ -3,6 +3,7 @@
 
 #include "TIMERUNController.h"
 #include "Kismet/GameplayStatics.h"
+#include "TimerManager.h"
 
 ATIMERUNController::ATIMERUNController()
 {
@@ -39,10 +40,6 @@ void ATIMERUNController::Tick(float DeltaTime)
 	else
 		RecvPacketFromIngameServer();
 
-    if (isPlayermove) {
-        APawn* ControlledPawn = GetPawn();
-        SendMovePacket(ControlledPawn);
-    }
 	if (IsEnterNewPlayer)
 		UpdateNewPlayer(other_id);
 }
@@ -157,6 +154,7 @@ void ATIMERUNController::ProcessPakcet(char* packet)
     }
                          break;
     case SC_INGAME_SUCCESS: {
+
         SC_INGAME_SUCCESS_PACKET* p = reinterpret_cast<SC_INGAME_SUCCESS_PACKET*>(packet);
         my_id = p->id;
 
@@ -164,22 +162,22 @@ void ATIMERUNController::ProcessPakcet(char* packet)
 
         MyPlayerCharacter->id = my_id;
 
-        FVector myCharacterLocation;
+        FVector characterLocation;
 
-        myCharacterLocation.X = 0;
-        myCharacterLocation.Y = 0;
-        myCharacterLocation.Z = 0;
+        characterLocation.X = p->location.x;
+        characterLocation.Y = p->location.y;
+        characterLocation.Z = p->location.z;
 
-        FRotator myCharacterRotation;
+        FRotator characterRotation;
 
-        myCharacterRotation.Yaw = 0;
-        myCharacterRotation.Pitch = 0;
-        myCharacterRotation.Roll = 0;
+        characterRotation.Yaw = p->yaw;
+        characterRotation.Pitch = 0;
+        characterRotation.Roll = 0;
 
-        auto myplayer = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+        MyPlayerCharacter->SetActorLocation(characterLocation);
+        MyPlayerCharacter->SetActorRotation(characterRotation);
 
-        myplayer->SetActorLocation(myCharacterLocation);
-        myplayer->SetActorRotation(myCharacterRotation);
+        GetWorldTimerManager().SetTimer(SendPlayerInfoHandle, this, &ATIMERUNController::SendPlayerupdatePakcet, 0.016f, true);
     }
                           break;
 
@@ -197,52 +195,49 @@ void ATIMERUNController::ProcessPakcet(char* packet)
                       break;
     case SC_SIGNUP: {
         SC_SIGNUP_PACKET* p = reinterpret_cast<SC_SIGNUP_PACKET*>(packet);
-    }
-                  break;
-    case SC_MOVE_PLAYER: {
-        SC_MOVE_PACKET* p = reinterpret_cast<SC_MOVE_PACKET*>(packet);
+	}
+				  break;
+	case SC_WORLD_UPDATE: {
+		SC_WORLD_UPDATE_PACKET* p = reinterpret_cast<SC_WORLD_UPDATE_PACKET*>(packet);
 
-        UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
-        //위 함수는 spawnCharacters에 world에 생성된 객체를 넣지만, 월드에 스폰된 순서로 들어가기에 아이디를 사용한 오름차순 정렬이 필요하다.
-        SortPlayerIndex();
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
+		//위 함수는 spawnCharacters에 world에 생성된 객체를 넣지만, 월드에 스폰된 순서로 들어가기에 아이디를 사용한 오름차순 정렬이 필요하다.
+		SortPlayerIndex();
 
-        FVector CharacterLocation;
-        CharacterLocation.X = p->location.x;
-        CharacterLocation.Y = p->location.y;
-        CharacterLocation.Z = p->location.z;
+		FVector CharacterLocation;
+		CharacterLocation.X = p->location.x;
+		CharacterLocation.Y = p->location.y;
+		CharacterLocation.Z = p->location.z;
 
-        FRotator CharacterRotation;
-        CharacterRotation.Yaw = p->yaw;
-        CharacterRotation.Pitch = 0;
-        CharacterRotation.Roll = 0;
+		FRotator CharacterRotation;
+		CharacterRotation.Yaw = p->yaw;
+		CharacterRotation.Pitch = 0;
+		CharacterRotation.Roll = 0;
 
-        if (p->id == my_id) {
-            spawnedCharacters[my_id]->SetActorLocation(CharacterLocation);
-            spawnedCharacters[my_id]->SetActorRotation(CharacterRotation);
-        }
-        else {
-            spawnedCharacters[p->id]->SetActorLocation(CharacterLocation);
-            spawnedCharacters[p->id]->SetActorRotation(CharacterRotation);
-        }
-    }
-                       break;
+		spawnedCharacters[p->id]->SetActorLocation(CharacterLocation);
+		spawnedCharacters[p->id]->SetActorRotation(CharacterRotation);
+	}
+						break;
     }
 }
 
-void ATIMERUNController::SendMovePacket(/*direction direction,*/ APawn* pawn)
+void ATIMERUNController::SendPlayerupdatePakcet()
 {
-    CS_MOVE_PACKET packet;
-    packet.size = sizeof CS_MOVE_PACKET;
-    packet.type = CS_MOVE;
+    APawn* ControlledPawn = GetPawn();
+    CS_PLAYER_UPDATE_PACKET packet;
+    packet.size = sizeof CS_PLAYER_UPDATE_PACKET;
+    packet.type = CS_PLAYER_UPDATE;
     packet.id = my_id;
-    /*packet.direction = direction;*/
-    packet.yaw = pawn->GetActorRotation().Yaw;
-    packet.location.x = pawn->GetActorLocation().X;
-    packet.location.y = pawn->GetActorLocation().Y;
-    packet.location.z = pawn->GetActorLocation().Z;
+    packet.location.x = ControlledPawn->GetActorLocation().X;
+    packet.location.y = ControlledPawn->GetActorLocation().Y;
+    packet.location.z = ControlledPawn->GetActorLocation().Z;
+    packet.yaw = ControlledPawn->GetActorRotation().Yaw;
+
+    //UE_LOG(LogTemp, Warning, TEXT("location x y z %f %f %f"), packet.location.x, packet.location.y, packet.location.z);
 
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
+
 
 void ATIMERUNController::UpdateNewPlayer(int c_id)
 {

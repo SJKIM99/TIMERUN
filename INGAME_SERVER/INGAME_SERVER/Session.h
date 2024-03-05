@@ -36,6 +36,7 @@ public:
 	std::mutex m_container_lock;
 	std::mutex m_state_lock;
 	std::mutex m_channel_lock;
+	std::mutex m_update_lock;
 	int m_channel;
 	int m_client_in_channel_id;
 	int m_id;
@@ -75,6 +76,7 @@ public:
 	void send_add_player_packet(int c_id);
 	void send_ingame_login_sucess_packet(int c_id);
 	void send_move_packet(int c_id);
+	void send_world_update_packet(int c_id);
 public:
 	void SendPacket(void* packet);
 	void RecvPacket();

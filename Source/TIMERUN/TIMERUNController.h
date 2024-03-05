@@ -43,12 +43,13 @@ private:
 	int my_id;
 	int other_id;
 	TArray<AActor*> spawnedCharacters;
+	FTimerHandle SendPlayerInfoHandle;	// 동기화 타이머 핸들러
 public:
 	virtual void Tick(float DeltaTime) override;
 	void RecvPacketFromLoginServer();
 	void RecvPacketFromIngameServer();
 	void ProcessPakcet(char* packet);
-	void SendMovePacket(/*direction direction,*/ APawn* pawn);
+	void SendPlayerupdatePakcet();
 
 	UTIMERUNGameInstance* instance;
 	//RecvFromLoginn
@@ -62,11 +63,6 @@ public:
 	char ingame_prev_packet_buf[10000];
 
 	bool IsActiveIngameSocket = false;
-//public:
-	//virtual void SetupInputComponent() override;
-public:
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	bool isPlayermove;
 private:
 	int nPlayers;
 	bool IsEnterNewPlayer;

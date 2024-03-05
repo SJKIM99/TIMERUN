@@ -87,57 +87,29 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
 	}
 }
 
-void WorkerThread::timer_thread()
-{
-	IngameMain ingameMain{};
+//void WorkerThread::timer_thread()
+//{
+//	IngameMain ingameMain{};
+//
+//	while (true) {
+//		TIMER_EVENT event;
+//		auto current_time = std::chrono::system_clock::now();
+//		if (true == timer_queue.try_pop(event)) {
+//			if (event.wakeup_time > current_time) {
+//				timer_queue.push(event);
+//				std::this_thread::sleep_for(std::chrono::milliseconds(1));
+//				continue;
+//			}
+//			switch (event.event) {
+//			}
+//			continue;
+//		}
+//		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+//	}
+//}
 
-	while (true) {
-		TIMER_EVENT event;
-		auto current_time = std::chrono::system_clock::now();
-		if (true == timer_queue.try_pop(event)) {
-			if (event.wakeup_time > current_time) {
-				timer_queue.push(event);
-				continue;
-			}
-			switch (event.event) {
-			
-			}
-			continue;
-		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
-	}
-}
 
-void WorkerThread::world_update_thread()
-{
-	SC_MOVE_PACKET packet;
-	packet.size = sizeof SC_MOVE_PACKET;
-	packet.type = SC_MOVE;
 
-	std::chrono::steady_clock::time_point last_send_time = std::chrono::steady_clock::now();
-	while (true) {
-		auto current_time = std::chrono::steady_clock::now();
-		auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - last_send_time).count();
-
-		if (elapsed_time >= 1000 / 33) {
-			for (auto& cl : clients) {
-				if (cl.m_state == ST_FREE) continue;
-				packet.id = cl.m_id;
-				packet.location.x = cl.m_location.x;
-				packet.location.y = cl.m_location.y;
-				packet.location.z = cl.m_location.z;
-				packet.yaw = cl.m_yaw;
-			}
-			for (auto& cl : clients) {
-				std::lock_guard<std::mutex> lock(cl.m_container_lock);
-				if (cl.m_state != ST_FREE) {
-					cl.SendPacket(&packet);
-				}
-			}
-		}
-		last_send_time = current_time;
-	}
-}
 
 int WorkerThread::get_new_client_id()
 {
@@ -167,13 +139,17 @@ void WorkerThread::InitPlayerInfo(int player_id)
 	clients[player_id].m_name[0] = 0;
 	clients[player_id].m_prev_remain_data = 0;
 	clients[player_id].m_online = true;
-	clients[player_id].m_client_in_channel_id = -1;
+	clients[player_id].m_location.x = 0;
+	clients[player_id].m_location.y = 0;
+	clients[player_id].m_location.z = 0;
+	clients[player_id].m_yaw = 0;
 }
 
 void WorkerThread::ProcessPacket(int c_id, char* packet)
 {
 	switch (packet[1]) {
 	case CS_INGAME_LOGIN: {
+		isEnterPlayer = true;
 		CS_INGAME_LOGIN_PACKET* p = reinterpret_cast<CS_INGAME_LOGIN_PACKET*>(packet);
 		std::cout << c_id << "번 클라이언트 인게임 로그인 성공" << std::endl;
 
@@ -193,24 +169,23 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 		}
 	}
 						break;
-	case CS_MOVE: {
-		CS_MOVE_PACKET* p = reinterpret_cast<CS_MOVE_PACKET*>(packet);
-
+	case CS_PLAYER_UPDATE: {
+		CS_PLAYER_UPDATE_PACKET* p = reinterpret_cast<CS_PLAYER_UPDATE_PACKET*>(packet);
 		{
-			std::lock_guard<std::mutex> movelock(clients[c_id].m_container_lock);
+			std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
 			clients[p->id].m_location.x = p->location.x;
 			clients[p->id].m_location.y = p->location.y;
 			clients[p->id].m_location.z = p->location.z;
 
 			clients[p->id].m_yaw = p->yaw;
+			std::cout << p->id << "번 클라 " << " " << p->location.x << " " << p->location.y << " " << p->location.z << std::endl;
+			for (auto& cl : clients) {
+				if (cl.m_state == ST_FREE) break;
+				cl.send_world_update_packet(c_id);
+			}
 		}
-		/*for (auto& pl : clients) {
-			if (pl.m_state != ST_ALLOC) break;
-			if (pl.m_id == c_id) continue;
-			pl.send_move_packet(c_id);
-		}
-		std::cout << p->id << "번 클라이언트 이동" << std::endl;*/
+		
 	}
-				break;
+						 break;
 	}
 }
