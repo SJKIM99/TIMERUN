@@ -21,7 +21,9 @@ ATIMERUNCharacter::ATIMERUNCharacter()
 	//변수 초기화
 	WalkSpeed = 250.f;
 	RunSpeed = 600.f;
+	GunWalkSpeed = 150.f;
 
+	GravityGunRange = 300.f;
 	HaveGravityGun = false;
 	IsGrabbingObject = false;
 

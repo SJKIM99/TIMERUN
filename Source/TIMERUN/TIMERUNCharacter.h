@@ -32,6 +32,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float RunSpeed;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float GunWalkSpeed;
+
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float GravityGunRange;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool HaveGravityGun;
