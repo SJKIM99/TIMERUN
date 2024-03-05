@@ -18,15 +18,20 @@ ATIMERUNCharacter::ATIMERUNCharacter()
 	}
 	
 
+	//변수 초기화
+	WalkSpeed = 250.f;
+	RunSpeed = 600.f;
+
+	HaveGravityGun = false;
+	IsGrabbingObject = false;
+
 	//캐릭터 기본 세팅
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-
-	//변수 초기화
-	HaveGravityGun = false;
-	IsGrabbingObject = false;
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	GetCharacterMovement()->BrakingFrictionFactor = 0.01;
 }
 
 // Called when the game starts or when spawned
