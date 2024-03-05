@@ -34,7 +34,7 @@
 extern SOCKET g_server_socket;
 extern SOCKET g_client_socket;
 
-enum EVENT_TYPE { };
+enum EVENT_TYPE { EV_WORLD_UPDATE };
 
 struct TIMER_EVENT {
 	int object_id;

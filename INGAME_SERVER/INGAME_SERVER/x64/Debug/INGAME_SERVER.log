@@ -1,5 +1,7 @@
-﻿  WorkerThread.cpp
-C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(104,4): warning C4060: switch문에 'case' 또는 'default' 레이블이 없습니다.
-C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(115,16): warning C4305: '=': 'int'에서 'char'(으)로 잘립니다.
-C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(115,16): warning C4309: '=': 상수 값이 잘립니다.
+﻿  pch.cpp
+  INGAME_SERVER.cpp
+  IngameMain.cpp
+  Session.cpp
+  WorkerThread.cpp
+  코드를 생성하고 있습니다...
   INGAME_SERVER.vcxproj -> C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\x64\Debug\INGAME_SERVER.exe
