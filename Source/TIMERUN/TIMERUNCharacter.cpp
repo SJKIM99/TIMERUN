@@ -18,14 +18,14 @@ ATIMERUNCharacter::ATIMERUNCharacter()
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FRotator(0.0f, -90.0f, 0.0f));
 	}
 
-	//애니메이션 블루프린터 연결
-	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimationClass(TEXT("/Game/Player/Resource/Animation/BP_CharacterAnim"));
-	if (AnimationClass.Succeeded())
-	{
-		//애니메이션 블루프린트 클래스를 가져와서 설정
-		GetMesh()->SetAnimInstanceClass(AnimationClass.Class);
-	}
-	
+	////애니메이션 블루프린터 연결
+	//static ConstructorHelpers::FClassFinder<UAnimInstance> AnimationClass(TEXT("/Game/Player/Resource/Animation/BP_CharacterAnim"));
+	//if (AnimationClass.Succeeded())
+	//{
+	//	//애니메이션 블루프린트 클래스를 가져와서 설정
+	//	GetMesh()->SetAnimInstanceClass(AnimationClass.Class);
+	//}
+	//
 	
 
 	//변수 초기화
