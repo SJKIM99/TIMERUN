@@ -17,15 +17,12 @@ ATIMERUNCharacter::ATIMERUNCharacter()
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FRotator(0.0f, -90.0f, 0.0f));
 	}
 
-	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBlueprint(TEXT("/Game/Player/Resource/Animation/BP_CharacterAnim"));
-	if (AnimBlueprint.Succeeded())
+	//애니메이션 블루프린터 연결
+	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimationClass(TEXT("/Game/Player/Resource/Animation/BP_CharacterAnim"));
+	if (AnimationClass.Succeeded())
 	{
-		AnimInstance = AnimBlueprint.Class;
-		if (GetMesh())
-		{
-			GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-			GetMesh()->SetAnimInstanceClass(AnimBlueprint.Class);
-		}
+		// 애니메이션 블루프린트 클래스를 가져와서 설정
+		GetMesh()->SetAnimInstanceClass(AnimationClass.Class);
 	}
 	
 
