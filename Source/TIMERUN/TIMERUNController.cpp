@@ -26,8 +26,8 @@ void ATIMERUNController::BeginPlay()
 	CS_LOGIN_PACKET packet;
 	packet.size = sizeof CS_LOGIN_PACKET;
 	packet.type = CS_LOGIN;
-	strcpy_s(packet.id, "sungjun4264");
-	strcpy_s(packet.passwd, "wkd5306s");
+	strcpy_s(packet.id, "sungjun426");
+	strcpy_s(packet.passwd, "wkd5306");
 
 	int ret = send(*login_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 }
