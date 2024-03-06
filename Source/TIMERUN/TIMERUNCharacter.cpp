@@ -16,6 +16,17 @@ ATIMERUNCharacter::ATIMERUNCharacter()
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FRotator(0.0f, -90.0f, 0.0f));
 	}
+
+	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBlueprint(TEXT("/Game/Player/Resource/Animation/BP_CharacterAnim"));
+	if (AnimBlueprint.Succeeded())
+	{
+		AnimInstance = AnimBlueprint.Class;
+		if (GetMesh())
+		{
+			GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+			GetMesh()->SetAnimInstanceClass(AnimBlueprint.Class);
+		}
+	}
 	
 
 	//변수 초기화
