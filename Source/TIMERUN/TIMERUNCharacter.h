@@ -47,6 +47,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsGrabbingObject;
 
+
+
+
 public:
 	int id;
 	char nickname[NAME_SIZE];
