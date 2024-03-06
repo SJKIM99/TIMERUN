@@ -19,15 +19,15 @@ AGravityBox::AGravityBox()
 		StaticMeshComponent->SetStaticMesh(StaticMeshAsset.Object);
 	}
 
-	//SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
-	//SkeletalMeshComponent->SetupAttachment(StaticMeshComponent); // Attach to Static Mesh Component
+	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
+	SkeletalMeshComponent->SetupAttachment(StaticMeshComponent); // Attach to Static Mesh Component
 
-	//// Load Skeletal Mesh Asset
-	//static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMeshAsset(TEXT("SkeletalMesh'/Game/GravityBox/Resource/GravityBox_Rigged'"));
-	//if (SkeletalMeshAsset.Succeeded())
-	//{
-	//    SkeletalMeshComponent->SetSkeletalMesh(SkeletalMeshAsset.Object);
-	//}
+	// Load Skeletal Mesh Asset
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMeshAsset(TEXT("SkeletalMesh'/Game/GravityBox/Resource/GravityBox_Rigged'"));
+	if (SkeletalMeshAsset.Succeeded())
+	{
+	    SkeletalMeshComponent->SetSkeletalMesh(SkeletalMeshAsset.Object);
+	}
 
 
 
@@ -56,8 +56,8 @@ void AGravityBox::Tick(float DeltaTime)
 
 	GravityBoxTransform = GetActorTransform();
 
-	if (GetVelocity() == FVector::ZeroVector) IsMoving = false;
-	else IsMoving = true;
+	if (GetVelocity().Size() > 0.f) IsMoving = true;
+	else IsMoving = false;
 
 }
 
