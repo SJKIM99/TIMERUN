@@ -16,9 +16,10 @@ class TIMERUN_API UCharacterAnimInstance : public UAnimInstance
 
 public:
 	UCharacterAnimInstance();
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Pawn, Meta=(AllowPrivateAccess=true))
 	float MoveSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

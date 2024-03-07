@@ -2,12 +2,44 @@
 
 
 #include "CharacterAnimInstance.h"
+#include "GameFramework/PawnMovementComponent.h"
+#include "TIMERUNCharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 UCharacterAnimInstance::UCharacterAnimInstance()
 {
 	MoveSpeed = 0.f;
+	ShouldMove = false;
 	IsFalling = false;
+
+
 	HaveGravityGun = false;
 	IsGrabbingObject = false;
-	Direction = 0;
+	Direction = 0.f;
+
+}
+
+void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
+{
+	Super::NativeUpdateAnimation(DeltaSeconds);
+	ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (::IsValid(MyPlayerCharacter))
+	{
+		MoveSpeed = MyPlayerCharacter->GetVelocity().Size();
+
+		if (MoveSpeed > 3.f) ShouldMove = true;
+		else ShouldMove = false;
+
+		IsFalling = MyPlayerCharacter->GetMovementComponent()->IsFalling();
+
+		HaveGravityGun = MyPlayerCharacter->HaveGravityGun;
+
+		IsGrabbingObject = MyPlayerCharacter->IsGrabbingObject;
+
+		Direction = CalculateDirection(MyPlayerCharacter->GetVelocity(), MyPlayerCharacter->GetActorRotation());
+		
+	}
+	else UE_LOG(LogTemp, Warning , TEXT("Pawn is not valid"));
+
+
 }

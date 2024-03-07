@@ -19,6 +19,7 @@ ATIMERUNCharacter::ATIMERUNCharacter()
 	}
 
 	//애니메이션 블루프린터 연결
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimationClass(TEXT("/Game/Player/Resource/Animation/BP_CharacterAnim"));
 	if (AnimationClass.Succeeded())
 	{

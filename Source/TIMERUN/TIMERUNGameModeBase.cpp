@@ -2,6 +2,7 @@
 
 
 #include "TIMERUNGameModeBase.h"
+#include "TIMERUNCharacter.h"
 
 
 ATIMERUNGameModeBase::ATIMERUNGameModeBase()
