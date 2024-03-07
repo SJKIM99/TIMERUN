@@ -162,11 +162,11 @@ void ATIMERUNController::ProcessPakcet(char* packet)
 
         MyPlayerCharacter->id = my_id;
 
-        FVector characterVelocity;
+        //FVector characterVelocity;
 
-        characterVelocity.X = p->velocity.x;
-        characterVelocity.Y = p->velocity.y;
-        characterVelocity.Z = p->velocity.z;
+        //characterVelocity.X = p->velocity.x;
+        //characterVelocity.Y = p->velocity.y;
+        //characterVelocity.Z = p->velocity.z;
 
         FVector characterLocation;
 
@@ -180,7 +180,7 @@ void ATIMERUNController::ProcessPakcet(char* packet)
         characterRotation.Pitch = 0;
         characterRotation.Roll = 0;
 
-        MyPlayerCharacter->AddMovementInput(characterVelocity);
+        //MyPlayerCharacter->AddMovementInput(characterVelocity);
         MyPlayerCharacter->SetActorLocation(characterLocation);
         MyPlayerCharacter->SetActorRotation(characterRotation);
 
@@ -211,10 +211,10 @@ void ATIMERUNController::ProcessPakcet(char* packet)
 		//위 함수는 spawnCharacters에 world에 생성된 객체를 넣지만, 월드에 스폰된 순서로 들어가기에 아이디를 사용한 오름차순 정렬이 필요하다.
 		SortPlayerIndex();
 
-        FVector CharacterVelocity;
-        CharacterVelocity.X = p->velocity.x;
-        CharacterVelocity.Y = p->velocity.y;
-        CharacterVelocity.Z = p->velocity.z;
+        //FVector CharacterVelocity;
+        //CharacterVelocity.X = p->velocity.x;
+        //CharacterVelocity.Y = p->velocity.y;
+        //CharacterVelocity.Z = p->velocity.z;
 
 		FVector CharacterLocation;
 		CharacterLocation.X = p->location.x;
@@ -228,7 +228,7 @@ void ATIMERUNController::ProcessPakcet(char* packet)
 
 		ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
 
-		OtherPlayer->AddMovementInput(CharacterVelocity);
+		//OtherPlayer->AddMovementInput(CharacterVelocity);
 		OtherPlayer->SetActorLocation(CharacterLocation);
 		OtherPlayer->SetActorRotation(CharacterRotation);
 	}
@@ -246,9 +246,9 @@ void ATIMERUNController::SendPlayerupdatePakcet()
     packet.location.x = ControlledPawn->GetActorLocation().X;
     packet.location.y = ControlledPawn->GetActorLocation().Y;
     packet.location.z = ControlledPawn->GetActorLocation().Z;
-    packet.velocity.x = ControlledPawn->GetVelocity().X;
-    packet.velocity.y = ControlledPawn->GetVelocity().Y;
-    packet.velocity.z = ControlledPawn->GetVelocity().Z;
+   // packet.velocity.x = ControlledPawn->GetVelocity().X;
+   // packet.velocity.y = ControlledPawn->GetVelocity().Y;
+   // packet.velocity.z = ControlledPawn->GetVelocity().Z;
     packet.yaw = ControlledPawn->GetActorRotation().Yaw;
 
     //UE_LOG(LogTemp, Warning, TEXT("location x y z %f %f %f"), packet.location.x, packet.location.y, packet.location.z);
