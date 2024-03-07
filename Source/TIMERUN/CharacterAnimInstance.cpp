@@ -22,9 +22,13 @@ UCharacterAnimInstance::UCharacterAnimInstance()
 void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
-	ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-	if (::IsValid(MyPlayerCharacter))
+
+	auto Pawn = TryGetPawnOwner();
+	
+	if (::IsValid(Pawn))
 	{
+		ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(Pawn);
+
 		MoveSpeed = MyPlayerCharacter->GetVelocity().Size();
 
 		if (MoveSpeed > 3.f) ShouldMove = true;

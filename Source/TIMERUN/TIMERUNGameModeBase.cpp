@@ -16,8 +16,8 @@ ATIMERUNGameModeBase::ATIMERUNGameModeBase()
 	
 	//DefaultPawnClass = ATIMERUNCharacter::StaticClass();
 
-	//static ConstructorHelpers::FClassFinder<AController> PlayerControllerBPClass(TEXT("/Game/Player/Control/BP_TIMERUNController"));
-	static ConstructorHelpers::FClassFinder<AController> PlayerControllerBPClass(TEXT("/Game/Player/Control/BP_TestController"));
+	static ConstructorHelpers::FClassFinder<AController> PlayerControllerBPClass(TEXT("/Game/Player/Control/BP_TIMERUNController"));
+	//static ConstructorHelpers::FClassFinder<AController> PlayerControllerBPClass(TEXT("/Game/Player/Control/BP_TestController"));
 	if (PlayerControllerBPClass.Class != NULL)
 	{
 		PlayerControllerClass = PlayerControllerBPClass.Class;
