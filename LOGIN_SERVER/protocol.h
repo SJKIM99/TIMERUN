@@ -102,7 +102,7 @@ struct CS_PLAYER_UPDATE_PACKET {
 	int id;
 	double yaw;
 	vector_d3 location;
-	//vector_d3 velocity;
+	vector_d3 velocity;
 };
 
 //S2C
@@ -146,7 +146,7 @@ struct SC_INGAME_SUCCESS_PACKET {
 	char type;
 	int id;
 	vector_d3 location;
-	//vector_d3 velocity;
+	vector_d3 velocity;
 	double yaw;
 };
 
@@ -156,7 +156,7 @@ struct SC_WORLD_UPDATE_PACKET {
 	int id;
 	double yaw;
 	vector_d3 location;
-	//vector_d3 velocity;
+	vector_d3 velocity;
 };
 
 #pragma pack(pop)

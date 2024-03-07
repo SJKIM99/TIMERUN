@@ -180,7 +180,9 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			clients[p->id].m_location.y = p->location.y;
 			clients[p->id].m_location.z = p->location.z;
 
-			//clients[p->id].m_velocity.x = p->
+			clients[p->id].m_velocity.x = p->velocity.x;
+			clients[p->id].m_velocity.y = p->velocity.y;
+			clients[p->id].m_velocity.z = p->velocity.z;
 
 			clients[p->id].m_yaw = p->yaw;
 			std::cout << p->id << "¹ø Å¬¶ó " << " " << p->location.x << " " << p->location.y << " " << p->location.z << std::endl;
