@@ -5,6 +5,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
+
 ATIMERUNController::ATIMERUNController()
 {
 }
@@ -227,10 +229,15 @@ void ATIMERUNController::ProcessPakcet(char* packet)
 		CharacterRotation.Roll = 0;
 
 		ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
+        UCharacterMovementComponent* CharacterMovement = OtherPlayer->GetCharacterMovement();
+        FVector NewVelocity = FVector(p->velocity.x, p->velocity.y, OtherPlayer->GetVelocity().Z);
+        CharacterMovement->Velocity = NewVelocity;
 
 		OtherPlayer->AddMovementInput(CharacterVelocity);
 		OtherPlayer->SetActorLocation(CharacterLocation);
 		OtherPlayer->SetActorRotation(CharacterRotation);
+
+        //UE_LOG(LogTemp, Warning, TEXT("%f"), vec_size);
 	}
 						break;
     }
