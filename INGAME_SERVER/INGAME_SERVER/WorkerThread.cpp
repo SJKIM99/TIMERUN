@@ -143,6 +143,9 @@ void WorkerThread::InitPlayerInfo(int player_id)
 	clients[player_id].m_location.y = 0;
 	clients[player_id].m_location.z = 0;
 	clients[player_id].m_yaw = 0;
+	clients[player_id].m_velocity.x = 0;
+	clients[player_id].m_velocity.y = 0;
+	clients[player_id].m_velocity.z = 0;
 }
 
 void WorkerThread::ProcessPacket(int c_id, char* packet)
@@ -177,10 +180,13 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			clients[p->id].m_location.y = p->location.y;
 			clients[p->id].m_location.z = p->location.z;
 
+			clients[p->id].m_velocity.x;
+
 			clients[p->id].m_yaw = p->yaw;
 			std::cout << p->id << "¹ø Å¬¶ó " << " " << p->location.x << " " << p->location.y << " " << p->location.z << std::endl;
 			for (auto& cl : clients) {
 				if (cl.m_state == ST_FREE) break;
+				if (cl.m_id == p->id) continue;
 				cl.send_world_update_packet(c_id);
 			}
 		}
