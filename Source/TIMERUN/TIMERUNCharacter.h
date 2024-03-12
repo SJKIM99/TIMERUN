@@ -27,6 +27,17 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+
+
+	//void GravityGunVisibility(bool toValue);
+
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent* GravityGunMesh;
+
+
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float WalkSpeed;
 

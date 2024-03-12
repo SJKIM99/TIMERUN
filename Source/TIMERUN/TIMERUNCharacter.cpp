@@ -18,16 +18,26 @@ ATIMERUNCharacter::ATIMERUNCharacter()
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FRotator(0.0f, -90.0f, 0.0f));
 	}
 
-	//애니메이션 블루프린터 연결
-	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimationClass(TEXT("/Game/Player/Resource/Animation/BP_CharacterAnim"));
-	if (AnimationClass.Succeeded())
+	////애니메이션 블루프린터 연결
+	//GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	//static ConstructorHelpers::FClassFinder<UAnimInstance> AnimationClass(TEXT("/Game/Player/Resource/Animation/BP_CharacterAnim"));
+	//if (AnimationClass.Succeeded())
+	//{
+	//	//애니메이션 블루프린트 클래스를 가져와서 설정
+	//	GetMesh()->SetAnimInstanceClass(AnimationClass.Class);
+	//}
+	
+
+	GravityGunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GravityGun"));
+	FName GravityGunSocket(TEXT("GravityGunSocket"));
+	GravityGunMesh->SetupAttachment(GetMesh(), GravityGunSocket);
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshAsset(TEXT("StaticMesh'/Game/GravityGun/GravityGun'"));
+	if (StaticMeshAsset.Succeeded())
 	{
-		//애니메이션 블루프린트 클래스를 가져와서 설정
-		GetMesh()->SetAnimInstanceClass(AnimationClass.Class);
+		GravityGunMesh->SetStaticMesh(StaticMeshAsset.Object);
 	}
 	
-	
+
 
 	//변수 초기화
 	WalkSpeed = 250.f;
@@ -45,6 +55,8 @@ ATIMERUNCharacter::ATIMERUNCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	GetCharacterMovement()->BrakingFrictionFactor = 0.01;
+
+	
 }
 
 // Called when the game starts or when spawned
@@ -59,6 +71,7 @@ void ATIMERUNCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//GravityGunVisibility(HaveGravityGun);
 }
 
 // Called to bind functionality to input
@@ -66,5 +79,22 @@ void ATIMERUNCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	
 }
+
+//void ATIMERUNCharacter::GravityGunVisibility(bool toValue)
+//{
+//	if (toValue)
+//	{
+//		GravityGunMesh->SetHiddenInGame(false);
+//	}
+//	else
+//	{
+//		GravityGunMesh->SetHiddenInGame(true);
+//	}
+//}
+
+
+
+
 
