@@ -18,7 +18,7 @@ ATIMERUNCharacter::ATIMERUNCharacter()
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FRotator(0.0f, -90.0f, 0.0f));
 	}
 
-	////애니메이션 블루프린터 연결
+	//애니메이션 블루프린터 연결
 	//GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	//static ConstructorHelpers::FClassFinder<UAnimInstance> AnimationClass(TEXT("/Game/Player/Resource/Animation/BP_CharacterAnim"));
 	//if (AnimationClass.Succeeded())
@@ -71,7 +71,6 @@ void ATIMERUNCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//GravityGunVisibility(HaveGravityGun);
 }
 
 // Called to bind functionality to input
