@@ -29,14 +29,19 @@ ATIMERUNCharacter::ATIMERUNCharacter()
 	
 
 	GravityGunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GravityGun"));
-	FName GravityGunSocket(TEXT("GravityGunSocket"));
-	GravityGunMesh->SetupAttachment(GetMesh(), GravityGunSocket);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshAsset(TEXT("StaticMesh'/Game/GravityGun/GravityGun'"));
-	if (StaticMeshAsset.Succeeded())
+	if (GravityGunMesh)
 	{
-		GravityGunMesh->SetStaticMesh(StaticMeshAsset.Object);
+		static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshAsset(TEXT("/Game/GravityGun/GravityGun"));
+		if (StaticMeshAsset.Succeeded())
+		{
+			GravityGunMesh->SetStaticMesh(StaticMeshAsset.Object);
+		}
+
+		FName GravityGunSocket(TEXT("GravityGunSocket"));
+		GravityGunMesh->SetupAttachment(GetMesh(), GravityGunSocket);
 	}
-	
+
+
 
 
 	//변수 초기화
@@ -63,14 +68,14 @@ ATIMERUNCharacter::ATIMERUNCharacter()
 void ATIMERUNCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	GravityGunMesh = FindComponentByClass<UStaticMeshComponent>();
 }
 
 // Called every frame
 void ATIMERUNCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	UpdateGravityGunVisibility();
 }
 
 // Called to bind functionality to input
@@ -81,19 +86,13 @@ void ATIMERUNCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	
 }
 
-//void ATIMERUNCharacter::GravityGunVisibility(bool toValue)
-//{
-//	if (toValue)
-//	{
-//		GravityGunMesh->SetHiddenInGame(false);
-//	}
-//	else
-//	{
-//		GravityGunMesh->SetHiddenInGame(true);
-//	}
-//}
 
 
-
+void ATIMERUNCharacter::UpdateGravityGunVisibility()
+{
+	if (GravityGunMesh) {
+		GravityGunMesh->SetHiddenInGame(!HaveGravityGun);
+	}
+}
 
 

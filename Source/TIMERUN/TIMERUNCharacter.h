@@ -28,12 +28,11 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 
-
-	//void GravityGunVisibility(bool toValue);
+	void UpdateGravityGunVisibility();
 
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 	UStaticMeshComponent* GravityGunMesh;
 
 
