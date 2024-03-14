@@ -237,6 +237,8 @@ void ATIMERUNController::ProcessPakcet(char* packet)
 		OtherPlayer->SetActorLocation(CharacterLocation);
 		OtherPlayer->SetActorRotation(CharacterRotation);
 
+        OtherPlayer->HaveGravityGun = p->HaveGravityGun;
+
         //UE_LOG(LogTemp, Warning, TEXT("%f"), vec_size);
 	}
 						break;
@@ -246,17 +248,20 @@ void ATIMERUNController::ProcessPakcet(char* packet)
 void ATIMERUNController::SendPlayerupdatePakcet()
 {
     APawn* ControlledPawn = GetPawn();
+    ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(ControlledPawn);
+
     CS_PLAYER_UPDATE_PACKET packet;
     packet.size = sizeof CS_PLAYER_UPDATE_PACKET;
     packet.type = CS_PLAYER_UPDATE;
     packet.id = my_id;
-    packet.location.x = ControlledPawn->GetActorLocation().X;
-    packet.location.y = ControlledPawn->GetActorLocation().Y;
-    packet.location.z = ControlledPawn->GetActorLocation().Z;
-    packet.velocity.x = ControlledPawn->GetVelocity().X;
-    packet.velocity.y = ControlledPawn->GetVelocity().Y;
-    packet.velocity.z = ControlledPawn->GetVelocity().Z;
-    packet.yaw = ControlledPawn->GetActorRotation().Yaw;
+    packet.location.x = MyPlayerCharacter->GetActorLocation().X;
+    packet.location.y = MyPlayerCharacter->GetActorLocation().Y;
+    packet.location.z = MyPlayerCharacter->GetActorLocation().Z;
+    packet.velocity.x = MyPlayerCharacter->GetVelocity().X;
+    packet.velocity.y = MyPlayerCharacter->GetVelocity().Y;
+    packet.velocity.z = MyPlayerCharacter->GetVelocity().Z;
+    packet.yaw = MyPlayerCharacter->GetActorRotation().Yaw;
+    packet.HaveGravityGun = MyPlayerCharacter->HaveGravityGun;
 
     //UE_LOG(LogTemp, Warning, TEXT("location x y z %f %f %f"), packet.location.x, packet.location.y, packet.location.z);
 

@@ -146,6 +146,7 @@ void WorkerThread::InitPlayerInfo(int player_id)
 	clients[player_id].m_velocity.x = 0;
 	clients[player_id].m_velocity.y = 0;
 	clients[player_id].m_velocity.z = 0;
+	clients[player_id].m_HaveGrabityGun = false;
 }
 
 void WorkerThread::ProcessPacket(int c_id, char* packet)

@@ -43,6 +43,7 @@ public:
 	char m_name[NAMESIZE];
 	vector_d3 m_location;
 	vector_d3 m_velocity;
+	bool m_HaveGrabityGun;
 	double m_yaw;
 	int m_prev_remain_data;
 public:

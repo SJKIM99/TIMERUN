@@ -103,6 +103,7 @@ struct CS_PLAYER_UPDATE_PACKET {
 	double yaw;
 	vector_d3 location;
 	vector_d3 velocity;
+	bool HaveGravityGun;
 };
 
 //S2C
@@ -157,6 +158,7 @@ struct SC_WORLD_UPDATE_PACKET {
 	double yaw;
 	vector_d3 location;
 	vector_d3 velocity;
+	bool HaveGravityGun;
 };
 
 #pragma pack(pop)
