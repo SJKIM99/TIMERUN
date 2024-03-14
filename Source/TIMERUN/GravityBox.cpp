@@ -29,7 +29,18 @@ AGravityBox::AGravityBox()
 	    SkeletalMeshComponent->SetSkeletalMesh(SkeletalMeshAsset.Object);
 	}
 
+    //애니메이션 블루프린터 연결
+    SkeletalMeshComponent->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+    static ConstructorHelpers::FClassFinder<UAnimInstance> AnimationClass(TEXT("/Game/GravityBox/Resource/Animation/BP_GravityBoxAnimInstance"));
+    if (AnimationClass.Succeeded())
+    {
+    	//애니메이션 블루프린트 클래스를 가져와서 설정
+        SkeletalMeshComponent->SetAnimInstanceClass(AnimationClass.Class);
+    }
 
+
+    isGrabbed = false;
+    CanFixPos = false;
 
 	//기본 스테틱 메쉬 설정
 	StaticMeshComponent->SetHiddenInGame(true, true);
@@ -45,7 +56,7 @@ AGravityBox::AGravityBox()
 void AGravityBox::BeginPlay()
 {
 	Super::BeginPlay();
-	
+    StaticMeshComponent = FindComponentByClass<UStaticMeshComponent>();
 }
 
 // Called every frame
@@ -56,9 +67,11 @@ void AGravityBox::Tick(float DeltaTime)
 
 	GravityBoxTransform = GetActorTransform();
 
-	if (GetVelocity().Size() > 0.f) IsMoving = true;
-	else IsMoving = false;
+	IsMoving = IsMovingCheck();
+    CanFallCheck();
+    CanFixPos = CanFixPosCheck();
 
+    DoGrabbingRotate(isGrabbed);
 }
 
 // Called to bind functionality to input
@@ -66,5 +79,85 @@ void AGravityBox::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+bool AGravityBox::IsMovingCheck()
+{
+	if (GetVelocity().Size() > 0.f) return true;
+	else return false;
+}
+
+void AGravityBox::CanFallCheck()
+{
+    // 충돌 검사 시작점과 끝점 설정
+    FVector StartLocation = GetActorLocation();
+    FVector EndLocation = StartLocation + FVector(0.f, 0.f, -70.f); // TraceDistance는 float 변수로 설정해야 합니다.
+
+    // 충돌 검사를 위한 파라미터 설정
+    FCollisionQueryParams TraceParams(FName(TEXT("LineTrace")), true, GetOwner());
+
+    // 결과를 담을 변수
+    FHitResult HitResult;
+
+    // 충돌 검사 수행
+    bool bHit = GetWorld()->LineTraceSingleByChannel(
+        HitResult,      // 충돌 결과를 저장할 변수
+        StartLocation,  // 시작점
+        EndLocation,    // 끝점
+        ECC_Visibility, // 채널 (ECC_Visibility 대신 다른 채널을 사용할 수 있습니다.)
+        TraceParams     // 충돌 검사 파라미터
+    );
+
+    // 충돌 여부 확인
+    if (bHit)
+    {
+        CanFall = false;
+    }
+    else
+    {
+        CanFall = true;
+    }
+
+    // 디버깅용으로 충돌 검사 결과를 그릴 수 있습니다.
+    DrawDebugLine(
+        GetWorld(),
+        StartLocation,
+        EndLocation,
+        FColor::Red, // 선의 색상
+        false,// 지속적으로 그릴 것인지 여부
+        0.f, // 라인 두께
+        0, // DepthPriority
+        0.f // 지속시간 (0은 지속적으로 그림)
+    );
+	
+}
+
+bool AGravityBox::CanFixPosCheck()
+{
+    if (!IsMoving && !isGrabbed && !CanFall)
+    {
+        if (StaticMeshComponent)
+        {
+            StaticMeshComponent->SetSimulatePhysics(false);
+        }
+        return true;
+    }
+    else
+    {
+        if (StaticMeshComponent)
+        {
+            StaticMeshComponent->SetSimulatePhysics(true);
+        }
+        return false;
+    }
+}
+
+void AGravityBox::DoGrabbingRotate(bool when)
+{
+    if (StaticMeshComponent && when)
+    {
+        FRotator RotationValue(0.f, 0.05f, 0.05f);
+        StaticMeshComponent->AddWorldRotation(RotationValue);
+    }
 }
 
