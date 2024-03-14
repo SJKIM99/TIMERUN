@@ -185,16 +185,16 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			clients[p->id].m_velocity.y = p->velocity.y;
 			clients[p->id].m_velocity.z = p->velocity.z;
 
-			float vel_size = sqrt(p->velocity.x * p->velocity.x + p->velocity.y * p->velocity.y + p->velocity.z * p->velocity.z);
+			clients[p->id].m_HaveGrabityGun = p->HaveGravityGun;
+	//		float vel_size = sqrt(p->velocity.x * p->velocity.x + p->velocity.y * p->velocity.y +p->velocity.z * p->velocity.z);
 			clients[p->id].m_yaw = p->yaw;
-			std::cout << p->id << "번 클라 " << " " << vel_size << std::endl;
-			for (auto& cl : clients) {
-				if (cl.m_state == ST_FREE) break;
-				if (cl.m_id == p->id) continue;
-				cl.send_world_update_packet(c_id);
-			}
+		//	std::cout << p->id << "번 클라 " << " " << vel_size << std::endl;
 		}
-		
+		for (auto& cl : clients) {
+			if (cl.m_state == ST_FREE) break;
+			if (cl.m_id == p->id) continue;
+			cl.send_world_update_packet(c_id);
+		}
 	}
 						 break;
 	}
