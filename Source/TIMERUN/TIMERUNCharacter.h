@@ -32,8 +32,11 @@ public:
 
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
 	UStaticMeshComponent* GravityGunMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Arrow_REF")
+	UArrowComponent* Muzzle;
 
 
 public:

@@ -3,6 +3,7 @@
 
 #include "TIMERUNCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/ArrowComponent.h"
 
 
 // Sets default values
@@ -11,6 +12,7 @@ ATIMERUNCharacter::ATIMERUNCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//플레이어 케릭터
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Game/Player/Resource/Male_Rigged"));
 	if (MeshAsset.Succeeded())
 	{
@@ -26,8 +28,9 @@ ATIMERUNCharacter::ATIMERUNCharacter()
 	//	//애니메이션 블루프린트 클래스를 가져와서 설정
 	//	GetMesh()->SetAnimInstanceClass(AnimationClass.Class);
 	//}
-	
+	//
 
+	// 중력총
 	GravityGunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GravityGun"));
 	if (GravityGunMesh)
 	{
@@ -41,8 +44,10 @@ ATIMERUNCharacter::ATIMERUNCharacter()
 		GravityGunMesh->SetupAttachment(GetMesh(), GravityGunSocket);
 	}
 
-
-
+	//중력총 총구 REF
+	Muzzle = CreateDefaultSubobject<UArrowComponent>(TEXT("Muzzle"));
+	Muzzle->ArrowSize = 0.5f;
+	Muzzle->ArrowColor = FColor::Blue;
 
 	//변수 초기화
 	WalkSpeed = 250.f;
@@ -69,6 +74,14 @@ void ATIMERUNCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	GravityGunMesh = FindComponentByClass<UStaticMeshComponent>();
+
+	//중력총 설정
+	Muzzle = FindComponentByClass<UArrowComponent>();
+	Muzzle->AttachToComponent(GravityGunMesh, FAttachmentTransformRules::KeepRelativeTransform);
+	FVector MuzzleLocation(0.f, 20.5f, 4.5f);
+	FRotator MuzzleRotation(0.0f, 90.0f, 0.f);
+	Muzzle->SetRelativeLocation(MuzzleLocation);
+	Muzzle->SetRelativeRotation(MuzzleRotation);
 }
 
 // Called every frame
