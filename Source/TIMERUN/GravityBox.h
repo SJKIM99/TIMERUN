@@ -55,7 +55,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) // 에디터, 블루프린트 안에서 수정 가능
 	bool CanFixPos;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite) // 에디터, 블루프린트 안에서 수정 가능
-	FTransform GravityBoxTransform; //GravityB
-
+	FVector BoxLocation;
+	FRotator BoxRotation;
 };

@@ -65,7 +65,7 @@ ATIMERUNCharacter::ATIMERUNCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	GetCharacterMovement()->BrakingFrictionFactor = 0.01;
-
+	GetCharacterMovement()->JumpZVelocity = 500.f;
 	
 }
 

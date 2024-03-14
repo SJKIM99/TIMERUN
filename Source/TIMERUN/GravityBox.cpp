@@ -64,8 +64,8 @@ void AGravityBox::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-
-	GravityBoxTransform = GetActorTransform();
+    BoxLocation = GetActorLocation(); //박스의 위치값, FVector형태로 들어감
+    BoxRotation = GetActorRotation(); //박스의 회전값, FRotator형태로 들어감
 
 	IsMoving = IsMovingCheck();
     CanFallCheck();
