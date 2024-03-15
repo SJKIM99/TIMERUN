@@ -257,7 +257,10 @@ void ATIMERUNController::ProcessPakcet(char* packet)
         GravityBoxRotation.Pitch = p->rotation.y;
         GravityBoxRotation.Roll = p->rotation.z;
 
+        FTimerDelegate TimerDelegate;
+        TimerDelegate.BindUFunction(this, FName("GravityBoxUpdatePacket"));
         UpdateNewGravityBox(GravityBoxLocation, GravityBoxRotation, p->box_count);
+        GetWorldTimerManager().SetTimer(SendPlayerInfoHandle2, TimerDelegate, 0.008f, true);
     }
                              break;
     case SC_GRAVITYBOX_UPDATE: {

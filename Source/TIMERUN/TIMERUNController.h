@@ -45,6 +45,7 @@ private:
 	int other_id;
 	TArray<AActor*> spawnedCharacters;
 	FTimerHandle SendPlayerInfoHandle;	// 동기화 타이머 핸들러
+	FTimerHandle SendPlayerInfoHandle2;	// 동기화 타이머 핸들러
 public:
 	virtual void Tick(float DeltaTime) override;
 	void RecvPacketFromLoginServer();
