@@ -75,5 +75,5 @@ public:
 		return *ingame_socket;
 	}
 private:
-	void UpdateNewGravityBox();
+	void UpdateNewGravityBox(FVector location, FRotator rotation);
 };

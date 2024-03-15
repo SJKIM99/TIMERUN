@@ -244,7 +244,20 @@ void ATIMERUNController::ProcessPakcet(char* packet)
 						break;
     case SC_GRAVITYBOX_UPDATE: {
         SC_GRAVITYBOX_UPDATE_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_UPDATE_PACKET*>(packet);
-        UpdateNewGravityBox();
+
+        FVector GravityBoxLocation;
+
+        GravityBoxLocation.X = p->location.x;
+        GravityBoxLocation.Y = p->location.y;
+        GravityBoxLocation.Z = p->location.z;
+
+        FRotator GravityBoxRotation;
+
+        GravityBoxRotation.Yaw = p->rotation.x;
+        GravityBoxRotation.Pitch = p->rotation.y;
+        GravityBoxRotation.Roll = p->rotation.z;
+
+        UpdateNewGravityBox(GravityBoxLocation, GravityBoxRotation);
     }
                              break;
     }
@@ -301,10 +314,8 @@ void ATIMERUNController::SortPlayerIndex()
     spawnedCharacters.Sort(CompareByPlayerId);
 }
 
-void ATIMERUNController::UpdateNewGravityBox()
+void ATIMERUNController::UpdateNewGravityBox(FVector location, FRotator rotation)
 {
     UWorld* const world = GetWorld();
-    AGravityBox* SpawnGravityBox = world->SpawnActor<AGravityBox>();
-
-
+    AGravityBox* SpawnGravityBox = world->SpawnActor<AGravityBox>(location, rotation);
 }
