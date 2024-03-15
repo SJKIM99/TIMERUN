@@ -70,7 +70,4 @@ public:
 
 	FVector BoxLocation;
 	FRotator BoxRotation;
-	static int box_count;
-	int GetBoxCount() { return box_count; }
-	void PlusBoxCount() { ++box_count; }
 };

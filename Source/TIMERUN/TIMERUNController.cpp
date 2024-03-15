@@ -341,5 +341,5 @@ void ATIMERUNController::UpdateNewGravityBox(FVector location, FRotator rotation
 {
     UWorld* const world = GetWorld();
     AGravityBox* SpawnGravityBox = world->SpawnActor<AGravityBox>(location, rotation);
-    SpawnGravityBox->box_count = box_id;
+    //SpawnGravityBox->box_count = box_id;
 }
