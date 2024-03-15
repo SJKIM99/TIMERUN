@@ -49,8 +49,9 @@ public:
 	int m_prev_remain_data;
 	
 	//GravityBox
-	vector_d3 m_gravitybox_location;
-	vector_d3 m_gravitybox_rotation;
+	int m_box_count[5];
+	vector_d3 m_gravitybox_location[5];
+	vector_d3 m_gravitybox_rotation[5];
 
 public:
 	bool m_online;
@@ -85,7 +86,8 @@ public:
 	void send_ingame_login_sucess_packet(int c_id);
 	void send_move_packet(int c_id);
 	void send_world_update_packet(int c_id);
-	void send_gravitybox_update_packet(int c_id);
+	void send_gravitybox_add_packet(int c_id, int box_id);
+	void send_gravitybox_update_packet(int c_id, int box_id);
 public:
 	void SendPacket(void* packet);
 	void RecvPacket();

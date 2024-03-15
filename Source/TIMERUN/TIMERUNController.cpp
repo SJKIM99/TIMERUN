@@ -242,8 +242,8 @@ void ATIMERUNController::ProcessPakcet(char* packet)
         //UE_LOG(LogTemp, Warning, TEXT("%f"), vec_size);
 	}
 						break;
-    case SC_GRAVITYBOX_UPDATE: {
-        SC_GRAVITYBOX_UPDATE_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_UPDATE_PACKET*>(packet);
+    case SC_GRAVITYBOX_ADD: {
+        SC_GRAVITYBOX_ADD_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_ADD_PACKET*>(packet);
 
         FVector GravityBoxLocation;
 
@@ -257,7 +257,30 @@ void ATIMERUNController::ProcessPakcet(char* packet)
         GravityBoxRotation.Pitch = p->rotation.y;
         GravityBoxRotation.Roll = p->rotation.z;
 
-        UpdateNewGravityBox(GravityBoxLocation, GravityBoxRotation);
+        UpdateNewGravityBox(GravityBoxLocation, GravityBoxRotation, p->box_count);
+    }
+                             break;
+    case SC_GRAVITYBOX_UPDATE: {
+        SC_GRAVITYBOX_UPDATE_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_UPDATE_PACKET*>(packet);
+
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
+
+        FVector GravityBoxLocation;
+
+        GravityBoxLocation.X = p->location.x;
+        GravityBoxLocation.Y = p->location.y;
+        GravityBoxLocation.Z = p->location.z;
+        UE_LOG(LogTemp, Warning, TEXT("%f,%f,%f"), p->location.x, p->location.y, p->location.z);
+        FRotator GravityBoxRotation;
+
+        GravityBoxRotation.Yaw = p->rotation.x;
+        GravityBoxRotation.Pitch = p->rotation.y;
+        GravityBoxRotation.Roll = p->rotation.z;
+
+        AGravityBox* OtherGravityBox = Cast<AGravityBox>(spawnedGravityBox[p->box_count]);
+
+        OtherGravityBox->SetActorLocation(GravityBoxLocation);
+        OtherGravityBox->SetActorRotation(GravityBoxRotation);
     }
                              break;
     }
@@ -314,8 +337,9 @@ void ATIMERUNController::SortPlayerIndex()
     spawnedCharacters.Sort(CompareByPlayerId);
 }
 
-void ATIMERUNController::UpdateNewGravityBox(FVector location, FRotator rotation)
+void ATIMERUNController::UpdateNewGravityBox(FVector location, FRotator rotation, int box_id)
 {
     UWorld* const world = GetWorld();
     AGravityBox* SpawnGravityBox = world->SpawnActor<AGravityBox>(location, rotation);
+    SpawnGravityBox->box_count = box_id;
 }
