@@ -197,5 +197,25 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 		}
 	}
 						 break;
+	case CS_GRAVITYBOX_UPDATE: {
+		std::cout << "중력박스 스폰?" << std::endl;
+		CS_GRAVITYBOX_UPDATE_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_UPDATE_PACKET*>(packet);
+		{
+			std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
+			clients[p->id].m_gravitybox_location.x = p->location.x;
+			clients[p->id].m_gravitybox_location.y = p->location.y;
+			clients[p->id].m_gravitybox_location.z = p->location.z;
+
+			clients[p->id].m_gravitybox_rotation.x = p->rotation.x;
+			clients[p->id].m_gravitybox_rotation.y = p->rotation.y;
+			clients[p->id].m_gravitybox_rotation.z = p->rotation.z;
+		}
+		for (auto& cl : clients) {
+			if (cl.m_state == ST_FREE) break;
+			if (cl.m_id == p->id) continue;
+			cl.send_gravitybox_update_packet(c_id);
+		}
+	}
+							 break;
 	}
 }

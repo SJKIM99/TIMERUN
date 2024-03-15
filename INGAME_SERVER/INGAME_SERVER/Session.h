@@ -37,6 +37,7 @@ public:
 	std::mutex m_state_lock;
 	std::mutex m_channel_lock;
 	std::mutex m_update_lock;
+	std::mutex m_gravitybox_lock;
 	int m_channel;
 	int m_client_in_channel_id;
 	int m_id;
@@ -46,6 +47,11 @@ public:
 	bool m_HaveGrabityGun;
 	double m_yaw;
 	int m_prev_remain_data;
+	
+	//GravityBox
+	vector_d3 m_gravitybox_location;
+	vector_d3 m_gravitybox_rotation;
+
 public:
 	bool m_online;
 
@@ -79,6 +85,7 @@ public:
 	void send_ingame_login_sucess_packet(int c_id);
 	void send_move_packet(int c_id);
 	void send_world_update_packet(int c_id);
+	void send_gravitybox_update_packet(int c_id);
 public:
 	void SendPacket(void* packet);
 	void RecvPacket();

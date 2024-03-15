@@ -46,6 +46,7 @@ constexpr char CS_MOVE = 2;
 constexpr char CS_SELECT_CHANNEL = 3;
 constexpr char CS_INGAME_LOGIN = 4;
 constexpr char CS_PLAYER_UPDATE= 5;
+constexpr char CS_GRAVITYBOX_UPDATE= 6;
 
 //S2C
 constexpr char SC_LOGIN_SUCCESS = 1;
@@ -56,6 +57,7 @@ constexpr char SC_MOVE_PLAYER = 5;
 constexpr char SC_ADD_PLAYER = 6;
 constexpr char SC_INGAME_SUCCESS = 7;
 constexpr char SC_WORLD_UPDATE = 8;
+constexpr char SC_GRAVITYBOX_UPDATE = 9;
 
 
 #pragma pack (push, 1)
@@ -106,6 +108,13 @@ struct CS_PLAYER_UPDATE_PACKET {
 	bool HaveGravityGun;
 };
 
+struct CS_GRAVITYBOX_UPDATE_PACKET {
+	unsigned char size;
+	char type;
+	int id;
+	vector_d3 location;
+	vector_d3 rotation;
+};
 //S2C
 struct SC_SIGNUP_PACKET {
 	unsigned char size;
@@ -161,4 +170,11 @@ struct SC_WORLD_UPDATE_PACKET {
 	bool HaveGravityGun;
 };
 
+struct SC_GRAVITYBOX_UPDATE_PACKET {
+	unsigned char size;
+	char type;
+	int id;
+	vector_d3 location;
+	vector_d3 rotation;
+};
 #pragma pack(pop)

@@ -242,6 +242,11 @@ void ATIMERUNController::ProcessPakcet(char* packet)
         //UE_LOG(LogTemp, Warning, TEXT("%f"), vec_size);
 	}
 						break;
+    case SC_GRAVITYBOX_UPDATE: {
+        SC_GRAVITYBOX_UPDATE_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_UPDATE_PACKET*>(packet);
+        UpdateNewGravityBox();
+    }
+                             break;
     }
 }
 
@@ -294,4 +299,12 @@ void ATIMERUNController::SortPlayerIndex()
         return false;
     };
     spawnedCharacters.Sort(CompareByPlayerId);
+}
+
+void ATIMERUNController::UpdateNewGravityBox()
+{
+    UWorld* const world = GetWorld();
+    AGravityBox* SpawnGravityBox = world->SpawnActor<AGravityBox>();
+
+
 }

@@ -7,6 +7,7 @@
 #include "SocketMgr.h"
 #include "TIMERUNGameInstance.h"
 #include "TIMERUNCharacter.h"
+#include "GravityBox.h"
 
 #include "Windows/AllowWindowsPlatformTypes.h"
 #include "Windows/prewindowsapi.h"
@@ -69,5 +70,10 @@ private:
 	Session* NewPlayer;
 	void UpdateNewPlayer(int c_id);
 	void SortPlayerIndex();
-
+public:
+	SOCKET& GetIngmaeSocket() {
+		return *ingame_socket;
+	}
+private:
+	void UpdateNewGravityBox();
 };

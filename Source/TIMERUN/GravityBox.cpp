@@ -2,6 +2,8 @@
 
 
 #include "GravityBox.h"
+#include "Kismet/GameplayStatics.h"
+#include "TIMERUNController.h"
 
 // Sets default values
 AGravityBox::AGravityBox()
@@ -57,6 +59,27 @@ void AGravityBox::BeginPlay()
 {
 	Super::BeginPlay();
     StaticMeshComponent = FindComponentByClass<UStaticMeshComponent>();
+
+
+    ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+    
+    CS_GRAVITYBOX_UPDATE_PACKET packet;
+    
+    packet.id = MyPlayerCharacter->id;
+    packet.type = CS_GRAVITYBOX_UPDATE;
+    packet.size = sizeof CS_GRAVITYBOX_UPDATE_PACKET;
+    packet.location.x = BoxLocation.X;
+    packet.location.y = BoxLocation.Y;
+    packet.location.z = BoxLocation.Z;
+    packet.rotation.x = BoxRotation.Yaw;
+    packet.rotation.y = BoxRotation.Pitch;
+    packet.rotation.z = BoxRotation.Roll;
+
+    ATIMERUNController* MyController = Cast<ATIMERUNController>(GetWorld()->GetFirstPlayerController());
+
+    int ret = send(MyController->GetIngmaeSocket(), reinterpret_cast<char*>(&packet), sizeof(packet), 0);
+
+    UE_LOG(LogTemp, Warning, TEXT("GravityBox Spawned"));
 }
 
 // Called every frame
