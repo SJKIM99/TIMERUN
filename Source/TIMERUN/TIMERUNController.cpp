@@ -250,7 +250,7 @@ void ATIMERUNController::ProcessPakcet(char* packet)
         GravityBoxLocation.X = p->location.x;
         GravityBoxLocation.Y = p->location.y;
         GravityBoxLocation.Z = p->location.z;
-
+        UE_LOG(LogTemp, Warning, TEXT("%f,%f,%f"), p->location.x, p->location.y, p->location.z);
         FRotator GravityBoxRotation;
 
         GravityBoxRotation.Yaw = p->rotation.x;

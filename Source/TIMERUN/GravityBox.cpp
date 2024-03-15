@@ -60,6 +60,8 @@ void AGravityBox::BeginPlay()
 	Super::BeginPlay();
     StaticMeshComponent = FindComponentByClass<UStaticMeshComponent>();
 
+    BoxLocation = GetActorLocation(); //박스의 위치값, FVector형태로 들어감
+    BoxRotation = GetActorRotation(); //박스의 회전값, FRotator형태로 들어감
 
     ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
     
@@ -89,6 +91,7 @@ void AGravityBox::Tick(float DeltaTime)
 
     BoxLocation = GetActorLocation(); //박스의 위치값, FVector형태로 들어감
     BoxRotation = GetActorRotation(); //박스의 회전값, FRotator형태로 들어감
+    UE_LOG(LogTemp, Warning, TEXT("%f,%f,%f"), BoxLocation.X, BoxLocation.Y, BoxLocation.Z);
 
 	IsMoving = IsMovingCheck();
     CanFallCheck();

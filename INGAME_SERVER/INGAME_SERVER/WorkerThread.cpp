@@ -206,6 +206,8 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			clients[p->id].m_gravitybox_location.y = p->location.y;
 			clients[p->id].m_gravitybox_location.z = p->location.z;
 
+			std::cout << p->location.x << p->location.y << p->location.z << std::endl;
+
 			clients[p->id].m_gravitybox_rotation.x = p->rotation.x;
 			clients[p->id].m_gravitybox_rotation.y = p->rotation.y;
 			clients[p->id].m_gravitybox_rotation.z = p->rotation.z;
