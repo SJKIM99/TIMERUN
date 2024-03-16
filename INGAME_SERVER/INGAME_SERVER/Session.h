@@ -26,6 +26,14 @@ public:
 };
 
 enum S_STATE { ST_FREE, ST_ALLOC, ST_INGAME };
+enum GravityBox_STATE { ST_NULL, ST_OCCUPY };
+
+struct GravityBox {
+	int BoxId;
+	GravityBox_STATE gravitybox_state;
+	vector_d3 locaton;
+	vector_d3 rotation;
+};
 
 class Session
 {
@@ -47,15 +55,8 @@ public:
 	bool m_HaveGrabityGun;
 	double m_yaw;
 	int m_prev_remain_data;
-	
-	//GravityBox
-	int m_box_count[5];
-	vector_d3 m_gravitybox_location[5];
-	vector_d3 m_gravitybox_rotation[5];
-
 public:
 	bool m_online;
-
 public:
 	Session() {
 		m_socket = 0;
@@ -101,7 +102,7 @@ public:
 };
 
 extern std::array<Session, MAX_USER> clients;
-extern std::vector<std::queue<Session>> channels;
+extern std::array<GravityBox, MAX_GRAVITYBOX> gravitybox;
 
 void disconnect(int c_id);
 

@@ -2,6 +2,7 @@
 #include "Session.h"
 
 std::array<Session, MAX_USER> clients;
+std::array<GravityBox, MAX_GRAVITYBOX> gravitybox;
 
 std::vector<std::queue<Session>> channels(10);
 
@@ -66,13 +67,13 @@ void Session::send_gravitybox_add_packet(int c_id, int box_id)
 	packet.type = SC_GRAVITYBOX_ADD;
 	packet.size = sizeof SC_GRAVITYBOX_ADD_PACKET;
 	packet.id = c_id;
-	packet.box_count = box_id;
-	packet.location.x = clients[c_id].m_gravitybox_location[box_id].x;
-	packet.location.y = clients[c_id].m_gravitybox_location[box_id].y;
-	packet.location.z = clients[c_id].m_gravitybox_location[box_id].z;
-	packet.rotation.x = clients[c_id].m_gravitybox_rotation[box_id].x;
-	packet.rotation.y = clients[c_id].m_gravitybox_rotation[box_id].y;
-	packet.rotation.z = clients[c_id].m_gravitybox_rotation[box_id].z;
+	packet.boxid = box_id;
+	packet.location.x = gravitybox[box_id].locaton.x;
+	packet.location.y = gravitybox[box_id].locaton.y;
+	packet.location.z = gravitybox[box_id].locaton.z;
+	packet.rotation.x = gravitybox[box_id].rotation.x;
+	packet.rotation.y = gravitybox[box_id].rotation.y;
+	packet.rotation.z = gravitybox[box_id].rotation.z;
 	SendPacket(&packet);
 }
 
@@ -82,13 +83,13 @@ void Session::send_gravitybox_update_packet(int c_id, int box_id)
 	packet.type = SC_GRAVITYBOX_UPDATE;
 	packet.size = sizeof SC_GRAVITYBOX_UPDATE_PACKET;
 	packet.id = c_id;
-	packet.box_count = box_id;
-	packet.location.x = clients[c_id].m_gravitybox_location[box_id].x;
-	packet.location.y = clients[c_id].m_gravitybox_location[box_id].y;
-	packet.location.z = clients[c_id].m_gravitybox_location[box_id].z;
-	packet.rotation.x = clients[c_id].m_gravitybox_rotation[box_id].x;
-	packet.rotation.y = clients[c_id].m_gravitybox_rotation[box_id].y;
-	packet.rotation.z = clients[c_id].m_gravitybox_rotation[box_id].z;
+	packet.boxid = box_id;
+	packet.location.x = gravitybox[box_id].locaton.x;
+	packet.location.y = gravitybox[box_id].locaton.y;
+	packet.location.z = gravitybox[box_id].locaton.z;
+	packet.rotation.x = gravitybox[box_id].rotation.x;
+	packet.rotation.y = gravitybox[box_id].rotation.y;
+	packet.rotation.z = gravitybox[box_id].rotation.z;
 	SendPacket(&packet);
 }
 

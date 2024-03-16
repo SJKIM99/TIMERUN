@@ -43,7 +43,7 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
 			if (client_id != -1) {
 				{
 					std::lock_guard<std::mutex> ll{ clients[client_id].m_state_lock };
-					clients[client_id].m_state = ST_ALLOC;
+					clients[client_id].m_state = S_STATE::ST_ALLOC;
 				}
 				InitPlayerInfo(client_id);
 				CreateIoCompletionPort(reinterpret_cast<HANDLE>(g_client_socket), h_iocp, client_id, 0);
@@ -115,19 +115,8 @@ int WorkerThread::get_new_client_id()
 {
 	for (int i = 0; i < MAX_USER; ++i) {
 		std::lock_guard <std::mutex> ll{ clients[i].m_state_lock };
-		if (clients[i].m_state == ST_FREE)
+		if (clients[i].m_state == S_STATE::ST_FREE)
 			return i;
-	}
-	return -1;
-}
-
-int WorkerThread::get_new_client_in_channel_id()
-{
-	for (int i = 0; i < MAX_CHANNEL_USER; ++i) {
-		std::lock_guard <std::mutex> ll{ clients[i].m_channel_lock };
-		if (clients[i].m_client_in_channel_id == -1) {
-			return i;
-		}
 	}
 	return -1;
 }
@@ -185,10 +174,8 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			clients[p->id].m_velocity.y = p->velocity.y;
 			clients[p->id].m_velocity.z = p->velocity.z;
 
-			clients[p->id].m_HaveGrabityGun = p->HaveGravityGun;
-	//		float vel_size = sqrt(p->velocity.x * p->velocity.x + p->velocity.y * p->velocity.y +p->velocity.z * p->velocity.z);
 			clients[p->id].m_yaw = p->yaw;
-		//	std::cout << p->id << "번 클라 " << " " << vel_size << std::endl;
+			clients[p->id].m_HaveGrabityGun = p->HaveGravityGun;
 		}
 		for (auto& cl : clients) {
 			if (cl.m_state == ST_FREE) break;
@@ -198,27 +185,22 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 	}
 						 break;
 	case CS_GRAVITYBOX_ADD: {
-		std::cout << "중력박스 스폰?" << std::endl;
 		CS_GRAVITYBOX_ADD_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_ADD_PACKET*>(packet);
 		{
 			std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
-			
-			clients[p->id].m_box_count[p->box_count] = p->box_count;
+			int BoxId = get_new_gravitybox_id();
+			gravitybox[BoxId].locaton.x = p->location.x;
+			gravitybox[BoxId].locaton.y = p->location.y;
+			gravitybox[BoxId].locaton.z = p->location.z;
 
-			clients[p->id].m_gravitybox_location[p->box_count].x = p->location.x;
-			clients[p->id].m_gravitybox_location[p->box_count].y = p->location.y;
-			clients[p->id].m_gravitybox_location[p->box_count].z = p->location.z;
+			gravitybox[BoxId].rotation.x = p->rotation.x;
+			gravitybox[BoxId].rotation.y = p->rotation.y;
+			gravitybox[BoxId].rotation.z = p->rotation.z;
 
-			std::cout << p->location.x << p->location.y << p->location.z << std::endl;
-
-			clients[p->id].m_gravitybox_rotation[p->box_count].x = p->rotation.x;
-			clients[p->id].m_gravitybox_rotation[p->box_count].y = p->rotation.y;
-			clients[p->id].m_gravitybox_rotation[p->box_count].z = p->rotation.z;
-		}
-		for (auto& cl : clients) {
-			if (cl.m_state == ST_FREE) break;
-			if (cl.m_id == p->id) continue;
-			cl.send_gravitybox_add_packet(c_id, p->box_count);
+			for (auto& cl : clients) {
+				if (cl.m_state == ST_FREE) break;
+				cl.send_gravitybox_add_packet(c_id, BoxId);
+			}
 		}
 	}
 							 break;
@@ -226,22 +208,29 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 		CS_GRAVITYBOX_UPDATE_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_UPDATE_PACKET*>(packet);
 		{
 			std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
-			clients[p->id].m_gravitybox_location[p->box_count].x = p->location.x;
-			clients[p->id].m_gravitybox_location[p->box_count].y = p->location.y;
-			clients[p->id].m_gravitybox_location[p->box_count].z = p->location.z;
+			gravitybox[p->boxid].locaton.x = p->location.x;
+			gravitybox[p->boxid].locaton.y = p->location.y;
+			gravitybox[p->boxid].locaton.z = p->location.z;
 
-			std::cout << p->location.x << p->location.y << p->location.z << std::endl;
-
-			clients[p->id].m_gravitybox_rotation[p->box_count].x = p->rotation.x;
-			clients[p->id].m_gravitybox_rotation[p->box_count].y = p->rotation.y;
-			clients[p->id].m_gravitybox_rotation[p->box_count].z = p->rotation.z;
+			gravitybox[p->boxid].rotation.x = p->rotation.x;
+			gravitybox[p->boxid].rotation.y = p->rotation.y;
+			gravitybox[p->boxid].rotation.z = p->rotation.z;
 		}
 		for (auto& cl : clients) {
 			if (cl.m_state == ST_FREE) break;
 			if (cl.m_id == p->id) continue;
-			cl.send_gravitybox_update_packet(c_id, p->box_count);
+			cl.send_gravitybox_update_packet(c_id, p->boxid);
 		}
 	}
 							 break;
 	}
+}
+
+int WorkerThread::get_new_gravitybox_id()
+{
+	for (int i = 0; i < MAX_GRAVITYBOX; ++i) {
+		if (gravitybox[i].gravitybox_state == GravityBox_STATE::ST_NULL)
+			return i;
+	}
+	return -1;
 }

@@ -20,7 +20,7 @@ public:
 	int get_new_client_in_channel_id();
 	void InitPlayerInfo(int player_id);
 	void ProcessPacket(int c_id, char* packet);
-
+	int get_new_gravitybox_id();
 	bool isEnterPlayer = false;
 };
 

@@ -37,7 +37,8 @@ constexpr int PASSWDSIZE = 20;
 constexpr int IPSIZE = 20;
 
 constexpr int MAX_USER = 10;
-constexpr int MAX_CHANNEL_USER = 300;
+constexpr int MAX_GRAVITYBOX = 100;
+
 
 //C2S
 constexpr char CS_LOGIN = 0;
@@ -114,7 +115,6 @@ struct CS_GRAVITYBOX_ADD_PACKET {
 	unsigned char size;
 	char type;
 	int id;
-	int box_count;
 	vector_d3 location;
 	vector_d3 rotation;
 };
@@ -123,7 +123,7 @@ struct CS_GRAVITYBOX_UPDATE_PACKET {
 	unsigned char size;
 	char type;
 	int id;
-	int box_count;
+	int boxid;
 	vector_d3 location;
 	vector_d3 rotation;
 };
@@ -186,7 +186,7 @@ struct SC_GRAVITYBOX_ADD_PACKET {
 	unsigned char size;
 	char type;
 	int id;
-	int box_count;
+	int boxid;
 	vector_d3 location;
 	vector_d3 rotation;
 };
@@ -195,7 +195,7 @@ struct SC_GRAVITYBOX_UPDATE_PACKET {
 	unsigned char size;
 	char type;
 	int id;
-	int box_count;
+	int boxid;
 	vector_d3 location;
 	vector_d3 rotation;
 };

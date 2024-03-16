@@ -245,22 +245,27 @@ void ATIMERUNController::ProcessPakcet(char* packet)
     case SC_GRAVITYBOX_ADD: {
         SC_GRAVITYBOX_ADD_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_ADD_PACKET*>(packet);
 
-        FVector GravityBoxLocation;
+        if (p->id == my_id) {
+            //서버로부터 받은 box의 아이디만 설정해준다 
+            TArray<AActor*> FoundObjects;
+            UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), FoundObjects);
+            
+            AGravityBox* MyGarvityBox = Cast<AGravityBox>(FoundObjects[p->boxid]);
+            MyGarvityBox->BoxId = p->boxid;
+        }
+        else {
+            FVector GravityBoxLocation;
+            GravityBoxLocation.X = p->location.x;
+            GravityBoxLocation.Y = p->location.y;
+            GravityBoxLocation.Z = p->location.z;
 
-        GravityBoxLocation.X = p->location.x;
-        GravityBoxLocation.Y = p->location.y;
-        GravityBoxLocation.Z = p->location.z;
-        UE_LOG(LogTemp, Warning, TEXT("%f,%f,%f"), p->location.x, p->location.y, p->location.z);
-        FRotator GravityBoxRotation;
+            FRotator GravityBoxRotation;
+            GravityBoxRotation.Yaw = p->rotation.x;
+            GravityBoxRotation.Pitch = p->rotation.y;
+            GravityBoxRotation.Roll = p->rotation.z;
 
-        GravityBoxRotation.Yaw = p->rotation.x;
-        GravityBoxRotation.Pitch = p->rotation.y;
-        GravityBoxRotation.Roll = p->rotation.z;
-
-        FTimerDelegate TimerDelegate;
-        TimerDelegate.BindUFunction(this, FName("GravityBoxUpdatePacket"));
-        UpdateNewGravityBox(GravityBoxLocation, GravityBoxRotation, p->box_count);
-        GetWorldTimerManager().SetTimer(SendPlayerInfoHandle2, TimerDelegate, 0.008f, true);
+            UpdateNewGravityBox(GravityBoxLocation, GravityBoxRotation, p->boxid);
+        }
     }
                              break;
     case SC_GRAVITYBOX_UPDATE: {
@@ -269,18 +274,16 @@ void ATIMERUNController::ProcessPakcet(char* packet)
         UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
 
         FVector GravityBoxLocation;
-
         GravityBoxLocation.X = p->location.x;
         GravityBoxLocation.Y = p->location.y;
         GravityBoxLocation.Z = p->location.z;
-        UE_LOG(LogTemp, Warning, TEXT("%f,%f,%f"), p->location.x, p->location.y, p->location.z);
-        FRotator GravityBoxRotation;
 
+        FRotator GravityBoxRotation;
         GravityBoxRotation.Yaw = p->rotation.x;
         GravityBoxRotation.Pitch = p->rotation.y;
         GravityBoxRotation.Roll = p->rotation.z;
 
-        AGravityBox* OtherGravityBox = Cast<AGravityBox>(spawnedGravityBox[p->box_count]);
+        AGravityBox* OtherGravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
 
         OtherGravityBox->SetActorLocation(GravityBoxLocation);
         OtherGravityBox->SetActorRotation(GravityBoxRotation);
@@ -344,5 +347,5 @@ void ATIMERUNController::UpdateNewGravityBox(FVector location, FRotator rotation
 {
     UWorld* const world = GetWorld();
     AGravityBox* SpawnGravityBox = world->SpawnActor<AGravityBox>(location, rotation);
-    //SpawnGravityBox->box_count = box_id;
+    SpawnGravityBox->BoxId = box_id;
 }
