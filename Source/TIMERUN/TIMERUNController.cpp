@@ -250,8 +250,9 @@ void ATIMERUNController::ProcessPakcet(char* packet)
             TArray<AActor*> FoundObjects;
             UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), FoundObjects);
             
-            AGravityBox* MyGarvityBox = Cast<AGravityBox>(FoundObjects[p->boxid]);
-            MyGarvityBox->BoxId = p->boxid;
+            AGravityBox* MyGravityBox = Cast<AGravityBox>(FoundObjects[p->boxid]);
+            MyGravityBox->BoxId = p->boxid;
+            MyGravityBox->SpawnMyCharacter = true;
             UE_LOG(LogTemp, Warning, TEXT("my id packet"));
         }
         else {
@@ -349,4 +350,5 @@ void ATIMERUNController::UpdateNewGravityBox(FVector location, FRotator rotation
     UWorld* const world = GetWorld();
     AGravityBox* SpawnGravityBox = world->SpawnActor<AGravityBox>(location, rotation);
     SpawnGravityBox->BoxId = box_id;
+    SpawnGravityBox->SpawnMyCharacter = false;
 }

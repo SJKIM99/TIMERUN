@@ -71,4 +71,5 @@ public:
 	FVector BoxLocation;
 	FRotator BoxRotation;
 	int BoxId;
+	bool SpawnMyCharacter = true;
 };
