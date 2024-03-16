@@ -252,6 +252,7 @@ void ATIMERUNController::ProcessPakcet(char* packet)
             
             AGravityBox* MyGarvityBox = Cast<AGravityBox>(FoundObjects[p->boxid]);
             MyGarvityBox->BoxId = p->boxid;
+            UE_LOG(LogTemp, Warning, TEXT("my id packet"));
         }
         else {
             FVector GravityBoxLocation;
@@ -263,7 +264,7 @@ void ATIMERUNController::ProcessPakcet(char* packet)
             GravityBoxRotation.Yaw = p->rotation.x;
             GravityBoxRotation.Pitch = p->rotation.y;
             GravityBoxRotation.Roll = p->rotation.z;
-
+            UE_LOG(LogTemp, Warning, TEXT("other id packet"));
             UpdateNewGravityBox(GravityBoxLocation, GravityBoxRotation, p->boxid);
         }
     }

@@ -60,62 +60,62 @@ void AGravityBox::BeginPlay()
 	Super::BeginPlay();
     StaticMeshComponent = FindComponentByClass<UStaticMeshComponent>();
 
-    BoxLocation = GetActorLocation(); //박스의 위치값, FVector형태로 들어감
-    BoxRotation = GetActorRotation(); //박스의 회전값, FRotator형태로 들어감
+    //BoxLocation = GetActorLocation(); //박스의 위치값, FVector형태로 들어감
+    //BoxRotation = GetActorRotation(); //박스의 회전값, FRotator형태로 들어감
 
-    ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-    CS_GRAVITYBOX_ADD_PACKET packet;
-    packet.id = MyPlayerCharacter->id;
-    packet.type = CS_GRAVITYBOX_ADD;
-    packet.size = sizeof CS_GRAVITYBOX_ADD_PACKET;
-    packet.location.x = BoxLocation.X;
-    packet.location.y = BoxLocation.Y;
-    packet.location.z = BoxLocation.Z;
-    packet.rotation.x = BoxRotation.Yaw;
-    packet.rotation.y = BoxRotation.Pitch;
-    packet.rotation.z = BoxRotation.Roll;
+    //ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+    //CS_GRAVITYBOX_ADD_PACKET packet;
+    //packet.id = MyPlayerCharacter->id;
+    //packet.type = CS_GRAVITYBOX_ADD;
+    //packet.size = sizeof CS_GRAVITYBOX_ADD_PACKET;
+    //packet.location.x = BoxLocation.X;
+    //packet.location.y = BoxLocation.Y;
+    //packet.location.z = BoxLocation.Z;
+    //packet.rotation.x = BoxRotation.Yaw;
+    //packet.rotation.y = BoxRotation.Pitch;
+    //packet.rotation.z = BoxRotation.Roll;
 
-    ATIMERUNController* MyController = Cast<ATIMERUNController>(GetWorld()->GetFirstPlayerController());
+    //ATIMERUNController* MyController = Cast<ATIMERUNController>(GetWorld()->GetFirstPlayerController());
 
-    int ret = send(MyController->GetIngmaeSocket(), reinterpret_cast<char*>(&packet), sizeof(packet), 0);
+    //int ret = send(MyController->GetIngmaeSocket(), reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 
-    UE_LOG(LogTemp, Warning, TEXT("GravityBox Spawned"));
+    //UE_LOG(LogTemp, Warning, TEXT("GravityBox Spawned"));
 }
 
 // Called every frame
 void AGravityBox::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
+	//Super::Tick(DeltaTime);
 
-    if (!CanFixPos || !IsMoving) {
-        BoxLocation = GetActorLocation(); //박스의 위치값, FVector형태로 들어감
-        BoxRotation = GetActorRotation(); //박스의 회전값, FRotator형태로 들어감
- 
-        IsMoving = IsMovingCheck();
-        CanFallCheck();
-        CanFixPos = CanFixPosCheck();
+ //   if (!CanFixPos || !IsMoving) {
+ //       BoxLocation = GetActorLocation(); //박스의 위치값, FVector형태로 들어감
+ //       BoxRotation = GetActorRotation(); //박스의 회전값, FRotator형태로 들어감
+ //
+ //       IsMoving = IsMovingCheck();
+ //       CanFallCheck();
+ //       CanFixPos = CanFixPosCheck();
 
-        DoGrabbingRotate(isGrabbed);
+ //       DoGrabbingRotate(isGrabbed);
 
-        CS_GRAVITYBOX_UPDATE_PACKET packet;
+ //       CS_GRAVITYBOX_UPDATE_PACKET packet;
 
-        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+ //       ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
-        packet.id = MyPlayerCharacter->id;
-        packet.boxid = BoxId;
-        packet.type = CS_GRAVITYBOX_UPDATE;
-        packet.size = sizeof CS_GRAVITYBOX_UPDATE_PACKET;
-        packet.location.x = BoxLocation.X;
-        packet.location.y = BoxLocation.Y;
-        packet.location.z = BoxLocation.Z;
-        packet.rotation.x = BoxRotation.Yaw;
-        packet.rotation.x = BoxRotation.Pitch;
-        packet.rotation.x = BoxRotation.Roll;
+ //       packet.id = MyPlayerCharacter->id;
+ //       packet.boxid = BoxId;
+ //       packet.type = CS_GRAVITYBOX_UPDATE;
+ //       packet.size = sizeof CS_GRAVITYBOX_UPDATE_PACKET;
+ //       packet.location.x = BoxLocation.X;
+ //       packet.location.y = BoxLocation.Y;
+ //       packet.location.z = BoxLocation.Z;
+ //       packet.rotation.x = BoxRotation.Yaw;
+ //       packet.rotation.x = BoxRotation.Pitch;
+ //       packet.rotation.x = BoxRotation.Roll;
 
-        ATIMERUNController* MyController = Cast<ATIMERUNController>(GetWorld()->GetFirstPlayerController());
+ //       ATIMERUNController* MyController = Cast<ATIMERUNController>(GetWorld()->GetFirstPlayerController());
 
-        int ret = send(MyController->GetIngmaeSocket(), reinterpret_cast<char*>(&packet), sizeof(packet), 0);
-    }
+ //       int ret = send(MyController->GetIngmaeSocket(), reinterpret_cast<char*>(&packet), sizeof(packet), 0);
+ //   }
     
 }
 
