@@ -35,7 +35,7 @@ void ATIMERUNController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (instance->IsActiveIngameSocket)
+	if (!instance->IsActiveIngameSocket)
 		instance->RecvPacketFromLoginServer();
 	else
 		instance->RecvPacketFromIngameServer();
