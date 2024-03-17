@@ -6,6 +6,7 @@
 
 #include "TIMERUNCharacter.h"
 #include "GravityBox.h"
+#include "TIMERUNController.h"
 
 #include "Windows/AllowWindowsPlatformTypes.h"
 #include "Windows/prewindowsapi.h"
@@ -31,7 +32,7 @@ class TIMERUN_API UTIMERUNGameInstance : public UGameInstance
 	GENERATED_BODY()
 public:
 	UTIMERUNGameInstance();
-private:
+public:
 	SocketMgr socketmgr;
 	SOCKET* login_socket;
 	SOCKET* ingame_socket;
@@ -55,7 +56,7 @@ public:
 	char ingame_prev_packet_buf[10000];
 
 	bool IsActiveIngameSocket = false;
-private:
+public:
 	int nPlayers;
 	bool IsEnterNewPlayer;
 	void UpdateNewPlayer(int c_id);
@@ -65,7 +66,7 @@ public:
 	TArray<AActor*> spawnedCharacters;	//플레이어 동기화 배열 
 	FTimerHandle SendPlayerInfoHandle;	// 동기화 타이머 핸들러
 	TArray<AActor*> spawnedGravityBox;
-	void UpdateNewGravityBox(FVector location, FRotator rotation, int box_id);
+	//void UpdateNewGravityBox(FVector location, FRotator rotation, int box_id);
 public:
 	SocketMgr* GetSocketMgr() {
 		return &socketmgr;

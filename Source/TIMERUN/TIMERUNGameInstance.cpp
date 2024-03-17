@@ -204,37 +204,37 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         //UE_LOG(LogTemp, Warning, TEXT("%f"), vec_size);
     }
                         break;
-    case SC_GRAVITYBOX_ADD: {
-        SC_GRAVITYBOX_ADD_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_ADD_PACKET*>(packet);
+    //case SC_GRAVITYBOX_ADD: {
+    //    SC_GRAVITYBOX_ADD_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_ADD_PACKET*>(packet);
 
-        if (p->id == my_id) {
-            //서버로부터 받은 box의 아이디만 설정해준다 
-            TArray<AActor*> FoundObjects;
-            UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), FoundObjects);
+    //    if (p->id == my_id) {
+    //        //서버로부터 받은 box의 아이디만 설정해준다 
+    //        TArray<AActor*> FoundObjects;
+    //        UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), FoundObjects);
 
-            AGravityBox* MyGravityBox = Cast<AGravityBox>(FoundObjects[p->boxid]);
-            MyGravityBox->BoxId = p->boxid;
-            MyGravityBox->SpawnMyCharacter = true;
-            UE_LOG(LogTemp, Warning, TEXT("my id packet"));
-        }
-        else {
-            FVector GravityBoxLocation;
-            GravityBoxLocation.X = p->location.x;
-            GravityBoxLocation.Y = p->location.y;
-            GravityBoxLocation.Z = p->location.z;
+    //        AGravityBox* MyGravityBox = Cast<AGravityBox>(FoundObjects[p->boxid]);
+    //        MyGravityBox->BoxId = p->boxid;
+    //        MyGravityBox->SpawnMyCharacter = true;
+    //        UE_LOG(LogTemp, Warning, TEXT("my id packet"));
+    //    }
+    //    else {
+    //        FVector GravityBoxLocation;
+    //        GravityBoxLocation.X = p->location.x;
+    //        GravityBoxLocation.Y = p->location.y;
+    //        GravityBoxLocation.Z = p->location.z;
 
-            FRotator GravityBoxRotation;
-            GravityBoxRotation.Yaw = p->rotation.x;
-            GravityBoxRotation.Pitch = p->rotation.y;
-            GravityBoxRotation.Roll = p->rotation.z;
-            UE_LOG(LogTemp, Warning, TEXT("other id packet"));
-            UpdateNewGravityBox(GravityBoxLocation, GravityBoxRotation, p->boxid);
+    //        FRotator GravityBoxRotation;
+    //        GravityBoxRotation.Yaw = p->rotation.x;
+    //        GravityBoxRotation.Pitch = p->rotation.y;
+    //        GravityBoxRotation.Roll = p->rotation.z;
+    //        UE_LOG(LogTemp, Warning, TEXT("other id packet"));
+    //        UpdateNewGravityBox(GravityBoxLocation, GravityBoxRotation, p->boxid);
 
 
-        }
-    }
-                          break;
-    case SC_GRAVITYBOX_UPDATE: {
+    //    }
+    //}
+    //                      break;
+   /* case SC_GRAVITYBOX_UPDATE: {
         SC_GRAVITYBOX_UPDATE_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_UPDATE_PACKET*>(packet);
 
         UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
@@ -254,7 +254,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         OtherGravityBox->SetActorLocation(GravityBoxLocation);
         OtherGravityBox->SetActorRotation(GravityBoxRotation);
     }
-                             break;
+                             break;*/
     }
 }
 
@@ -309,13 +309,13 @@ void UTIMERUNGameInstance::SortPlayerIndex()
     spawnedCharacters.Sort(CompareByPlayerId);
 }
 
-void UTIMERUNGameInstance::UpdateNewGravityBox(FVector location, FRotator rotation, int box_id)
-{
-    UWorld* const world = GetWorld();
-    AGravityBox* SpawnGravityBox = world->SpawnActor<AGravityBox>(location, rotation);
-    SpawnGravityBox->BoxId = box_id;
-    SpawnGravityBox->SpawnMyCharacter = false;
-}
+//void UTIMERUNGameInstance::UpdateNewGravityBox(FVector location, FRotator rotation, int box_id)
+//{
+//    UWorld* const world = GetWorld();
+//    AGravityBox* SpawnGravityBox = world->SpawnActor<AGravityBox>(location, rotation);
+//    SpawnGravityBox->BoxId = box_id;
+//    SpawnGravityBox->SpawnMyCharacter = false;
+//}
 
 void UTIMERUNGameInstance::InitLoginSocket()
 {
