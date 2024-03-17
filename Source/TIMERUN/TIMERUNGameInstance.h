@@ -61,12 +61,15 @@ public:
 	bool IsEnterNewPlayer;
 	void UpdateNewPlayer(int c_id);
 	void SortPlayerIndex();
+	bool CheckGravityBoxSpawn();
+	void SpawnGravityBox();
+	int nGravityBox;
 
 public:
 	TArray<AActor*> spawnedCharacters;	//플레이어 동기화 배열 
 	FTimerHandle SendPlayerInfoHandle;	// 동기화 타이머 핸들러
 	TArray<AActor*> spawnedGravityBox;
-	//void UpdateNewGravityBox(FVector location, FRotator rotation, int box_id);
+	void UpdateNewGravityBox(FVector location, FRotator rotation, int box_id);
 public:
 	SocketMgr* GetSocketMgr() {
 		return &socketmgr;

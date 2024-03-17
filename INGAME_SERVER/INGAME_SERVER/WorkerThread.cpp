@@ -197,6 +197,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			gravitybox[BoxId].rotation.y = p->rotation.y;
 			gravitybox[BoxId].rotation.z = p->rotation.z;
 
+			std::cout << c_id << "번 클라이언트가 중력박스를 소환했네" << std::endl;
 			for (auto& cl : clients) {
 				if (cl.m_state == ST_FREE) break;
 				if (cl.m_id == p->id) continue;

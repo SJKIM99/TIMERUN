@@ -2,18 +2,7 @@
 
 #pragma once
 
-#include "C:/Users/user/Desktop/TIMERUN/LOGIN_SERVER/protocol.h"
-
 #include "TIMERUNCharacter.h"
-
-#include "Windows/AllowWindowsPlatformTypes.h"
-#include "Windows/prewindowsapi.h"
-
-#include <WinSock2.h>
-#pragma comment(lib, "WS2_32.lib")
-
-#include "Windows/PostWindowsApi.h"
-#include "Windows/HideWindowsPlatformTypes.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -71,7 +60,4 @@ public:
 	FVector BoxLocation;
 	FRotator BoxRotation;
 	int BoxId;
-	bool SpawnMyCharacter = true;
-
-	void SendInitGravityBox();
 };

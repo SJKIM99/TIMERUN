@@ -40,6 +40,5 @@ void ATIMERUNController::Tick(float DeltaTime)
 	else
 		instance->RecvPacketFromIngameServer();
 
-	if(instance->IsEnterNewPlayer)
-		instance->UpdateNewPlayer(other_id);
+	instance->CheckGravityBoxSpawn();
 }
