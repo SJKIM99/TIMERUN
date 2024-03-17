@@ -199,6 +199,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 
 			for (auto& cl : clients) {
 				if (cl.m_state == ST_FREE) break;
+				if (cl.m_id == p->id) continue;
 				cl.send_gravitybox_add_packet(c_id, BoxId);
 			}
 		}

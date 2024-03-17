@@ -72,4 +72,6 @@ public:
 	FRotator BoxRotation;
 	int BoxId;
 	bool SpawnMyCharacter = true;
+
+	void SendInitGravityBox();
 };

@@ -94,35 +94,35 @@ void AGravityBox::Tick(float DeltaTime)
         SendInitGravityBox();
     }
 
-    if (!CanFixPos || !IsMoving) {
-        BoxLocation = GetActorLocation(); //박스의 위치값, FVector형태로 들어감
-        BoxRotation = GetActorRotation(); //박스의 회전값, FRotator형태로 들어감
+    //if (!CanFixPos || !IsMoving) {
+    //    BoxLocation = GetActorLocation(); //박스의 위치값, FVector형태로 들어감
+    //    BoxRotation = GetActorRotation(); //박스의 회전값, FRotator형태로 들어감
  
-        IsMoving = IsMovingCheck();
-        CanFallCheck();
-        CanFixPos = CanFixPosCheck();
+    //    IsMoving = IsMovingCheck();
+    //    CanFallCheck();
+    //    CanFixPos = CanFixPosCheck();
 
-        DoGrabbingRotate(isGrabbed);
+    //    DoGrabbingRotate(isGrabbed);
 
-        CS_GRAVITYBOX_UPDATE_PACKET packet;
+    //    CS_GRAVITYBOX_UPDATE_PACKET packet;
 
-        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+    //    ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
-        packet.id = MyPlayerCharacter->id;
-        packet.boxid = BoxId;
-        packet.type = CS_GRAVITYBOX_UPDATE;
-        packet.size = sizeof CS_GRAVITYBOX_UPDATE_PACKET;
-        packet.location.x = BoxLocation.X;
-        packet.location.y = BoxLocation.Y;
-        packet.location.z = BoxLocation.Z;
-        packet.rotation.x = BoxRotation.Yaw;
-        packet.rotation.x = BoxRotation.Pitch;
-        packet.rotation.x = BoxRotation.Roll;
+    //    packet.id = MyPlayerCharacter->id;
+    //    packet.boxid = BoxId;
+    //    packet.type = CS_GRAVITYBOX_UPDATE;
+    //    packet.size = sizeof CS_GRAVITYBOX_UPDATE_PACKET;
+    //    packet.location.x = BoxLocation.X;
+    //    packet.location.y = BoxLocation.Y;
+    //    packet.location.z = BoxLocation.Z;
+    //    packet.rotation.x = BoxRotation.Yaw;
+    //    packet.rotation.x = BoxRotation.Pitch;
+    //    packet.rotation.x = BoxRotation.Roll;
 
-        ATIMERUNController* MyController = Cast<ATIMERUNController>(GetWorld()->GetFirstPlayerController());
+    //    ATIMERUNController* MyController = Cast<ATIMERUNController>(GetWorld()->GetFirstPlayerController());
 
-        int ret = send(MyController->GetIngmaeSocket(), reinterpret_cast<char*>(&packet), sizeof(packet), 0);
-    }
+    //    int ret = send(MyController->GetIngmaeSocket(), reinterpret_cast<char*>(&packet), sizeof(packet), 0);
+    //}
     
 }
 
@@ -215,7 +215,7 @@ void AGravityBox::DoGrabbingRotate(bool when)
 
 void AGravityBox::SendInitGravityBox()
 {
-    StaticMeshComponent = FindComponentByClass<UStaticMeshComponent>();
+    //StaticMeshComponent = FindComponentByClass<UStaticMeshComponent>();
 
     BoxLocation = GetActorLocation(); //박스의 위치값, FVector형태로 들어감
     BoxRotation = GetActorRotation(); //박스의 회전값, FRotator형태로 들어감
@@ -237,6 +237,8 @@ void AGravityBox::SendInitGravityBox()
     int ret = send(MyController->GetIngmaeSocket(), reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 
     UE_LOG(LogTemp, Warning, TEXT("GravityBox Spawned"));
+
+    SpawnMyCharacter = false;
 }
 
 
