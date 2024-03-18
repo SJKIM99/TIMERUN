@@ -200,7 +200,6 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			std::cout << c_id << "번 클라이언트가 중력박스를 소환했네" << std::endl;
 			for (auto& cl : clients) {
 				if (cl.m_state == ST_FREE) break;
-				if (cl.m_id == p->id) continue;
 				cl.send_gravitybox_add_packet(c_id, BoxId);
 			}
 		}
