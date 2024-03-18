@@ -40,5 +40,7 @@ void ATIMERUNController::Tick(float DeltaTime)
 	else
 		instance->RecvPacketFromIngameServer();
 
-	instance->CheckGravityBoxSpawn();
+	if (instance->CheckGravityBoxSpawn()) {
+		instance->SpawnGravityBox();
+	}
 }
