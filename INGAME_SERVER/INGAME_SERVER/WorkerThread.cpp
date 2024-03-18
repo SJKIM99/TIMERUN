@@ -189,6 +189,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 		{
 			std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
 			int BoxId = get_new_gravitybox_id();
+			std::cout << "중력박스 아이디 : " << BoxId << std::endl;
 			gravitybox[BoxId].locaton.x = p->location.x;
 			gravitybox[BoxId].locaton.y = p->location.y;
 			gravitybox[BoxId].locaton.z = p->location.z;
@@ -197,7 +198,6 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			gravitybox[BoxId].rotation.y = p->rotation.y;
 			gravitybox[BoxId].rotation.z = p->rotation.z;
 
-			std::cout << c_id << "번 클라이언트가 중력박스를 소환했네" << std::endl;
 			for (auto& cl : clients) {
 				if (cl.m_state == ST_FREE) break;
 				cl.send_gravitybox_add_packet(c_id, BoxId);
@@ -230,8 +230,10 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 int WorkerThread::get_new_gravitybox_id()
 {
 	for (int i = 0; i < MAX_GRAVITYBOX; ++i) {
-		if (gravitybox[i].gravitybox_state == GravityBox_STATE::ST_NULL)
+		if (gravitybox[i].gravitybox_state == GravityBox_STATE::ST_NULL) {
+			gravitybox[i].gravitybox_state = GravityBox_STATE::ST_OCCUPY;
 			return i;
+		}
 	}
 	return -1;
 }
