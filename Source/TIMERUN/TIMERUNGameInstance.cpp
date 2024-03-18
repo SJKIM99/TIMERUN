@@ -302,29 +302,22 @@ void UTIMERUNGameInstance::SortPlayerIndex()
     spawnedCharacters.Sort(CompareByPlayerId);
 }
 
-void UTIMERUNGameInstance::SendGravityBoxSpawn()
+void UTIMERUNGameInstance::SendGravityBoxSpawn(FVector location, FRotator rotation)
 {
-    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
-    AGravityBox* SpawnGravityBox = Cast<AGravityBox>(spawnedGravityBox[nGravityBox]); //박스의 위치값, FVector형태로 들어감
-
-    SpawnGravityBox->BoxLocation = SpawnGravityBox->GetActorLocation();
-    SpawnGravityBox->BoxRotation = SpawnGravityBox->GetActorRotation();
-
     ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
     CS_GRAVITYBOX_ADD_PACKET packet;
     packet.id = MyPlayerCharacter->id;
     packet.type = CS_GRAVITYBOX_ADD;
     packet.size = sizeof CS_GRAVITYBOX_ADD_PACKET;
-    packet.location.x = SpawnGravityBox->BoxLocation.X;
-    packet.location.y = SpawnGravityBox->BoxLocation.Y;
-    packet.location.z = SpawnGravityBox->BoxLocation.Z;
-    packet.rotation.x = SpawnGravityBox->BoxRotation.Yaw;
-    packet.rotation.y = SpawnGravityBox->BoxRotation.Pitch;
-    packet.rotation.z = SpawnGravityBox->BoxRotation.Roll;
+    packet.location.x = location.X;
+    packet.location.y = location.Y;
+    packet.location.z = location.Z;
+    packet.rotation.x = rotation.Yaw;
+    packet.rotation.y = rotation.Pitch;
+    packet.rotation.z = rotation.Roll;
 
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 
-    ++nGravityBox;
     UE_LOG(LogTemp, Warning, TEXT("GravityBox Spawned"));
 }
 

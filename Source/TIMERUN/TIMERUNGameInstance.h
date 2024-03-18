@@ -63,7 +63,7 @@ public:
 	void SortPlayerIndex();
 
 	UFUNCTION(BlueprintCallable)
-	void SendGravityBoxSpawn();
+	void SendGravityBoxSpawn(FVector location, FRotator rotation);
 
 	int nGravityBox;
 
