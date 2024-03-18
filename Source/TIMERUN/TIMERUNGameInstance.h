@@ -62,7 +62,10 @@ public:
 	void UpdateNewPlayer(int c_id);
 	void SortPlayerIndex();
 	bool CheckGravityBoxSpawn();
-	void SpawnGravityBox();
+
+	UFUNCTION(BlueprintCallable)
+	void SendGravityBoxSpawn();
+
 	int nGravityBox;
 
 public:
