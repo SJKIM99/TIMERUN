@@ -33,6 +33,7 @@ struct GravityBox {
 	GravityBox_STATE gravitybox_state;
 	vector_d3 locaton;
 	vector_d3 rotation;
+	vector_d3 velocity;
 };
 
 class Session

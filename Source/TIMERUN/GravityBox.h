@@ -2,11 +2,24 @@
 
 #pragma once
 
+#include "C:/Users/user/Desktop/TIMERUN/LOGIN_SERVER/protocol.h"
+
+#include "Windows/AllowWindowsPlatformTypes.h"
+#include "Windows/prewindowsapi.h"
+
+#include <WinSock2.h>
+#pragma comment(lib, "WS2_32.lib")
+
+#include "Windows/PostWindowsApi.h"
+#include "Windows/HideWindowsPlatformTypes.h"
+
 #include "TIMERUNCharacter.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "GravityBox.generated.h"
+
+class UTIMERUNGameInstance;
 
 UCLASS()
 class TIMERUN_API AGravityBox : public APawn
@@ -60,4 +73,9 @@ public:
 	FVector BoxLocation;
 	FRotator BoxRotation;
 	int BoxId;
+
+	UTIMERUNGameInstance* instance;
+	FTimerHandle SendGravityBoxInfoHandle;	// 동기화 타이머 핸들러
+	void SendGravityBoxMovePacket();
+	bool CompleteOtherGravityBoxSpawn = false;
 };

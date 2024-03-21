@@ -90,6 +90,9 @@ void Session::send_gravitybox_update_packet(int c_id, int box_id)
 	packet.rotation.x = gravitybox[box_id].rotation.x;
 	packet.rotation.y = gravitybox[box_id].rotation.y;
 	packet.rotation.z = gravitybox[box_id].rotation.z;
+	packet.velocity.x = gravitybox[box_id].velocity.x;
+	packet.velocity.y = gravitybox[box_id].velocity.y;
+	packet.velocity.z = gravitybox[box_id].velocity.z;
 	SendPacket(&packet);
 }
 

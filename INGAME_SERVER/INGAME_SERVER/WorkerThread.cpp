@@ -208,6 +208,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 	case CS_GRAVITYBOX_UPDATE: {
 		CS_GRAVITYBOX_UPDATE_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_UPDATE_PACKET*>(packet);
 		{
+			std::cout << p->location.x  << " " << p->location.y << " " << p->location.z << std::endl;
 			std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
 			gravitybox[p->boxid].locaton.x = p->location.x;
 			gravitybox[p->boxid].locaton.y = p->location.y;
@@ -216,10 +217,14 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			gravitybox[p->boxid].rotation.x = p->rotation.x;
 			gravitybox[p->boxid].rotation.y = p->rotation.y;
 			gravitybox[p->boxid].rotation.z = p->rotation.z;
+
+			gravitybox[p->boxid].velocity.x = p->velocity.x;
+			gravitybox[p->boxid].velocity.y = p->velocity.y;
+			gravitybox[p->boxid].velocity.z = p->velocity.z;
 		}
 		for (auto& cl : clients) {
 			if (cl.m_state == ST_FREE) break;
-			if (cl.m_id == p->id) continue;
+			if (cl.m_id == c_id) continue;
 			cl.send_gravitybox_update_packet(c_id, p->boxid);
 		}
 	}

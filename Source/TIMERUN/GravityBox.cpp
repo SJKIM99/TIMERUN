@@ -2,6 +2,8 @@
 
 
 #include "GravityBox.h"
+#include "TIMERUNGameInstance.h"
+#include "TimerManager.h"
 
 // Sets default values
 AGravityBox::AGravityBox()
@@ -56,21 +58,26 @@ void AGravityBox::BeginPlay()
 {
 	Super::BeginPlay();
     StaticMeshComponent = FindComponentByClass<UStaticMeshComponent>();
+
+    instance = Cast<UTIMERUNGameInstance>(GetWorld()->GetGameInstance());
+    instance->GetSocketMgr()->GetIngameSocket();
+
+    GetWorld()->GetTimerManager().SetTimer(SendGravityBoxInfoHandle, this, &AGravityBox::SendGravityBoxMovePacket, 0.032f, true);
 }
 
 // Called every frame
 void AGravityBox::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-  
-	BoxLocation = GetActorLocation(); //박스의 위치값, FVector형태로 들어감
-	BoxRotation = GetActorRotation(); //박스의 회전값, FRotator형태로 들어감
+    Super::Tick(DeltaTime);
 
-	IsMoving = IsMovingCheck();
-	CanFallCheck();
-	CanFixPos = CanFixPosCheck();
+    BoxLocation = GetActorLocation(); //박스의 위치값, FVector형태로 들어감
+    BoxRotation = GetActorRotation(); //박스의 회전값, FRotator형태로 들어감
 
-	DoGrabbingRotate(isGrabbed);
+    IsMoving = IsMovingCheck();
+    CanFallCheck();
+    DoGrabbingRotate(isGrabbed);
+
+    CanFixPos = CanFixPosCheck();
 }
 
 // Called to bind functionality to input
@@ -157,6 +164,29 @@ void AGravityBox::DoGrabbingRotate(bool when)
     {
         FRotator RotationValue(0.f, 0.05f, 0.05f);
         StaticMeshComponent->AddWorldRotation(RotationValue);
+    }
+}
+
+void AGravityBox::SendGravityBoxMovePacket()
+{
+    if (!CanFixPos) {
+        CS_GRAVITYBOX_UPDATE_PACKET packet;
+        packet.type = CS_GRAVITYBOX_UPDATE;
+        packet.size = sizeof CS_GRAVITYBOX_UPDATE_PACKET;
+        packet.boxid = BoxId;
+        packet.location.x = BoxLocation.X;
+        packet.location.y = BoxLocation.Y;
+        packet.location.z = BoxLocation.Z;
+        packet.rotation.x = BoxRotation.Yaw;
+        packet.rotation.y = BoxRotation.Pitch;
+        packet.rotation.z = BoxRotation.Roll;
+        packet.velocity.x = GetVelocity().X;
+        packet.velocity.y = GetVelocity().Y;
+        packet.velocity.z = GetVelocity().Z;
+
+        int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
+
+        UE_LOG(LogTemp, Warning, TEXT("Send GravityBox Update Packet"));
     }
 }
 

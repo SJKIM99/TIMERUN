@@ -228,7 +228,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		}
 	}
 						  break;
-  /*  case SC_GRAVITYBOX_UPDATE: {
+    case SC_GRAVITYBOX_UPDATE: {
         SC_GRAVITYBOX_UPDATE_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_UPDATE_PACKET*>(packet);
 
         UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
@@ -243,12 +243,18 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         GravityBoxRotation.Pitch = p->rotation.y;
         GravityBoxRotation.Roll = p->rotation.z;
 
+        FVector GravityBoxVelocity;
+        GravityBoxVelocity.X = p->velocity.x;
+        GravityBoxVelocity.Y = p->velocity.y;
+        GravityBoxVelocity.Z = p->velocity.z;
+
         AGravityBox* OtherGravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
 
         OtherGravityBox->SetActorLocation(GravityBoxLocation);
         OtherGravityBox->SetActorRotation(GravityBoxRotation);
+        OtherGravityBox->AddMovementInput(GravityBoxVelocity);
     }
-                             break;*/
+                             break;
     }
 }
 
@@ -327,6 +333,11 @@ void UTIMERUNGameInstance::UpdateNewGravityBox(FVector location, FRotator rotati
     UWorld* const world = GetWorld();
     AGravityBox* SpawnGravityBox = world->SpawnActor<AGravityBox>(location, rotation);
     SpawnGravityBox->BoxId = box_id;
+    SpawnGravityBox->CompleteOtherGravityBoxSpawn = true;
+
+    //UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
+    //AGravityBox* otherGravityBox = Cast<AGravityBox>(spawnedGravityBox[box_id]);
+    //GetWorld()->GetTimerManager().SetTimer(SendGravityBoxInfoHandle, otherGravityBox, &AGravityBox::SendGravityBoxMovePacket, 0.032f, true);
 }
 
 void UTIMERUNGameInstance::InitLoginSocket()

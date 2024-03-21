@@ -70,6 +70,7 @@ public:
 public:
 	TArray<AActor*> spawnedCharacters;	//플레이어 동기화 배열 
 	FTimerHandle SendPlayerInfoHandle;	// 동기화 타이머 핸들러
+	AGravityBox* gravitybox;
 	TArray<AActor*> spawnedGravityBox;
 	void UpdateNewGravityBox(FVector location, FRotator rotation, int box_id);
 public:

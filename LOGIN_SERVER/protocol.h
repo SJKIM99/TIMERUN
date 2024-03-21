@@ -2,13 +2,13 @@
 
 #define	BUF_SIZE		2048
 #define MAX_CLIENTS		100
-#define LOGIN_SERVERIP "25.52.149.86"
-
-#define INGAME_SERVERIP "25.58.12.4"
-
-//#define LOGIN_SERVERIP "127.0.0.1"
+//#define LOGIN_SERVERIP "25.52.149.86"
 //
-//#define INGAME_SERVERIP "127.0.0.1"
+//#define INGAME_SERVERIP "25.58.12.4"
+
+#define LOGIN_SERVERIP "127.0.0.1"
+
+#define INGAME_SERVERIP "127.0.0.1"
 
 enum COMP_TYPE {
 	OP_ACCEPT,
@@ -122,10 +122,10 @@ struct CS_GRAVITYBOX_ADD_PACKET {
 struct CS_GRAVITYBOX_UPDATE_PACKET {
 	unsigned char size;
 	char type;
-	int id;
 	int boxid;
 	vector_d3 location;
 	vector_d3 rotation;
+	vector_d3 velocity;
 };
 //S2C
 struct SC_SIGNUP_PACKET {
@@ -198,5 +198,6 @@ struct SC_GRAVITYBOX_UPDATE_PACKET {
 	int boxid;
 	vector_d3 location;
 	vector_d3 rotation;
+	vector_d3 velocity;
 };
 #pragma pack(pop)
