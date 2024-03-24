@@ -254,7 +254,6 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
             OtherGravityBox->SetActorLocation(GravityBoxLocation);
             OtherGravityBox->SetActorRotation(GravityBoxRotation);
             OtherGravityBox->AddMovementInput(GravityBoxVelocity);
-            UE_LOG(LogTemp, Warning, TEXT("lasda"));
         }
     }
                              break;
