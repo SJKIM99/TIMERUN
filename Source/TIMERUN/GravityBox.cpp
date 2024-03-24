@@ -81,6 +81,8 @@ void AGravityBox::Tick(float DeltaTime)
     DoGrabbingRotate(isGrabbed);
 
     CanFixPos = CanFixPosCheck();
+
+    OtherGrappedCheck();
 }
 
 // Called to bind functionality to input
@@ -143,6 +145,7 @@ void AGravityBox::CanFallCheck()
 
 bool AGravityBox::CanFixPosCheck()
 {
+
     if (!IsMoving && !isGrabbed && !CanFall)
     {
         if (StaticMeshComponent)
@@ -167,6 +170,21 @@ void AGravityBox::DoGrabbingRotate(bool when)
     {
         FRotator RotationValue(0.f, 0.05f, 0.05f);
         StaticMeshComponent->AddWorldRotation(RotationValue);
+    }
+}
+
+void AGravityBox::OtherGrappedCheck()
+{   
+    if (ByWho != nullptr) {
+        ATIMERUNCharacter* GrabbCharacter = Cast<ATIMERUNCharacter>(ByWho);
+        if (GrabbCharacter->id != instance->my_id)
+        {
+            if (StaticMeshComponent)
+            {
+                StaticMeshComponent->SetSimulatePhysics(false);
+            }
+        }
+
     }
 }
 
