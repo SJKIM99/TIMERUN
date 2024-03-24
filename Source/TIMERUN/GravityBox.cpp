@@ -43,6 +43,7 @@ AGravityBox::AGravityBox()
 
     isGrabbed = false;
     CanFixPos = false;
+    ByWho = nullptr;
 
 	//기본 스테틱 메쉬 설정
 	StaticMeshComponent->SetHiddenInGame(true, true);
@@ -62,7 +63,7 @@ void AGravityBox::BeginPlay()
     instance = Cast<UTIMERUNGameInstance>(GetWorld()->GetGameInstance());
     instance->GetSocketMgr()->GetIngameSocket();
 
-    GetWorld()->GetTimerManager().SetTimer(SendGravityBoxInfoHandle, this, &AGravityBox::SendGravityBoxMovePacket, 0.032f, true);
+    GetWorld()->GetTimerManager().SetTimer(SendGravityBoxInfoHandle, this, &AGravityBox::SendGravityBoxMovePacket, 0.016f, true);
 }
 
 // Called every frame
@@ -169,24 +170,26 @@ void AGravityBox::DoGrabbingRotate(bool when)
 
 void AGravityBox::SendGravityBoxMovePacket()
 {
-    if (!CanFixPos) {
-        CS_GRAVITYBOX_UPDATE_PACKET packet;
-        packet.type = CS_GRAVITYBOX_UPDATE;
-        packet.size = sizeof CS_GRAVITYBOX_UPDATE_PACKET;
-        packet.boxid = BoxId;
-        packet.location.x = BoxLocation.X;
-        packet.location.y = BoxLocation.Y;
-        packet.location.z = BoxLocation.Z;
-        packet.rotation.x = BoxRotation.Yaw;
-        packet.rotation.y = BoxRotation.Pitch;
-        packet.rotation.z = BoxRotation.Roll;
-        packet.velocity.x = GetVelocity().X;
-        packet.velocity.y = GetVelocity().Y;
-        packet.velocity.z = GetVelocity().Z;
+    ATIMERUNCharacter* GrabbCharacter = Cast<ATIMERUNCharacter>(ByWho);
 
-        int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
+    if (GrabbCharacter->id == instance->my_id) {
+        if (!CanFixPos) {
+            CS_GRAVITYBOX_UPDATE_PACKET packet;
+            packet.type = CS_GRAVITYBOX_UPDATE;
+            packet.size = sizeof CS_GRAVITYBOX_UPDATE_PACKET;
+            packet.boxid = BoxId;
+            packet.location.x = BoxLocation.X;
+            packet.location.y = BoxLocation.Y;
+            packet.location.z = BoxLocation.Z;
+            packet.rotation.x = BoxRotation.Yaw;
+            packet.rotation.y = BoxRotation.Pitch;
+            packet.rotation.z = BoxRotation.Roll;
+            packet.velocity.x = GetVelocity().X;
+            packet.velocity.y = GetVelocity().Y;
+            packet.velocity.z = GetVelocity().Z;
 
-        UE_LOG(LogTemp, Warning, TEXT("Send GravityBox Update Packet"));
+            int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
+        }
     }
 }
 

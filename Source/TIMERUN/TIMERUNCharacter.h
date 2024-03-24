@@ -61,8 +61,6 @@ public:
 	bool IsGrabbingObject;
 
 
-
-
 public:
 	int id;
 	char nickname[NAME_SIZE];

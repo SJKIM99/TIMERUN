@@ -70,6 +70,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) // 에디터, 블루프린트 안에서 수정 가능
 	bool CanFixPos;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) // 에디터, 블루프린트 안에서 수정 가능
+	AActor* ByWho;
+
+
 	FVector BoxLocation;
 	FRotator BoxRotation;
 	int BoxId;
@@ -77,5 +81,4 @@ public:
 	UTIMERUNGameInstance* instance;
 	FTimerHandle SendGravityBoxInfoHandle;	// 동기화 타이머 핸들러
 	void SendGravityBoxMovePacket();
-	bool CompleteOtherGravityBoxSpawn = false;
 };

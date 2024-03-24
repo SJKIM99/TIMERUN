@@ -228,31 +228,34 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		}
 	}
 						  break;
-    case SC_GRAVITYBOX_UPDATE: {
+    case SC_GRAVITYBOX_UPDATE: {        
         SC_GRAVITYBOX_UPDATE_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_UPDATE_PACKET*>(packet);
 
-        UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
+        if (p->id != my_id) {
+            UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
 
-        FVector GravityBoxLocation;
-        GravityBoxLocation.X = p->location.x;
-        GravityBoxLocation.Y = p->location.y;
-        GravityBoxLocation.Z = p->location.z;
+            FVector GravityBoxLocation;
+            GravityBoxLocation.X = p->location.x;
+            GravityBoxLocation.Y = p->location.y;
+            GravityBoxLocation.Z = p->location.z;
 
-        FRotator GravityBoxRotation;
-        GravityBoxRotation.Yaw = p->rotation.x;
-        GravityBoxRotation.Pitch = p->rotation.y;
-        GravityBoxRotation.Roll = p->rotation.z;
+            FRotator GravityBoxRotation;
+            GravityBoxRotation.Yaw = p->rotation.x;
+            GravityBoxRotation.Pitch = p->rotation.y;
+            GravityBoxRotation.Roll = p->rotation.z;
 
-        FVector GravityBoxVelocity;
-        GravityBoxVelocity.X = p->velocity.x;
-        GravityBoxVelocity.Y = p->velocity.y;
-        GravityBoxVelocity.Z = p->velocity.z;
+            FVector GravityBoxVelocity;
+            GravityBoxVelocity.X = p->velocity.x;
+            GravityBoxVelocity.Y = p->velocity.y;
+            GravityBoxVelocity.Z = p->velocity.z;
 
-        AGravityBox* OtherGravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
+            AGravityBox* OtherGravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
 
-        OtherGravityBox->SetActorLocation(GravityBoxLocation);
-        OtherGravityBox->SetActorRotation(GravityBoxRotation);
-        OtherGravityBox->AddMovementInput(GravityBoxVelocity);
+            OtherGravityBox->SetActorLocation(GravityBoxLocation);
+            OtherGravityBox->SetActorRotation(GravityBoxRotation);
+            OtherGravityBox->AddMovementInput(GravityBoxVelocity);
+            UE_LOG(LogTemp, Warning, TEXT("lasda"));
+        }
     }
                              break;
     }
@@ -333,11 +336,6 @@ void UTIMERUNGameInstance::UpdateNewGravityBox(FVector location, FRotator rotati
     UWorld* const world = GetWorld();
     AGravityBox* SpawnGravityBox = world->SpawnActor<AGravityBox>(location, rotation);
     SpawnGravityBox->BoxId = box_id;
-    SpawnGravityBox->CompleteOtherGravityBoxSpawn = true;
-
-    //UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
-    //AGravityBox* otherGravityBox = Cast<AGravityBox>(spawnedGravityBox[box_id]);
-    //GetWorld()->GetTimerManager().SetTimer(SendGravityBoxInfoHandle, otherGravityBox, &AGravityBox::SendGravityBoxMovePacket, 0.032f, true);
 }
 
 void UTIMERUNGameInstance::InitLoginSocket()

@@ -39,8 +39,4 @@ void ATIMERUNController::Tick(float DeltaTime)
 		instance->RecvPacketFromLoginServer();
 	else
 		instance->RecvPacketFromIngameServer();
-
-	/*if (instance->CheckGravityBoxSpawn()) {
-		instance->SpawnGravityBox();
-	}*/
 }

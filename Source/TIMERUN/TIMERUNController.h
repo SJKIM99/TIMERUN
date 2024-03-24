@@ -36,9 +36,9 @@ class TIMERUN_API ATIMERUNController : public APlayerController
 	~ATIMERUNController();
 protected:
 	virtual void BeginPlay() override;
-private:
-	int my_id;
-	int other_id;
+//private:
+//	int my_id;
+//	int other_id;
 public:
 	virtual void Tick(float DeltaTime) override;
 	UTIMERUNGameInstance* instance;
