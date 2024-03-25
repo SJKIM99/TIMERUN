@@ -29,7 +29,9 @@ enum S_STATE { ST_FREE, ST_ALLOC, ST_INGAME };
 enum GravityBox_STATE { ST_NULL, ST_OCCUPY };
 
 struct GravityBox {
+	int ByWhoId;
 	int BoxId;
+	bool isGrabbed;
 	GravityBox_STATE gravitybox_state;
 	vector_d3 locaton;
 	vector_d3 rotation;

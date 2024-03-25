@@ -122,7 +122,9 @@ struct CS_GRAVITYBOX_ADD_PACKET {
 struct CS_GRAVITYBOX_UPDATE_PACKET {
 	unsigned char size;
 	char type;
+	int bywhoid;
 	int boxid;
+	bool isgrabbed;
 	vector_d3 location;
 	vector_d3 rotation;
 	vector_d3 velocity;
@@ -196,6 +198,7 @@ struct SC_GRAVITYBOX_UPDATE_PACKET {
 	char type;
 	int id;
 	int boxid;
+	bool isGrabbed;
 	vector_d3 location;
 	vector_d3 rotation;
 	vector_d3 velocity;

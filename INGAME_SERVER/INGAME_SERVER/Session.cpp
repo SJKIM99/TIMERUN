@@ -84,6 +84,7 @@ void Session::send_gravitybox_update_packet(int c_id, int box_id)
 	packet.size = sizeof SC_GRAVITYBOX_UPDATE_PACKET;
 	packet.id = c_id;
 	packet.boxid = box_id;
+	packet.isGrabbed = gravitybox[box_id].isGrabbed;
 	packet.location.x = gravitybox[box_id].locaton.x;
 	packet.location.y = gravitybox[box_id].locaton.y;
 	packet.location.z = gravitybox[box_id].locaton.z;

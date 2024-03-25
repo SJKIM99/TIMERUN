@@ -185,7 +185,9 @@ void AGravityBox::SendGravityBoxMovePacket()
                 CS_GRAVITYBOX_UPDATE_PACKET packet;
                 packet.type = CS_GRAVITYBOX_UPDATE;
                 packet.size = sizeof CS_GRAVITYBOX_UPDATE_PACKET;
+                packet.bywhoid = ByWhoID;
                 packet.boxid = BoxId;
+                packet.isgrabbed = isGrabbed;
                 packet.location.x = BoxLocation.X;
                 packet.location.y = BoxLocation.Y;
                 packet.location.z = BoxLocation.Z;

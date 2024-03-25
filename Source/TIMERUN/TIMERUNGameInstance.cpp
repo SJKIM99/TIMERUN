@@ -231,7 +231,6 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
     case SC_GRAVITYBOX_UPDATE: {        
         SC_GRAVITYBOX_UPDATE_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_UPDATE_PACKET*>(packet);
 
-     
         UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
 
         FVector GravityBoxLocation;
@@ -249,12 +248,14 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         GravityBoxVelocity.Y = p->velocity.y;
         GravityBoxVelocity.Z = p->velocity.z;
 
-        AGravityBox* OtherGravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
+		AGravityBox* OtherGravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
 
-        OtherGravityBox->AddMovementInput(GravityBoxVelocity);
-        OtherGravityBox->SetActorRotation(GravityBoxRotation);
-        OtherGravityBox->SetActorLocation(GravityBoxLocation);
-        
+		OtherGravityBox->ByWhoID = p->id;
+		OtherGravityBox->isGrabbed = p->isGrabbed;
+		OtherGravityBox->AddMovementInput(GravityBoxVelocity);
+		OtherGravityBox->SetActorRotation(GravityBoxRotation);
+		OtherGravityBox->SetActorLocation(GravityBoxLocation);
+
     }
                              break;
     }
