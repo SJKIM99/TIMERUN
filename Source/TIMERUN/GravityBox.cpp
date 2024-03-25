@@ -193,24 +193,34 @@ void AGravityBox::OtherGrappedCheck()
 
 void AGravityBox::SendGravityBoxMovePacket()
 {
-	if (!CanFixPos) {
-		CS_GRAVITYBOX_UPDATE_PACKET packet;
-		packet.type = CS_GRAVITYBOX_UPDATE;
-		packet.size = sizeof CS_GRAVITYBOX_UPDATE_PACKET;
-		packet.boxid = BoxId;
-		packet.location.x = BoxLocation.X;
-		packet.location.y = BoxLocation.Y;
-		packet.location.z = BoxLocation.Z;
-		packet.rotation.x = BoxRotation.Yaw;
-		packet.rotation.y = BoxRotation.Pitch;
-		packet.rotation.z = BoxRotation.Roll;
-		packet.velocity.x = GetVelocity().X;
-		packet.velocity.y = GetVelocity().Y;
-		packet.velocity.z = GetVelocity().Z;
+    if (ByWho != nullptr) {
+        ATIMERUNCharacter* GrabbCharacter = Cast<ATIMERUNCharacter>(ByWho);
+        if (GrabbCharacter->id == instance->my_id) {
+            if (!CanFixPos) {
+                CS_GRAVITYBOX_UPDATE_PACKET packet;
+                packet.type = CS_GRAVITYBOX_UPDATE;
+                packet.size = sizeof CS_GRAVITYBOX_UPDATE_PACKET;
+                packet.boxid = BoxId;
+                packet.location.x = BoxLocation.X;
+                packet.location.y = BoxLocation.Y;
+                packet.location.z = BoxLocation.Z;
+                packet.rotation.x = BoxRotation.Yaw;
+                packet.rotation.y = BoxRotation.Pitch;
+                packet.rotation.z = BoxRotation.Roll;
+                packet.velocity.x = GetVelocity().X;
+                packet.velocity.y = GetVelocity().Y;
+                packet.velocity.z = GetVelocity().Z;
 
-		//UE_LOG(LogTemp, Warning, TEXT("my id : %d"), instance->my_id);
-		int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
-	}
+                UE_LOG(LogTemp, Warning, TEXT("my id : %d"), instance->my_id);
+                int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
+            }
+        }
+        else {
+            StaticMeshComponent->SetSimulatePhysics(false);
+            UE_LOG(LogTemp, Warning, TEXT("sexsex"));
+        }
+        UE_LOG(LogTemp, Warning, TEXT("Grabbrd id : %d"), GrabbCharacter->id);
+    }
 }
 
 
