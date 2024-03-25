@@ -62,6 +62,7 @@ public:
 
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int id;
 	char nickname[NAME_SIZE];
 };

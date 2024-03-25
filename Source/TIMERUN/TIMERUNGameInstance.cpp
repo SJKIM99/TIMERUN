@@ -231,30 +231,30 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
     case SC_GRAVITYBOX_UPDATE: {        
         SC_GRAVITYBOX_UPDATE_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_UPDATE_PACKET*>(packet);
 
-        if (p->id != my_id) {
-            UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
+     
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
 
-            FVector GravityBoxLocation;
-            GravityBoxLocation.X = p->location.x;
-            GravityBoxLocation.Y = p->location.y;
-            GravityBoxLocation.Z = p->location.z;
+        FVector GravityBoxLocation;
+        GravityBoxLocation.X = p->location.x;
+        GravityBoxLocation.Y = p->location.y;
+        GravityBoxLocation.Z = p->location.z;
 
-            FRotator GravityBoxRotation;
-            GravityBoxRotation.Yaw = p->rotation.x;
-            GravityBoxRotation.Pitch = p->rotation.y;
-            GravityBoxRotation.Roll = p->rotation.z;
+        FRotator GravityBoxRotation;
+        GravityBoxRotation.Yaw = p->rotation.x;
+        GravityBoxRotation.Pitch = p->rotation.y;
+        GravityBoxRotation.Roll = p->rotation.z;
 
-            FVector GravityBoxVelocity;
-            GravityBoxVelocity.X = p->velocity.x;
-            GravityBoxVelocity.Y = p->velocity.y;
-            GravityBoxVelocity.Z = p->velocity.z;
+        FVector GravityBoxVelocity;
+        GravityBoxVelocity.X = p->velocity.x;
+        GravityBoxVelocity.Y = p->velocity.y;
+        GravityBoxVelocity.Z = p->velocity.z;
 
-            AGravityBox* OtherGravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
+        AGravityBox* OtherGravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
 
-            OtherGravityBox->SetActorLocation(GravityBoxLocation);
-            OtherGravityBox->SetActorRotation(GravityBoxRotation);
-            OtherGravityBox->AddMovementInput(GravityBoxVelocity);
-        }
+        OtherGravityBox->AddMovementInput(GravityBoxVelocity);
+        OtherGravityBox->SetActorRotation(GravityBoxRotation);
+        OtherGravityBox->SetActorLocation(GravityBoxLocation);
+        
     }
                              break;
     }

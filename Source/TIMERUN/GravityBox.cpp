@@ -58,7 +58,6 @@ void AGravityBox::BeginPlay()
 {
 	Super::BeginPlay();
 
-    ByWho = nullptr;
 
     StaticMeshComponent = FindComponentByClass<UStaticMeshComponent>();
 
@@ -176,26 +175,12 @@ void AGravityBox::DoGrabbingRotate(bool when)
     }
 }
 
-void AGravityBox::OtherGrappedCheck()
-{   
-    if (ByWho != nullptr) {
-        ATIMERUNCharacter* GrabbCharacter = Cast<ATIMERUNCharacter>(ByWho);
-        if (GrabbCharacter->id != instance->my_id)
-        {
-            if (StaticMeshComponent)
-            {
-                StaticMeshComponent->SetSimulatePhysics(false);
-            }
-        }
 
-    }
-}
 
 void AGravityBox::SendGravityBoxMovePacket()
 {
-    if (ByWho != nullptr) {
-        ATIMERUNCharacter* GrabbCharacter = Cast<ATIMERUNCharacter>(ByWho);
-        if (GrabbCharacter->id == instance->my_id) {
+    if (ByWhoID != NULL) {
+        if (ByWhoID == instance->my_id) {
             if (!CanFixPos) {
                 CS_GRAVITYBOX_UPDATE_PACKET packet;
                 packet.type = CS_GRAVITYBOX_UPDATE;
@@ -212,6 +197,7 @@ void AGravityBox::SendGravityBoxMovePacket()
                 packet.velocity.z = GetVelocity().Z;
 
                 UE_LOG(LogTemp, Warning, TEXT("my id : %d"), instance->my_id);
+                UE_LOG(LogTemp, Warning, TEXT("Grabbrd id : %d"), ByWhoID);
                 int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
             }
         }
@@ -219,7 +205,6 @@ void AGravityBox::SendGravityBoxMovePacket()
             StaticMeshComponent->SetSimulatePhysics(false);
             UE_LOG(LogTemp, Warning, TEXT("sexsex"));
         }
-        UE_LOG(LogTemp, Warning, TEXT("Grabbrd id : %d"), GrabbCharacter->id);
     }
 }
 
