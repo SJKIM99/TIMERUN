@@ -280,8 +280,6 @@ void UTIMERUNGameInstance::SendPlayerupdatePakcet()
     packet.yaw = MyPlayerCharacter->GetActorRotation().Yaw;
     packet.HaveGravityGun = MyPlayerCharacter->HaveGravityGun;
 
-    //UE_LOG(LogTemp, Warning, TEXT("location x y z %f %f %f"), packet.location.x, packet.location.y, packet.location.z);
-
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 

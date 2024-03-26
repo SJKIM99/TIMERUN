@@ -179,35 +179,27 @@ void AGravityBox::DoGrabbingRotate(bool when)
 
 void AGravityBox::SendGravityBoxMovePacket()
 {
-    if (ByWhoID != NULL) {
-        if (ByWhoID == instance->my_id) {
-            if (!CanFixPos) {
-                CS_GRAVITYBOX_UPDATE_PACKET packet;
-                packet.type = CS_GRAVITYBOX_UPDATE;
-                packet.size = sizeof CS_GRAVITYBOX_UPDATE_PACKET;
-                packet.bywhoid = ByWhoID;
-                packet.boxid = BoxId;
-                packet.isgrabbed = isGrabbed;
-                packet.location.x = BoxLocation.X;
-                packet.location.y = BoxLocation.Y;
-                packet.location.z = BoxLocation.Z;
-                packet.rotation.x = BoxRotation.Yaw;
-                packet.rotation.y = BoxRotation.Pitch;
-                packet.rotation.z = BoxRotation.Roll;
-                packet.velocity.x = GetVelocity().X;
-                packet.velocity.y = GetVelocity().Y;
-                packet.velocity.z = GetVelocity().Z;
+	if (ByWhoID == instance->my_id) {
+		if (!CanFixPos) {
+			CS_GRAVITYBOX_UPDATE_PACKET packet;
+			packet.type = CS_GRAVITYBOX_UPDATE;
+			packet.size = sizeof CS_GRAVITYBOX_UPDATE_PACKET;
+			packet.bywhoid = ByWhoID;
+			packet.boxid = BoxId;
+			packet.isgrabbed = isGrabbed;
+			packet.location.x = BoxLocation.X;
+			packet.location.y = BoxLocation.Y;
+			packet.location.z = BoxLocation.Z;
+			packet.rotation.x = BoxRotation.Yaw;
+			packet.rotation.y = BoxRotation.Pitch;
+			packet.rotation.z = BoxRotation.Roll;
+			packet.velocity.x = GetVelocity().X;
+			packet.velocity.y = GetVelocity().Y;
+			packet.velocity.z = GetVelocity().Z;
 
-                UE_LOG(LogTemp, Warning, TEXT("my id : %d"), instance->my_id);
-                UE_LOG(LogTemp, Warning, TEXT("Grabbrd id : %d"), ByWhoID);
-                int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
-            }
-        }
-        else {
-            StaticMeshComponent->SetSimulatePhysics(false);
-            UE_LOG(LogTemp, Warning, TEXT("sexsex"));
-        }
-    }
+			int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
+		}
+	}
 }
 
 
