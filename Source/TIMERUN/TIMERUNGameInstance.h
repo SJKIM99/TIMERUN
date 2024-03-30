@@ -85,4 +85,5 @@ public:
 	}
 	void InitLoginSocket();
 	void InitIngameSocket();
+	int n = 0;
 };
