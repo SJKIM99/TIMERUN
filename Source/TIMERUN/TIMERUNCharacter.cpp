@@ -69,7 +69,6 @@ ATIMERUNCharacter::ATIMERUNCharacter()
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	GetCharacterMovement()->BrakingFrictionFactor = 0.01;
 	GetCharacterMovement()->JumpZVelocity = 500.f;
-	
 }
 
 // Called when the game starts or when spawned

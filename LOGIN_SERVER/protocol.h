@@ -19,12 +19,12 @@ enum COMP_TYPE {
 enum direction { forward, back, left, right };
 
 struct vector_d3 {
-	double x;
-	double y;
-	double z;
-	
+	float x;
+	float y;
+	float z;
+
 	vector_d3() : x(-1.f), y(-1.f), z(-1.f) {}
-	vector_d3(double x, double y, double z) {
+	vector_d3(float x, float y, float z) {
 		this->x = x;
 		this->y = y;
 		this->z = z;

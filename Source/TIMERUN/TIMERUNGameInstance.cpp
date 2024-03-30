@@ -148,7 +148,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         MyPlayerCharacter->SetActorLocation(characterLocation);
         MyPlayerCharacter->SetActorRotation(characterRotation);
 
-        GetWorld()->GetTimerManager().SetTimer(SendPlayerInfoHandle, this, &UTIMERUNGameInstance::SendPlayerupdatePakcet, 0.032f, true);
+        GetWorld()->GetTimerManager().SetTimer(SendPlayerInfoHandle, this, &UTIMERUNGameInstance::SendPlayerupdatePakcet, 0.2f, true);
     }
                           break;
 
@@ -189,7 +189,8 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         CharacterRotation.Pitch = 0;
         CharacterRotation.Roll = 0;
 
-        ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
+        UpdatePosition(CharacterLocation, CharacterRotation, CharacterVelocity, p->id);
+        /*ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
         UCharacterMovementComponent* CharacterMovement = OtherPlayer->GetCharacterMovement();
         FVector NewVelocity = FVector(p->velocity.x, p->velocity.y, OtherPlayer->GetVelocity().Z);
         CharacterMovement->Velocity = NewVelocity;
@@ -198,7 +199,8 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         OtherPlayer->SetActorLocation(CharacterLocation);
         OtherPlayer->SetActorRotation(CharacterRotation);
 
-        OtherPlayer->HaveGravityGun = p->HaveGravityGun;
+        OtherPlayer->HaveGravityGun = p->HaveGravityGun;*/
+
 
         //UE_LOG(LogTemp, Warning, TEXT("%f"), vec_size);
     }
@@ -251,10 +253,10 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		AGravityBox* OtherGravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
 
 		OtherGravityBox->ByWhoID = p->id;
-		OtherGravityBox->isGrabbed = p->isGrabbed;
 		OtherGravityBox->AddMovementInput(GravityBoxVelocity);
 		OtherGravityBox->SetActorRotation(GravityBoxRotation);
 		OtherGravityBox->SetActorLocation(GravityBoxLocation);
+		OtherGravityBox->isGrabbed = p->isGrabbed;
 
     }
                              break;
@@ -334,6 +336,41 @@ void UTIMERUNGameInstance::UpdateNewGravityBox(FVector location, FRotator rotati
     UWorld* const world = GetWorld();
     AGravityBox* SpawnGravityBox = world->SpawnActor<AGravityBox>(location, rotation);
     SpawnGravityBox->BoxId = box_id;
+}
+
+
+void UTIMERUNGameInstance::UpdatePosition(FVector new_location, FRotator new_rotation, FVector new_velocity, int player_id)
+{
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
+    SortPlayerIndex();
+
+    ATIMERUNCharacter* RecvUpdatePacketPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[player_id]);
+
+    RecvUpdatePacketPlayer->prev_location = RecvUpdatePacketPlayer->current_location;
+    RecvUpdatePacketPlayer->prev_rotation = RecvUpdatePacketPlayer->current_rotation;
+    RecvUpdatePacketPlayer->prev_velocity = RecvUpdatePacketPlayer->current_velocity;
+    
+    RecvUpdatePacketPlayer->current_location = new_location;
+    RecvUpdatePacketPlayer->current_rotation = new_rotation;
+    RecvUpdatePacketPlayer->current_velocity = new_velocity;
+
+    FTimerDelegate TimerCallback;
+    TimerCallback.BindLambda([=, this]() {
+        InterpolatePosition(RecvUpdatePacketPlayer);
+    });
+
+    GetWorld()->GetTimerManager().SetTimer(MoveTimerHandle, TimerCallback, 0.016f, true);
+}
+
+void UTIMERUNGameInstance::InterpolatePosition(ATIMERUNCharacter* UpdatePlayer)
+{
+    float Distance = FVector::Dist(UpdatePlayer->prev_location, UpdatePlayer->current_location);
+    float DesiredTimeToReachTarget = 0.2f;
+    float InterpSpeed = Distance / DesiredTimeToReachTarget;
+
+    FVector NewLocation = FMath::VInterpTo(UpdatePlayer->prev_location, UpdatePlayer->current_location, 0.016, InterpSpeed);
+
+    UpdatePlayer->SetActorLocation(NewLocation);
 }
 
 void UTIMERUNGameInstance::InitLoginSocket()

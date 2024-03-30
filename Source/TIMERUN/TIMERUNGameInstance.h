@@ -73,6 +73,12 @@ public:
 	AGravityBox* gravitybox;
 	TArray<AActor*> spawnedGravityBox;
 	void UpdateNewGravityBox(FVector location, FRotator rotation, int box_id);
+
+public:
+	//보간 코드 여기에 추가
+	void UpdatePosition(FVector new_location, FRotator new_rotation, FVector new_velocity, int player_id);
+	void InterpolatePosition(ATIMERUNCharacter* UpdatePlayer);
+	FTimerHandle MoveTimerHandle;	// 동기화 타이머 핸들러
 public:
 	SocketMgr* GetSocketMgr() {
 		return &socketmgr;
