@@ -148,7 +148,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         MyPlayerCharacter->SetActorLocation(characterLocation);
         MyPlayerCharacter->SetActorRotation(characterRotation);
 
-        GetWorld()->GetTimerManager().SetTimer(SendPlayerInfoHandle, this, &UTIMERUNGameInstance::SendPlayerupdatePakcet, 0.2f, true);
+        GetWorld()->GetTimerManager().SetTimer(SendPlayerInfoHandle, this, &UTIMERUNGameInstance::SendPlayerupdatePakcet, 0.1f, true);
     }
                           break;
 
@@ -190,10 +190,10 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         CharacterRotation.Roll = 0;
 
         ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
-        UCharacterMovementComponent* CharacterMovement = OtherPlayer->GetCharacterMovement();
-        FVector NewVelocity = FVector(p->velocity.x, p->velocity.y, OtherPlayer->GetVelocity().Z);
-        CharacterMovement->Velocity = NewVelocity;
-        OtherPlayer->AddMovementInput(CharacterVelocity);
+        //UCharacterMovementComponent* CharacterMovement = OtherPlayer->GetCharacterMovement();
+       /* FVector NewVelocity = FVector(p->velocity.x, p->velocity.y, OtherPlayer->GetVelocity().Z);
+        CharacterMovement->Velocity = NewVelocity;*/
+       // OtherPlayer->AddMovementInput(CharacterVelocity);
 
         UpdatePosition(CharacterLocation, CharacterRotation, CharacterVelocity, p->id);
         //OtherPlayer->SetActorLocation(CharacterLocation);
@@ -371,11 +371,11 @@ void UTIMERUNGameInstance::InterpolatePosition(ATIMERUNCharacter* UpdatePlayer)
 
     FVector NewLocation = FMath::VInterpTo(UpdatePlayer->GetActorLocation(), UpdatePlayer->current_location, 0.016, InterpSpeed);
     FRotator NewRotation = FMath::RInterpTo(UpdatePlayer->GetActorRotation(), UpdatePlayer->current_rotation, 0.016, InterpSpeed);
-    //FVector NewVelocity = FMath::VInterpTo(UpdatePlayer->GetVelocity(), UpdatePlayer->current_velocity, 0.016, InterpSpeed);
+    FVector NewVelocity = FMath::VInterpTo(UpdatePlayer->GetVelocity(), UpdatePlayer->current_velocity, 0.016, InterpSpeed * 10);
 
-    //UCharacterMovementComponent* CharacterMovement = UpdatePlayer->GetCharacterMovement();
-    //CharacterMovement->Velocity = NewVelocity;
-    //UpdatePlayer->AddMovementInput(NewVelocity);
+    UCharacterMovementComponent* CharacterMovement = UpdatePlayer->GetCharacterMovement();
+    CharacterMovement->Velocity = NewVelocity;
+    UpdatePlayer->AddMovementInput(NewVelocity);
     UpdatePlayer->SetActorLocation(NewLocation);
     UpdatePlayer->SetActorRotation(NewRotation);
 }
