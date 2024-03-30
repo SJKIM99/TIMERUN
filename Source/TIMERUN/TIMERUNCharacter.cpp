@@ -91,6 +91,7 @@ void ATIMERUNCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	UpdateGravityGunVisibility();
+	DoJump();
 }
 
 // Called to bind functionality to input
@@ -108,6 +109,16 @@ void ATIMERUNCharacter::UpdateGravityGunVisibility()
 	if (GravityGunMesh) {
 		GravityGunMesh->SetHiddenInGame(!HaveGravityGun);
 	}
+}
+
+void ATIMERUNCharacter::DoJump()
+{
+	if (IsJump)
+	{
+		Jump();
+	}
+	
+	IsJump = false;
 }
 
 

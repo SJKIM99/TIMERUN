@@ -30,6 +30,8 @@ public:
 
 	void UpdateGravityGunVisibility();
 
+	void DoJump();
+	
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
@@ -40,6 +42,9 @@ public:
 
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IsJump;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float WalkSpeed;
 

@@ -368,10 +368,11 @@ void UTIMERUNGameInstance::InterpolatePosition(ATIMERUNCharacter* UpdatePlayer)
    // float DesiredTimeToReachTarget = 0.2f;
     //loat InterpSpeed = Distance / DesiredTimeToReachTarget;
     float InterpSpeed = 2.5f;
+    float DeltaSeconds = GetWorld()->GetDeltaSeconds();
 
-    FVector NewLocation = FMath::VInterpTo(UpdatePlayer->GetActorLocation(), UpdatePlayer->current_location, 0.016, InterpSpeed);
-    FRotator NewRotation = FMath::RInterpTo(UpdatePlayer->GetActorRotation(), UpdatePlayer->current_rotation, 0.016, InterpSpeed);
-    FVector NewVelocity = FMath::VInterpTo(UpdatePlayer->GetVelocity(), UpdatePlayer->current_velocity, 0.016, InterpSpeed * 10);
+    FVector NewLocation = FMath::VInterpTo(UpdatePlayer->GetActorLocation(), UpdatePlayer->current_location, 0.008, InterpSpeed);
+    FRotator NewRotation = FMath::RInterpTo(UpdatePlayer->GetActorRotation(), UpdatePlayer->current_rotation, 0.008, InterpSpeed);
+    FVector NewVelocity = FMath::VInterpTo(UpdatePlayer->GetVelocity(), UpdatePlayer->current_velocity, 0.008, InterpSpeed * 10);
 
     UCharacterMovementComponent* CharacterMovement = UpdatePlayer->GetCharacterMovement();
     CharacterMovement->Velocity = NewVelocity;
