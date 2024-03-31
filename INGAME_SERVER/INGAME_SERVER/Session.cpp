@@ -97,6 +97,15 @@ void Session::send_gravitybox_update_packet(int c_id, int box_id)
 	SendPacket(&packet);
 }
 
+void Session::send_player_jump_packet(int c_id)
+{
+	SC_PLAYER_JUMP_PACKET packet;
+	packet.type = SC_PLAYER_JUMP;
+	packet.size = sizeof SC_PLAYER_JUMP_PACKET;
+	packet.id = c_id;
+	SendPacket(&packet);
+}
+
 
 void Session::SendPacket(void* packet)
 {

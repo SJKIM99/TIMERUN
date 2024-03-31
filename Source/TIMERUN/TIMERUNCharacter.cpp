@@ -113,12 +113,12 @@ void ATIMERUNCharacter::UpdateGravityGunVisibility()
 
 void ATIMERUNCharacter::DoJump()
 {
-	if (IsJump)
+	/*if (IsJump)
 	{
 		Jump();
 	}
 	
-	IsJump = false;
+	IsJump = false;*/
 }
 
 

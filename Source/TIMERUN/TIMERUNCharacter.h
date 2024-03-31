@@ -42,8 +42,8 @@ public:
 
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsJump;
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IsJump;*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float WalkSpeed;

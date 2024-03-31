@@ -260,6 +260,18 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
     }
                              break;
+    case SC_PLAYER_JUMP: {
+        SC_PLAYER_JUMP_PACKET* p = reinterpret_cast<SC_PLAYER_JUMP_PACKET*>(packet);
+
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
+        SortPlayerIndex();
+
+        ATIMERUNCharacter* JumpPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
+
+        //JumpPlayer->IsJump = true;
+        JumpPlayer->Jump();
+    }
+                       break;
     }
 }
 
@@ -399,5 +411,15 @@ void UTIMERUNGameInstance::InitIngameSocket()
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("Fail the Ingame server connect"));
 	}
+}
+
+void UTIMERUNGameInstance::SendPlayerJumpPacket()
+{
+    CS_PLAYER_JUMP_PACKET packet;
+    packet.size = sizeof CS_PLAYER_JUMP_PACKET;
+    packet.type = CS_PLAYER_JUMP;
+    packet.id = my_id;
+
+    int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 }
 

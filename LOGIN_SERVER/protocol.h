@@ -49,6 +49,7 @@ constexpr char CS_INGAME_LOGIN = 4;
 constexpr char CS_PLAYER_UPDATE= 5;
 constexpr char CS_GRAVITYBOX_ADD= 6;
 constexpr char CS_GRAVITYBOX_UPDATE= 7;
+constexpr char CS_PLAYER_JUMP= 8;
 
 //S2C
 constexpr char SC_LOGIN_SUCCESS = 1;
@@ -61,6 +62,7 @@ constexpr char SC_INGAME_SUCCESS = 7;
 constexpr char SC_WORLD_UPDATE = 8;
 constexpr char SC_GRAVITYBOX_ADD = 9;
 constexpr char SC_GRAVITYBOX_UPDATE = 10;
+constexpr char SC_PLAYER_JUMP = 11;
 
 
 #pragma pack (push, 1)
@@ -128,6 +130,12 @@ struct CS_GRAVITYBOX_UPDATE_PACKET {
 	vector_d3 location;
 	vector_d3 rotation;
 	vector_d3 velocity;
+};
+
+struct CS_PLAYER_JUMP_PACKET {
+	unsigned char size;
+	char type;
+	int id;
 };
 //S2C
 struct SC_SIGNUP_PACKET {
@@ -202,5 +210,11 @@ struct SC_GRAVITYBOX_UPDATE_PACKET {
 	vector_d3 location;
 	vector_d3 rotation;
 	vector_d3 velocity;
+};
+
+struct SC_PLAYER_JUMP_PACKET {
+	unsigned char size;
+	char type;
+	int id;
 };
 #pragma pack(pop)

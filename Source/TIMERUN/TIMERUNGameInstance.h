@@ -85,5 +85,7 @@ public:
 	}
 	void InitLoginSocket();
 	void InitIngameSocket();
-	int n = 0;
+public:
+	UFUNCTION(BlueprintCallable)
+	void SendPlayerJumpPacket();
 };
