@@ -190,10 +190,10 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         CharacterRotation.Roll = 0;
 
         ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
-        //UCharacterMovementComponent* CharacterMovement = OtherPlayer->GetCharacterMovement();
-       /* FVector NewVelocity = FVector(p->velocity.x, p->velocity.y, OtherPlayer->GetVelocity().Z);
-        CharacterMovement->Velocity = NewVelocity;*/
-       // OtherPlayer->AddMovementInput(CharacterVelocity);
+       /* UCharacterMovementComponent* CharacterMovement = OtherPlayer->GetCharacterMovement();
+        FVector NewVelocity = FVector(p->velocity.x, p->velocity.y, OtherPlayer->GetVelocity().Z);
+        CharacterMovement->Velocity = NewVelocity;
+        OtherPlayer->AddMovementInput(CharacterVelocity);*/
 
         UpdatePosition(CharacterLocation, CharacterRotation, CharacterVelocity, p->id);
         //OtherPlayer->SetActorLocation(CharacterLocation);
@@ -371,24 +371,29 @@ void UTIMERUNGameInstance::UpdatePosition(FVector new_location, FRotator new_rot
         InterpolatePosition(RecvUpdatePacketPlayer);
     });
 
-    GetWorld()->GetTimerManager().SetTimer(MoveTimerHandle, TimerCallback, 0.016f, true);
+    GetWorld()->GetTimerManager().SetTimer(MoveTimerHandle, TimerCallback, GetWorld()->GetDeltaSeconds(), true);
 }
 
 void UTIMERUNGameInstance::InterpolatePosition(ATIMERUNCharacter* UpdatePlayer)
 {
-    //float Distance = FVector::Dist(UpdatePlayer->prev_location, UpdatePlayer->current_location);
-   // float DesiredTimeToReachTarget = 0.2f;
-    //loat InterpSpeed = Distance / DesiredTimeToReachTarget;
-    float InterpSpeed = 2.5f;
+    float InterpSpeed = 1000;
+   // float DeltaSeconds = 0.008;
     float DeltaSeconds = GetWorld()->GetDeltaSeconds();
 
-    FVector NewLocation = FMath::VInterpTo(UpdatePlayer->GetActorLocation(), UpdatePlayer->current_location, 0.008, InterpSpeed);
-    FRotator NewRotation = FMath::RInterpTo(UpdatePlayer->GetActorRotation(), UpdatePlayer->current_rotation, 0.008, InterpSpeed);
-    FVector NewVelocity = FMath::VInterpTo(UpdatePlayer->GetVelocity(), UpdatePlayer->current_velocity, 0.008, InterpSpeed * 10);
+    FVector PrevLocation = UpdatePlayer->GetActorLocation();
 
-    UCharacterMovementComponent* CharacterMovement = UpdatePlayer->GetCharacterMovement();
-    CharacterMovement->Velocity = NewVelocity;
-    UpdatePlayer->AddMovementInput(NewVelocity);
+    FVector NewLocation = FMath::VInterpConstantTo(PrevLocation, UpdatePlayer->current_location, DeltaSeconds, InterpSpeed);
+    FRotator NewRotation = FMath::RInterpTo(UpdatePlayer->GetActorRotation(), UpdatePlayer->current_rotation, DeltaSeconds, InterpSpeed * 10);
+
+    FVector DeltaLocation = NewLocation - PrevLocation;
+
+    UE_LOG(LogTemp, Warning, TEXT("%f", DeltaLocation.Size()));
+
+     UCharacterMovementComponent* CharacterMovement = UpdatePlayer->GetCharacterMovement();
+     CharacterMovement->Velocity = DeltaLocation;
+
+
+    //UpdatePlayer->AddMovementInput(DeltaLocation);
     UpdatePlayer->SetActorLocation(NewLocation);
     UpdatePlayer->SetActorRotation(NewRotation);
 }
