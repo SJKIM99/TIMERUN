@@ -92,6 +92,16 @@ void ATIMERUNCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	UpdateGravityGunVisibility();
 	DoJump();
+
+	if (HaveGravityGun)
+	{
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+		GetCharacterMovement()->MaxWalkSpeed = GunWalkSpeed;
+	}
+	else
+	{
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+	}
 }
 
 // Called to bind functionality to input
