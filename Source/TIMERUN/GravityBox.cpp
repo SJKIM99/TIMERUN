@@ -197,6 +197,8 @@ void AGravityBox::SendGravityBoxMovePacket()
 			packet.velocity.y = GetVelocity().Y;
 			packet.velocity.z = GetVelocity().Z;
 
+            UE_LOG(LogTemp, Warning, TEXT("Send GravityBox Update Packet ByWhoID : %d"), ByWhoID);
+            UE_LOG(LogTemp, Warning, TEXT("Send GravityBox Update Packet instance->my_id : %d"), instance->my_id);
 			int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 		}
 	}
@@ -208,6 +210,7 @@ void AGravityBox::SendGravityBoxGrabbedPacket()
     packet.size = sizeof CS_GRAVITYBOX_GRABBED_PACKET;
     packet.type = CS_GRAVITYBOX_GRABBED;
     packet.boxid = BoxId;
+    packet.isGrabbed = true;
     int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 
@@ -217,6 +220,7 @@ void AGravityBox::SendGravityBoxDroppedPacket()
     packet.size = sizeof CS_GRAVITYBOX_DROPPED_PACKET;
     packet.type = CS_GRAVITYBOX_DROPPED;
     packet.boxid = BoxId;
+    packet.isGrabbed = false;
     int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 

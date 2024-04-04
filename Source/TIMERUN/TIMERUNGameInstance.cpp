@@ -126,6 +126,8 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
 		MyPlayerCharacter->id = my_id;
 
+		UE_LOG(LogTemp, Warning, TEXT("My Id : %d"),my_id);
+
 		FVector characterVelocity;
 
 		characterVelocity.X = p->velocity.x;
@@ -277,17 +279,21 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 	case SC_GRAVIRTBOX_GRABBED: {
 		SC_GRAVIRTBOX_GRABBED_PACKET* p = reinterpret_cast<SC_GRAVIRTBOX_GRABBED_PACKET*>(packet);
 
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
+
 		AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[p->box_id]);
 		GravityBox->ByWhoID = p->id;
-		GravityBox->isGrabbed = true;
+		GravityBox->isGrabbed = p->isGrabbed;
 	}
 							  break;
 	case SC_GRAVIRTBOX_DROPPED: {
 		SC_GRAVIRTBOX_DROPPED_PACKET* p = reinterpret_cast<SC_GRAVIRTBOX_DROPPED_PACKET*>(packet);
 
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
+
 		AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[p->box_id]);
 		GravityBox->ByWhoID = p->id;
-		GravityBox->isGrabbed = false;
+		GravityBox->isGrabbed = p->isGrabbed;
 	}
 							  break;
 	}
@@ -379,8 +385,6 @@ void UTIMERUNGameInstance::UpdatePosition(FVector new_location, FRotator new_rot
 	RecvUpdatePacketPlayer->prev_location = RecvUpdatePacketPlayer->current_location;
 	RecvUpdatePacketPlayer->prev_rotation = RecvUpdatePacketPlayer->current_rotation;
 	RecvUpdatePacketPlayer->prev_velocity = RecvUpdatePacketPlayer->current_velocity;
-
-	UE_LOG(LogTemp, Warning, TEXT("%f"), RecvUpdatePacketPlayer->prev_velocity.Size());
 
 	RecvUpdatePacketPlayer->current_location = new_location;
 	RecvUpdatePacketPlayer->current_rotation = new_rotation;

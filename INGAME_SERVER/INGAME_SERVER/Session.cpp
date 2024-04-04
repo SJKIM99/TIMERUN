@@ -82,7 +82,7 @@ void Session::send_gravitybox_update_packet(int c_id, int box_id)
 	SC_GRAVITYBOX_UPDATE_PACKET packet;
 	packet.type = SC_GRAVITYBOX_UPDATE;
 	packet.size = sizeof SC_GRAVITYBOX_UPDATE_PACKET;
-	packet.id = c_id;
+	packet.id = gravitybox[box_id].ByWhoId;
 	packet.boxid = box_id;
 	packet.isGrabbed = gravitybox[box_id].isGrabbed;
 	packet.location.x = gravitybox[box_id].locaton.x;
@@ -113,6 +113,7 @@ void Session::send_gravitybox_grabbed_packet(int c_id, int box_id)
 	packet.size = sizeof SC_GRAVIRTBOX_GRABBED_PACKET;
 	packet.id = c_id;
 	packet.box_id = box_id;
+	packet.isGrabbed = gravitybox[box_id].isGrabbed;
 	SendPacket(&packet);
 }
 
@@ -123,6 +124,7 @@ void Session::send_gravitybox_dropped_packet(int c_id, int box_id)
 	packet.size = sizeof SC_GRAVIRTBOX_DROPPED_PACKET;
 	packet.id = c_id;
 	packet.box_id = box_id;
+	packet.isGrabbed = gravitybox[box_id].isGrabbed;
 	SendPacket(&packet);
 }
 

@@ -146,12 +146,14 @@ struct CS_GRAVITYBOX_GRABBED_PACKET {
 	unsigned char size;
 	char type;
 	int boxid;
+	bool isGrabbed;
 };
 
 struct CS_GRAVITYBOX_DROPPED_PACKET {
 	unsigned char size;
 	char type;
 	int boxid;
+	bool isGrabbed;
 };
 //S2C
 struct SC_SIGNUP_PACKET {
@@ -239,6 +241,7 @@ struct SC_GRAVIRTBOX_GRABBED_PACKET {
 	char type;
 	int id;
 	int box_id;
+	bool isGrabbed;
 };
 
 struct SC_GRAVIRTBOX_DROPPED_PACKET {
@@ -246,5 +249,6 @@ struct SC_GRAVIRTBOX_DROPPED_PACKET {
 	char type;
 	int id;
 	int box_id;
+	bool isGrabbed;
 };
 #pragma pack(pop)

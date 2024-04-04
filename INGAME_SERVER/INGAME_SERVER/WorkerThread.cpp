@@ -213,7 +213,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
 
 			gravitybox[p->boxid].ByWhoId = p->bywhoid;
-			gravitybox[p->boxid].isGrabbed = p->isgrabbed;
+			//gravitybox[p->boxid].isGrabbed = p->isgrabbed;
 			gravitybox[p->boxid].locaton.x = p->location.x;
 			gravitybox[p->boxid].locaton.y = p->location.y;
 			gravitybox[p->boxid].locaton.z = p->location.z;
@@ -245,7 +245,10 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 					   break;
 	case CS_GRAVITYBOX_GRABBED: {
 		CS_GRAVITYBOX_GRABBED_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_GRABBED_PACKET*>(packet);
-
+		{
+			std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
+			gravitybox[p->boxid].isGrabbed = p->isGrabbed;
+		}
 		for (auto& cl : clients) {
 			if (cl.m_state == ST_FREE) break;
 			if (cl.m_id == c_id) continue;
@@ -255,7 +258,10 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 							  break;
 	case CS_GRAVITYBOX_DROPPED: {
 		CS_GRAVITYBOX_DROPPED_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_DROPPED_PACKET*>(packet);
-
+		{
+			std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
+			gravitybox[p->boxid].isGrabbed = p->isGrabbed;
+		}
 		for (auto& cl : clients) {
 			if (cl.m_state == ST_FREE) break;
 			if (cl.m_id == c_id) continue;
