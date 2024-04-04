@@ -243,6 +243,25 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 		}
 	}
 					   break;
+	case CS_GRAVITYBOX_GRABBED: {
+		CS_GRAVITYBOX_GRABBED_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_GRABBED_PACKET*>(packet);
+
+		for (auto& cl : clients) {
+			if (cl.m_state == ST_FREE) break;
+			if (cl.m_id == c_id) continue;
+			cl.send_gravitybox_grabbed_packet(c_id, p->boxid);
+		}
+	}
+							  break;
+	case CS_GRAVITYBOX_DROPPED: {
+		CS_GRAVITYBOX_DROPPED_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_DROPPED_PACKET*>(packet);
+
+		for (auto& cl : clients) {
+			if (cl.m_state == ST_FREE) break;
+			if (cl.m_id == c_id) continue;
+			cl.send_gravitybox_dropped_packet(c_id, p->boxid);
+		}
+	}
 	}
 }
 

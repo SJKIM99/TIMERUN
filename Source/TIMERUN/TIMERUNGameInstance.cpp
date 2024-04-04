@@ -253,7 +253,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		AGravityBox* OtherGravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
 
 		OtherGravityBox->ByWhoID = p->id;
-		OtherGravityBox->isGrabbed = p->isGrabbed;
+		//OtherGravityBox->isGrabbed = p->isGrabbed;
 
 		UpdateGravityBoxPosition(GravityBoxLocation, GravityBoxRotation, GravityBoxVelocity, p->boxid);
 		/*OtherGravityBox->AddMovementInput(GravityBoxVelocity);
@@ -274,6 +274,20 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		JumpPlayer->Jump();
 	}
 					   break;
+	case SC_GRAVIRTBOX_GRABBED: {
+		SC_GRAVIRTBOX_GRABBED_PACKET* p = reinterpret_cast<SC_GRAVIRTBOX_GRABBED_PACKET*>(packet);
+
+		AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[p->box_id]);
+		GravityBox->isGrabbed = true;
+	}
+							  break;
+	case SC_GRAVIRTBOX_DROPPED: {
+		SC_GRAVIRTBOX_DROPPED_PACKET* p = reinterpret_cast<SC_GRAVIRTBOX_DROPPED_PACKET*>(packet);
+
+		AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[p->box_id]);
+		GravityBox->isGrabbed = false;
+	}
+							  break;
 	}
 }
 

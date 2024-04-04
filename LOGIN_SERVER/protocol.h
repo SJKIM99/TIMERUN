@@ -50,6 +50,8 @@ constexpr char CS_PLAYER_UPDATE= 5;
 constexpr char CS_GRAVITYBOX_ADD= 6;
 constexpr char CS_GRAVITYBOX_UPDATE= 7;
 constexpr char CS_PLAYER_JUMP= 8;
+constexpr char CS_GRAVITYBOX_GRABBED= 9;
+constexpr char CS_GRAVITYBOX_DROPPED = 10;
 
 //S2C
 constexpr char SC_LOGIN_SUCCESS = 1;
@@ -63,6 +65,8 @@ constexpr char SC_WORLD_UPDATE = 8;
 constexpr char SC_GRAVITYBOX_ADD = 9;
 constexpr char SC_GRAVITYBOX_UPDATE = 10;
 constexpr char SC_PLAYER_JUMP = 11;
+constexpr char SC_GRAVIRTBOX_GRABBED = 12;
+constexpr char SC_GRAVIRTBOX_DROPPED = 13;
 
 
 #pragma pack (push, 1)
@@ -136,6 +140,18 @@ struct CS_PLAYER_JUMP_PACKET {
 	unsigned char size;
 	char type;
 	int id;
+};
+
+struct CS_GRAVITYBOX_GRABBED_PACKET {
+	unsigned char size;
+	char type;
+	int boxid;
+};
+
+struct CS_GRAVITYBOX_DROPPED_PACKET {
+	unsigned char size;
+	char type;
+	int boxid;
 };
 //S2C
 struct SC_SIGNUP_PACKET {
@@ -216,5 +232,19 @@ struct SC_PLAYER_JUMP_PACKET {
 	unsigned char size;
 	char type;
 	int id;
+};
+
+struct SC_GRAVIRTBOX_GRABBED_PACKET {
+	unsigned char size;
+	char type;
+	int id;
+	int box_id;
+};
+
+struct SC_GRAVIRTBOX_DROPPED_PACKET {
+	unsigned char size;
+	char type;
+	int id;
+	int box_id;
 };
 #pragma pack(pop)

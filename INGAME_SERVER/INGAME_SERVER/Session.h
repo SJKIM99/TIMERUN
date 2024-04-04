@@ -93,6 +93,8 @@ public:
 	void send_gravitybox_add_packet(int c_id, int box_id);
 	void send_gravitybox_update_packet(int c_id, int box_id);
 	void send_player_jump_packet(int c_id);
+	void send_gravitybox_grabbed_packet(int c_id, int box_id);
+	void send_gravitybox_dropped_packet(int c_id, int box_id);
 public:
 	void SendPacket(void* packet);
 	void RecvPacket();

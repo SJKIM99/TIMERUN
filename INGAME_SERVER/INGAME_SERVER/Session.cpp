@@ -106,6 +106,26 @@ void Session::send_player_jump_packet(int c_id)
 	SendPacket(&packet);
 }
 
+void Session::send_gravitybox_grabbed_packet(int c_id, int box_id)
+{
+	SC_GRAVIRTBOX_GRABBED_PACKET packet;
+	packet.type = SC_GRAVIRTBOX_GRABBED;
+	packet.size = sizeof SC_GRAVIRTBOX_GRABBED_PACKET;
+	packet.id = c_id;
+	packet.box_id = box_id;
+	SendPacket(&packet);
+}
+
+void Session::send_gravitybox_dropped_packet(int c_id, int box_id)
+{
+	SC_GRAVIRTBOX_DROPPED_PACKET packet;
+	packet.type = SC_GRAVIRTBOX_DROPPED;
+	packet.size = sizeof SC_GRAVIRTBOX_DROPPED_PACKET;
+	packet.id = c_id;
+	packet.box_id = box_id;
+	SendPacket(&packet);
+}
+
 
 void Session::SendPacket(void* packet)
 {

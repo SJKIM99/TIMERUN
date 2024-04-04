@@ -186,7 +186,7 @@ void AGravityBox::SendGravityBoxMovePacket()
 			packet.size = sizeof CS_GRAVITYBOX_UPDATE_PACKET;
 			packet.bywhoid = ByWhoID;
 			packet.boxid = BoxId;
-			packet.isgrabbed = isGrabbed;
+			//packet.isgrabbed = isGrabbed;
 			packet.location.x = BoxLocation.X;
 			packet.location.y = BoxLocation.Y;
 			packet.location.z = BoxLocation.Z;
@@ -200,6 +200,24 @@ void AGravityBox::SendGravityBoxMovePacket()
 			int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 		}
 	}
+}
+
+void AGravityBox::SendGravityBoxGrabbedPacket()
+{
+    CS_GRAVITYBOX_GRABBED_PACKET packet;
+    packet.size = sizeof CS_GRAVITYBOX_GRABBED_PACKET;
+    packet.type = CS_GRAVITYBOX_GRABBED;
+    packet.boxid = BoxId;
+    int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
+}
+
+void AGravityBox::SendGravityBoxDroppedPacket()
+{
+    CS_GRAVITYBOX_DROPPED_PACKET packet;
+    packet.size = sizeof CS_GRAVITYBOX_DROPPED_PACKET;
+    packet.type = CS_GRAVITYBOX_DROPPED;
+    packet.boxid = BoxId;
+    int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 
 
