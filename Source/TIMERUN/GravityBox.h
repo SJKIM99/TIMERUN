@@ -80,4 +80,9 @@ public:
 	UTIMERUNGameInstance* instance;
 	FTimerHandle SendGravityBoxInfoHandle;	// 동기화 타이머 핸들러
 	void SendGravityBoxMovePacket();
+public:
+
+	FVector current_location;
+	FRotator current_rotation;
+	FVector current_velocity;
 };

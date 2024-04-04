@@ -253,10 +253,12 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		AGravityBox* OtherGravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
 
 		OtherGravityBox->ByWhoID = p->id;
-		OtherGravityBox->AddMovementInput(GravityBoxVelocity);
-		OtherGravityBox->SetActorRotation(GravityBoxRotation);
-		OtherGravityBox->SetActorLocation(GravityBoxLocation);
 		OtherGravityBox->isGrabbed = p->isGrabbed;
+
+		UpdateGravityBoxPosition(GravityBoxLocation, GravityBoxRotation, GravityBoxVelocity, p->boxid);
+		/*OtherGravityBox->AddMovementInput(GravityBoxVelocity);
+		OtherGravityBox->SetActorRotation(GravityBoxRotation);
+		OtherGravityBox->SetActorLocation(GravityBoxLocation);*/
 
 	}
 							 break;
@@ -394,8 +396,40 @@ void UTIMERUNGameInstance::InterpolatePosition(ATIMERUNCharacter* UpdatePlayer)
 	UpdatePlayer->AddMovementInput(NewVelocity);
 	UpdatePlayer->SetActorLocation(NewLocation);
 	UpdatePlayer->SetActorRotation(NewRotation);
+}
 
-	
+void UTIMERUNGameInstance::UpdateGravityBoxPosition(FVector new_location, FRotator new_rotation, FVector new_velocity, int box_id)
+{
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
+
+	AGravityBox* RecvUpdatePacketGravityBox = Cast<AGravityBox>(spawnedGravityBox[box_id]);
+
+	RecvUpdatePacketGravityBox->current_location = new_location;
+	RecvUpdatePacketGravityBox->current_rotation = new_rotation;
+	RecvUpdatePacketGravityBox->current_velocity = new_velocity;
+
+	FTimerDelegate TimerCallback;
+	TimerCallback.BindLambda([=, this]() {
+		InterporlateGravityBoxPosition(RecvUpdatePacketGravityBox);
+	});
+
+	GetWorld()->GetTimerManager().SetTimer(MoveGravityBoxTimerHandle, TimerCallback, GetWorld()->GetDeltaSeconds(), true);
+}
+
+void UTIMERUNGameInstance::InterporlateGravityBoxPosition(AGravityBox* UpdateGravityBox)
+{
+	float InterpSpeed = 5;
+	//float DeltaSeconds = 0.008;
+	float DeltaSeconds = GetWorld()->GetDeltaSeconds();
+
+
+	FVector NewLocation = FMath::VInterpTo(UpdateGravityBox->GetActorLocation(), UpdateGravityBox->current_location, DeltaSeconds, InterpSpeed);
+	FRotator NewRotation = FMath::RInterpTo(UpdateGravityBox->GetActorRotation(), UpdateGravityBox->current_rotation, DeltaSeconds, InterpSpeed);
+	FVector NewVelocity = UpdateGravityBox->current_velocity;
+
+	//UpdatePlayer->AddMovementInput(NewVelocity);
+	UpdateGravityBox->SetActorLocation(NewLocation);
+	UpdateGravityBox->SetActorRotation(NewRotation);
 }
 
 void UTIMERUNGameInstance::InitLoginSocket()

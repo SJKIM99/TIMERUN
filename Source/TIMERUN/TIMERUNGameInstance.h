@@ -79,6 +79,10 @@ public:
 	void UpdatePosition(FVector new_location, FRotator new_rotation, FVector new_velocity, int player_id);
 	void InterpolatePosition(ATIMERUNCharacter* UpdatePlayer);
 	FTimerHandle MoveTimerHandle;	// 동기화 타이머 핸들러
+
+	void UpdateGravityBoxPosition(FVector new_location, FRotator new_rotation, FVector new_velocity, int box_id);
+	void InterporlateGravityBoxPosition(AGravityBox* UpdateGravityBox);
+	FTimerHandle MoveGravityBoxTimerHandle;
 public:
 	SocketMgr* GetSocketMgr() {
 		return &socketmgr;
