@@ -252,7 +252,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
 		AGravityBox* OtherGravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
 
-		OtherGravityBox->ByWhoID = p->id;
+		//OtherGravityBox->ByWhoID = p->id;
 		//OtherGravityBox->isGrabbed = p->isGrabbed;
 
 		UpdateGravityBoxPosition(GravityBoxLocation, GravityBoxRotation, GravityBoxVelocity, p->boxid);
@@ -278,6 +278,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		SC_GRAVIRTBOX_GRABBED_PACKET* p = reinterpret_cast<SC_GRAVIRTBOX_GRABBED_PACKET*>(packet);
 
 		AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[p->box_id]);
+		GravityBox->ByWhoID = p->id;
 		GravityBox->isGrabbed = true;
 	}
 							  break;
@@ -285,6 +286,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		SC_GRAVIRTBOX_DROPPED_PACKET* p = reinterpret_cast<SC_GRAVIRTBOX_DROPPED_PACKET*>(packet);
 
 		AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[p->box_id]);
+		GravityBox->ByWhoID = p->id;
 		GravityBox->isGrabbed = false;
 	}
 							  break;
@@ -441,7 +443,7 @@ void UTIMERUNGameInstance::InterporlateGravityBoxPosition(AGravityBox* UpdateGra
 	FRotator NewRotation = FMath::RInterpTo(UpdateGravityBox->GetActorRotation(), UpdateGravityBox->current_rotation, DeltaSeconds, InterpSpeed);
 	FVector NewVelocity = UpdateGravityBox->current_velocity;
 
-	//UpdatePlayer->AddMovementInput(NewVelocity);
+	UpdateGravityBox->AddMovementInput(NewVelocity);
 	UpdateGravityBox->SetActorLocation(NewLocation);
 	UpdateGravityBox->SetActorRotation(NewRotation);
 }
