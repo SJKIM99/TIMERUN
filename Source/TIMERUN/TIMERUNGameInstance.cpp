@@ -445,10 +445,11 @@ void UTIMERUNGameInstance::InterporlateGravityBoxPosition(AGravityBox* UpdateGra
 	//float DeltaSeconds = 0.008;
 	float DeltaSeconds = GetWorld()->GetDeltaSeconds();
 
-
+	
 	FVector NewLocation = FMath::VInterpTo(UpdateGravityBox->GetActorLocation(), UpdateGravityBox->current_location, DeltaSeconds, InterpSpeed);
 	FRotator NewRotation = FMath::RInterpTo(UpdateGravityBox->GetActorRotation(), UpdateGravityBox->current_rotation, DeltaSeconds, InterpSpeed);
 	FVector NewVelocity = UpdateGravityBox->current_velocity;
+	
 
 	UpdateGravityBox->AddMovementInput(NewVelocity);
 	UpdateGravityBox->SetActorLocation(NewLocation);
