@@ -225,10 +225,6 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			gravitybox[p->boxid].velocity.x = p->velocity.x;
 			gravitybox[p->boxid].velocity.y = p->velocity.y;
 			gravitybox[p->boxid].velocity.z = p->velocity.z;
-
-			gravitybox[p->boxid].isMoving = p->IsMoving;
-			gravitybox[p->boxid].CanFall = p->CanFall;
-			gravitybox[p->boxid].CanFixPos = p->CanFixPos;
 		}
 		for (auto& cl : clients) {
 			if (cl.m_state == ST_FREE) break;
@@ -248,7 +244,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 	}
 					   break;
 	case CS_GRAVITYBOX_GRABBED: {
-		CS_GRAVITYBOX_GRABBED_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_GRABBED_PACKET*>(packet);
+	/*	CS_GRAVITYBOX_GRABBED_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_GRABBED_PACKET*>(packet);
 		{
 			std::cout << p->boxid << "번 박스 그랩 " <<std::endl;
 			std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
@@ -258,11 +254,11 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			if (cl.m_state == ST_FREE) break;
 			if (cl.m_id == c_id) continue;
 			cl.send_gravitybox_grabbed_packet(c_id, p->boxid);
-		}
+		}*/
 	}
 							  break;
 	case CS_GRAVITYBOX_DROPPED: {
-		CS_GRAVITYBOX_DROPPED_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_DROPPED_PACKET*>(packet);
+	/*	CS_GRAVITYBOX_DROPPED_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_DROPPED_PACKET*>(packet);
 		{
 			std::cout << p->boxid << "번 박스 드롭 " << std::endl;
 			std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
@@ -272,7 +268,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			if (cl.m_state == ST_FREE) break;
 			if (cl.m_id == c_id) continue;
 			cl.send_gravitybox_dropped_packet(c_id, p->boxid);
-		}
+		}*/
 	}
 	}
 }

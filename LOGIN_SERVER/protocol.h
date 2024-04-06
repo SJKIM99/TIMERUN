@@ -134,9 +134,6 @@ struct CS_GRAVITYBOX_UPDATE_PACKET {
 	vector_d3 location;
 	vector_d3 rotation;
 	vector_d3 velocity;
-	bool IsMoving;
-	bool CanFall;
-	bool CanFixPos;
 };
 
 struct CS_PLAYER_JUMP_PACKET {
