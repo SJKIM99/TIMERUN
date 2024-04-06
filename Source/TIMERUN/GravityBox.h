@@ -90,4 +90,5 @@ public:
 	FVector current_location;
 	FRotator current_rotation;
 	FVector current_velocity;
+	FTimerDelegate TimerCallback;
 };

@@ -428,12 +428,12 @@ void UTIMERUNGameInstance::UpdateGravityBoxPosition(FVector new_location, FRotat
 	RecvUpdatePacketGravityBox->current_rotation = new_rotation;
 	RecvUpdatePacketGravityBox->current_velocity = new_velocity;
 
-	FTimerDelegate TimerCallback;
-	TimerCallback.BindLambda([=, this]() {
+
+	RecvUpdatePacketGravityBox->TimerCallback.BindLambda([=, this]() {
 		InterporlateGravityBoxPosition(RecvUpdatePacketGravityBox);
 	});
 
-	GetWorld()->GetTimerManager().SetTimer(RecvUpdatePacketGravityBox->MoveGravityBoxTimerHandle, TimerCallback, GetWorld()->GetDeltaSeconds(), true);
+	GetWorld()->GetTimerManager().SetTimer(RecvUpdatePacketGravityBox->MoveGravityBoxTimerHandle, RecvUpdatePacketGravityBox->TimerCallback, GetWorld()->GetDeltaSeconds(), true);
 }
 
 void UTIMERUNGameInstance::InterporlateGravityBoxPosition(AGravityBox* UpdateGravityBox)
@@ -447,6 +447,7 @@ void UTIMERUNGameInstance::InterporlateGravityBoxPosition(AGravityBox* UpdateGra
 	FRotator NewRotation = FMath::RInterpTo(UpdateGravityBox->GetActorRotation(), UpdateGravityBox->current_rotation, DeltaSeconds, InterpSpeed);
 	FVector NewVelocity = UpdateGravityBox->current_velocity;
 	
+	UE_LOG(LogTemp, Warning, TEXT("%f %f %f"), UpdateGravityBox->current_location.X, UpdateGravityBox->current_location.Y, UpdateGravityBox->current_location.Z);
 
 	UpdateGravityBox->AddMovementInput(NewVelocity);
 	UpdateGravityBox->SetActorLocation(NewLocation);
