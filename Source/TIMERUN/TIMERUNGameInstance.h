@@ -72,7 +72,7 @@ public:
 	FTimerHandle SendPlayerInfoHandle;	// 동기화 타이머 핸들러
 	AGravityBox* gravitybox;
 	TArray<AActor*> spawnedGravityBox;
-	void UpdateNewGravityBox(FVector location, FRotator rotation, int box_id);
+	void UpdateNewGravityBox(FVector location, FRotator rotation, int box_id, int bywhoid);
 
 public:
 	//보간 코드 여기에 추가

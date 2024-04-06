@@ -184,7 +184,7 @@ void AGravityBox::DoGrabbingRotate(bool when)
 void AGravityBox::SendGravityBoxMovePacket()
 {
 	if (ByWhoID == instance->my_id) {
-		if (!CanFixPos) {
+		if (true) {
 			CS_GRAVITYBOX_UPDATE_PACKET packet;
 			packet.type = CS_GRAVITYBOX_UPDATE;
 			packet.size = sizeof CS_GRAVITYBOX_UPDATE_PACKET;

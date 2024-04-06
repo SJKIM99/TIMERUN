@@ -372,7 +372,7 @@ void UTIMERUNGameInstance::UpdateNewGravityBox(FVector location, FRotator rotati
 	UWorld* const world = GetWorld();
 	AGravityBox* SpawnGravityBox = world->SpawnActor<AGravityBox>(location, rotation);
 	SpawnGravityBox->BoxId = box_id;
-	SpawnGravityBox->ByWhoID = my_id;
+	SpawnGravityBox->ByWhoID = bywhoid;
 }
 
 
@@ -448,7 +448,7 @@ void UTIMERUNGameInstance::InterporlateGravityBoxPosition(AGravityBox* UpdateGra
 	FRotator NewRotation = FMath::RInterpTo(UpdateGravityBox->GetActorRotation(), UpdateGravityBox->current_rotation, DeltaSeconds, InterpSpeed);
 	FVector NewVelocity = UpdateGravityBox->current_velocity;
 	
-	UE_LOG(LogTemp, Warning, TEXT("%f %f %f"), UpdateGravityBox->current_location.X, UpdateGravityBox->current_location.Y, UpdateGravityBox->current_location.Z);
+	UE_LOG(LogTemp, Warning, TEXT("%d"), UpdateGravityBox->ByWhoID);
 
 	UpdateGravityBox->AddMovementInput(NewVelocity);
 	UpdateGravityBox->SetActorLocation(NewLocation);
