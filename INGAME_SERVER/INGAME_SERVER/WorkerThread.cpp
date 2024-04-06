@@ -213,7 +213,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
 
 			gravitybox[p->boxid].ByWhoId = p->bywhoid;
-			//gravitybox[p->boxid].isGrabbed = p->isgrabbed;
+			gravitybox[p->boxid].isGrabbed = p->isgrabbed;
 			gravitybox[p->boxid].locaton.x = p->location.x;
 			gravitybox[p->boxid].locaton.y = p->location.y;
 			gravitybox[p->boxid].locaton.z = p->location.z;
@@ -225,6 +225,10 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			gravitybox[p->boxid].velocity.x = p->velocity.x;
 			gravitybox[p->boxid].velocity.y = p->velocity.y;
 			gravitybox[p->boxid].velocity.z = p->velocity.z;
+
+			gravitybox[p->boxid].isMoving = p->IsMoving;
+			gravitybox[p->boxid].CanFall = p->CanFall;
+			gravitybox[p->boxid].CanFixPos = p->CanFixPos;
 		}
 		for (auto& cl : clients) {
 			if (cl.m_state == ST_FREE) break;

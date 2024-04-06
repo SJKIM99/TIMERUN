@@ -254,13 +254,16 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
 		AGravityBox* OtherGravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
 
-		//OtherGravityBox->ByWhoID = p->id;
-		//OtherGravityBox->isGrabbed = p->isGrabbed;
+		OtherGravityBox->ByWhoID = p->id;
+		OtherGravityBox->isGrabbed = p->isGrabbed;
+		OtherGravityBox->IsMoving = p->isMoving;
+		OtherGravityBox->CanFall = p->CanFall;
+		OtherGravityBox->CanFixPos = p->CanFixPos;
 
-		UpdateGravityBoxPosition(GravityBoxLocation, GravityBoxRotation, GravityBoxVelocity, p->boxid);
-		/*OtherGravityBox->AddMovementInput(GravityBoxVelocity);
+		//UpdateGravityBoxPosition(GravityBoxLocation, GravityBoxRotation, GravityBoxVelocity, p->boxid);
+		OtherGravityBox->AddMovementInput(GravityBoxVelocity);
 		OtherGravityBox->SetActorRotation(GravityBoxRotation);
-		OtherGravityBox->SetActorLocation(GravityBoxLocation);*/
+		OtherGravityBox->SetActorLocation(GravityBoxLocation);
 
 	}
 							 break;
@@ -277,23 +280,23 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 	}
 					   break;
 	case SC_GRAVIRTBOX_GRABBED: {
-		SC_GRAVIRTBOX_GRABBED_PACKET* p = reinterpret_cast<SC_GRAVIRTBOX_GRABBED_PACKET*>(packet);
+		/*SC_GRAVIRTBOX_GRABBED_PACKET* p = reinterpret_cast<SC_GRAVIRTBOX_GRABBED_PACKET*>(packet);
 
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
 
 		AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[p->box_id]);
 		GravityBox->ByWhoID = p->id;
-		GravityBox->isGrabbed = p->isGrabbed;
+		GravityBox->isGrabbed = p->isGrabbed;*/
 	}
 							  break;
 	case SC_GRAVIRTBOX_DROPPED: {
-		SC_GRAVIRTBOX_DROPPED_PACKET* p = reinterpret_cast<SC_GRAVIRTBOX_DROPPED_PACKET*>(packet);
+		/*SC_GRAVIRTBOX_DROPPED_PACKET* p = reinterpret_cast<SC_GRAVIRTBOX_DROPPED_PACKET*>(packet);
 
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
 
 		AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[p->box_id]);
 		GravityBox->ByWhoID = p->id;
-		GravityBox->isGrabbed = p->isGrabbed;
+		GravityBox->isGrabbed = p->isGrabbed;*/
 	}
 							  break;
 	}

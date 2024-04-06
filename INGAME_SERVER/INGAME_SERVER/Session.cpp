@@ -94,6 +94,10 @@ void Session::send_gravitybox_update_packet(int c_id, int box_id)
 	packet.velocity.x = gravitybox[box_id].velocity.x;
 	packet.velocity.y = gravitybox[box_id].velocity.y;
 	packet.velocity.z = gravitybox[box_id].velocity.z;
+	packet.isMoving = gravitybox[p->boxid].isMoving = p->IsMoving;
+	packet.CanFall = gravitybox[p->boxid].CanFall = p->CanFall;
+	packet.CanFixPos = gravitybox[p->boxid].CanFixPos = p->CanFixPos;
+
 	SendPacket(&packet);
 }
 
