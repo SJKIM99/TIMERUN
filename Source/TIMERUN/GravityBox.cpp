@@ -64,7 +64,7 @@ void AGravityBox::BeginPlay()
     instance = Cast<UTIMERUNGameInstance>(GetWorld()->GetGameInstance());
     instance->GetSocketMgr()->GetIngameSocket();
 
-    GetWorld()->GetTimerManager().SetTimer(SendGravityBoxInfoHandle, this, &AGravityBox::SendGravityBoxMovePacket, 0.016f, true);
+    GetWorld()->GetTimerManager().SetTimer(SendGravityBoxInfoHandle, this, &AGravityBox::SendGravityBoxMovePacket, 0.1f, true);
 }
 
 // Called every frame
@@ -208,22 +208,22 @@ void AGravityBox::SendGravityBoxMovePacket()
 
 void AGravityBox::SendGravityBoxGrabbedPacket()
 {
-    /*CS_GRAVITYBOX_GRABBED_PACKET packet;
+    CS_GRAVITYBOX_GRABBED_PACKET packet;
     packet.size = sizeof CS_GRAVITYBOX_GRABBED_PACKET;
     packet.type = CS_GRAVITYBOX_GRABBED;
     packet.boxid = BoxId;
     packet.isGrabbed = true;
-    int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);*/
+    int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 
 void AGravityBox::SendGravityBoxDroppedPacket()
 {
-    //CS_GRAVITYBOX_DROPPED_PACKET packet;
-    //packet.size = sizeof CS_GRAVITYBOX_DROPPED_PACKET;
-    //packet.type = CS_GRAVITYBOX_DROPPED;
-    //packet.boxid = BoxId;
-    //packet.isGrabbed = false;
-    //int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
+    CS_GRAVITYBOX_DROPPED_PACKET packet;
+    packet.size = sizeof CS_GRAVITYBOX_DROPPED_PACKET;
+    packet.type = CS_GRAVITYBOX_DROPPED;
+    packet.boxid = BoxId;
+    packet.isGrabbed = false;
+    int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 
 
