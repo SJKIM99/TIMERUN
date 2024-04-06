@@ -227,7 +227,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 			GravityBoxRotation.Yaw = p->rotation.x;
 			GravityBoxRotation.Pitch = p->rotation.y;
 			GravityBoxRotation.Roll = p->rotation.z;
-			UpdateNewGravityBox(GravityBoxLocation, GravityBoxRotation, p->boxid);
+			UpdateNewGravityBox(GravityBoxLocation, GravityBoxRotation, p->boxid, p->id);
 			UE_LOG(LogTemp, Warning, TEXT("Other GravityBox Spawned %d"), p->boxid);
 		}
 	}
@@ -367,11 +367,12 @@ void UTIMERUNGameInstance::SendGravityBoxSpawn(FVector location, FRotator rotati
 }
 
 
-void UTIMERUNGameInstance::UpdateNewGravityBox(FVector location, FRotator rotation, int box_id)
+void UTIMERUNGameInstance::UpdateNewGravityBox(FVector location, FRotator rotation, int box_id, int bywhoid)
 {
 	UWorld* const world = GetWorld();
 	AGravityBox* SpawnGravityBox = world->SpawnActor<AGravityBox>(location, rotation);
 	SpawnGravityBox->BoxId = box_id;
+	SpawnGravityBox->ByWhoID = my_id;
 }
 
 
