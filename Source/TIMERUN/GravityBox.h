@@ -85,6 +85,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SendGravityBoxDroppedPacket();
 public:
+	FTimerHandle MoveGravityBoxTimerHandle;
 
 	FVector current_location;
 	FRotator current_rotation;
