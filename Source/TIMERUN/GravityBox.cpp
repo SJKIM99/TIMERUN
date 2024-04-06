@@ -147,8 +147,10 @@ bool AGravityBox::CanFixPosCheck()
 
     if (!IsMoving && !isGrabbed && !CanFall)
     {
+
         if (StaticMeshComponent)
         {
+            SendGravityBoxMovePacket();
             StaticMeshComponent->SetSimulatePhysics(false);
         }
         return true;
