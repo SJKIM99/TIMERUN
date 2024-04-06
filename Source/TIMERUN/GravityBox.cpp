@@ -64,7 +64,7 @@ void AGravityBox::BeginPlay()
     instance = Cast<UTIMERUNGameInstance>(GetWorld()->GetGameInstance());
     instance->GetSocketMgr()->GetIngameSocket();
 
-    GetWorld()->GetTimerManager().SetTimer(SendGravityBoxInfoHandle, this, &AGravityBox::SendGravityBoxMovePacket, 0.008f, true);
+    GetWorld()->GetTimerManager().SetTimer(SendGravityBoxInfoHandle, this, &AGravityBox::SendGravityBoxMovePacket, 0.1f, true);
 }
 
 // Called every frame

@@ -257,10 +257,10 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		OtherGravityBox->ByWhoID = p->id;
 		OtherGravityBox->isGrabbed = p->isGrabbed;
 
-		//UpdateGravityBoxPosition(GravityBoxLocation, GravityBoxRotation, GravityBoxVelocity, p->boxid);
-		OtherGravityBox->AddMovementInput(GravityBoxVelocity);
+		UpdateGravityBoxPosition(GravityBoxLocation, GravityBoxRotation, GravityBoxVelocity, p->boxid);
+	/*	OtherGravityBox->AddMovementInput(GravityBoxVelocity);
 		OtherGravityBox->SetActorRotation(GravityBoxRotation);
-		OtherGravityBox->SetActorLocation(GravityBoxLocation);
+		OtherGravityBox->SetActorLocation(GravityBoxLocation);*/
 
 	}
 							 break;
