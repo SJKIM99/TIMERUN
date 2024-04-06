@@ -79,9 +79,6 @@ void AGravityBox::Tick(float DeltaTime)
     CanFallCheck();
     DoGrabbingRotate(isGrabbed);
 
-    if (isGrabbed) StaticMeshComponent->SetEnableGravity(false);
-    else StaticMeshComponent->SetEnableGravity(true);
-
     CanFixPos = CanFixPosCheck();
 
     //OtherGrappedCheck();
@@ -170,8 +167,13 @@ void AGravityBox::DoGrabbingRotate(bool when)
 {
     if (StaticMeshComponent && when)
     {
+        StaticMeshComponent->SetEnableGravity(false);
         FRotator RotationValue(0.f, 0.05f, 0.05f);
         StaticMeshComponent->AddWorldRotation(RotationValue);
+    }
+    else {
+        StaticMeshComponent->SetEnableGravity(true);
+
     }
 }
 
