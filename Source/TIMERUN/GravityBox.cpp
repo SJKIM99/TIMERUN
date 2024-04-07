@@ -170,8 +170,12 @@ void AGravityBox::DoGrabbingRotate(bool when)
     if (StaticMeshComponent && when)
     {
         StaticMeshComponent->SetEnableGravity(false);
-        FRotator RotationValue(0.f, 0.05f, 0.05f);
-        StaticMeshComponent->AddWorldRotation(RotationValue);
+
+        if (instance->my_id == ByWhoID)
+        {
+            FRotator RotationValue(0.f, 0.05f, 0.05f);
+            StaticMeshComponent->AddWorldRotation(RotationValue);
+        }
     }
     else if( StaticMeshComponent && !when){
         StaticMeshComponent->SetEnableGravity(true);
