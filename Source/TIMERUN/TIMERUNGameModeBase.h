@@ -15,8 +15,4 @@ class TIMERUN_API ATIMERUNGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 public:
 	ATIMERUNGameModeBase();
-
-	// Whether to use seamless travel or not
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game Mode")
-	bool bUseSeamlessTravel = true;
 };
