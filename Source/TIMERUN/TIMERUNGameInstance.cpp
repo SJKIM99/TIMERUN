@@ -429,7 +429,6 @@ void UTIMERUNGameInstance::UpdateGravityBoxPosition(FVector new_location, FRotat
 	RecvUpdatePacketGravityBox->current_rotation = new_rotation;
 	RecvUpdatePacketGravityBox->current_velocity = new_velocity;
 
-
 	RecvUpdatePacketGravityBox->TimerCallback.BindLambda([=, this]() {
 		InterporlateGravityBoxPosition(RecvUpdatePacketGravityBox);
 	});
@@ -439,20 +438,23 @@ void UTIMERUNGameInstance::UpdateGravityBoxPosition(FVector new_location, FRotat
 
 void UTIMERUNGameInstance::InterporlateGravityBoxPosition(AGravityBox* UpdateGravityBox)
 {
-	float InterpSpeed = 5;
-	//float DeltaSeconds = 0.008;
-	float DeltaSeconds = GetWorld()->GetDeltaSeconds();
+	if (UpdateGravityBox->CanFixPos == false && my_id != UpdateGravityBox->ByWhoID) {
+		float InterpSpeed = 5;
+		//float DeltaSeconds = 0.008;
+		float DeltaSeconds = GetWorld()->GetDeltaSeconds();
 
-	
-	FVector NewLocation = FMath::VInterpTo(UpdateGravityBox->GetActorLocation(), UpdateGravityBox->current_location, DeltaSeconds, InterpSpeed);
-	FRotator NewRotation = FMath::RInterpTo(UpdateGravityBox->GetActorRotation(), UpdateGravityBox->current_rotation, DeltaSeconds, InterpSpeed);
-	FVector NewVelocity = UpdateGravityBox->current_velocity;
-	
-	UE_LOG(LogTemp, Warning, TEXT("%d"), UpdateGravityBox->ByWhoID);
 
-	UpdateGravityBox->AddMovementInput(NewVelocity);
-	UpdateGravityBox->SetActorLocation(NewLocation);
-	UpdateGravityBox->SetActorRotation(NewRotation);
+		FVector NewLocation = FMath::VInterpTo(UpdateGravityBox->GetActorLocation(), UpdateGravityBox->current_location, DeltaSeconds, InterpSpeed);
+		FRotator NewRotation = FMath::RInterpTo(UpdateGravityBox->GetActorRotation(), UpdateGravityBox->current_rotation, DeltaSeconds, InterpSpeed);
+		FVector NewVelocity = UpdateGravityBox->current_velocity;
+
+		UE_LOG(LogTemp, Warning, TEXT("%d, suh"), UpdateGravityBox->ByWhoID);
+
+		UpdateGravityBox->AddMovementInput(NewVelocity);
+		UpdateGravityBox->SetActorLocation(NewLocation);
+		UpdateGravityBox->SetActorRotation(NewRotation);
+	}
+	
 }
 
 void UTIMERUNGameInstance::InitLoginSocket()
