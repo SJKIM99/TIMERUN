@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "C:/Users/user/Desktop/TIMERUN/LOGIN_SERVER/protocol.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "TIMERUNCharacter.generated.h"
@@ -78,4 +80,6 @@ public:
 	FVector prev_location;
 	FRotator prev_rotation;
 	FVector prev_velocity;
+public:
+	char level_name[LEVELSIZE];
 };

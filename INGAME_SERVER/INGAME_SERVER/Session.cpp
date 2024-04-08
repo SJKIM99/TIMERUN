@@ -129,6 +129,16 @@ void Session::send_gravitybox_dropped_packet(int c_id, int box_id)
 	SendPacket(&packet);
 }
 
+void Session::send_level_change_packet(int c_id)
+{
+	SC_LEVEL_CHANGE_PACKET packet;
+	packet.type = SC_LEVEL_CHANGE;
+	packet.size = sizeof SC_LEVEL_CHANGE_PACKET;
+	packet.id = c_id;
+	strncpy(packet.levelname, clients[c_id].m_level_name, sizeof clients[c_id].m_level_name);
+	SendPacket(&packet);
+}
+
 
 void Session::SendPacket(void* packet)
 {

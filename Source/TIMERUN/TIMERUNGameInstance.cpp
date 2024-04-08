@@ -128,7 +128,14 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
 		UE_LOG(LogTemp, Warning, TEXT("My Id : %d"),my_id);
 
+		FString FullMapName = GetWorld()->GetMapName();
+		FString LevelName = FPaths::GetBaseFilename(FullMapName);
+
+		FCStringAnsi::Strncpy(MyPlayerCharacter->level_name, TCHAR_TO_ANSI(*LevelName), LEVELSIZE);
+		MyPlayerCharacter->level_name[LEVELSIZE - 1] = '\0';
+
 		FVector characterVelocity;
+
 
 		characterVelocity.X = p->velocity.x;
 		characterVelocity.Y = p->velocity.y;
@@ -173,7 +180,6 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		SC_WORLD_UPDATE_PACKET* p = reinterpret_cast<SC_WORLD_UPDATE_PACKET*>(packet);
 
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
-		//위 함수는 spawnCharacters에 world에 생성된 객체를 넣지만, 월드에 스폰된 순서로 들어가기에 아이디를 사용한 오름차순 정렬이 필요하다.
 		SortPlayerIndex();
 
 		FVector CharacterVelocity;
@@ -296,6 +302,19 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		GravityBox->isGrabbed = p->isGrabbed;
 	}
 							  break;
+	case SC_LEVEL_CHANGE: {
+		SC_LEVEL_CHANGE_PACKET* p = reinterpret_cast<SC_LEVEL_CHANGE_PACKET*>(packet);
+
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
+		SortPlayerIndex();
+
+		ATIMERUNCharacter* LevelChangePlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
+
+		strncpy(LevelChangePlayer->level_name, p->levelname, sizeof p->levelname);
+		//여기서 이제 레벨 이동한 캐릭터를 없애야 해
+		LevelChangePlayer->GetMesh()->SetHiddenInGame(true);
+	}
+						break;
 	}
 }
 
@@ -483,6 +502,20 @@ void UTIMERUNGameInstance::SendPlayerJumpPacket()
 	packet.size = sizeof CS_PLAYER_JUMP_PACKET;
 	packet.type = CS_PLAYER_JUMP;
 	packet.id = my_id;
+
+	int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
+}
+
+void UTIMERUNGameInstance::SendLevelChangePacket()
+{
+	APlayerController* PlayerContoller = GetWorld()->GetFirstPlayerController();
+	APawn* ControlledPawn = PlayerContoller->GetPawn();
+	ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(ControlledPawn);
+
+	CS_LEVEL_CHANGE_PACKET packet;
+	packet.size = sizeof CS_LEVEL_CHANGE_PACKET;
+	packet.type = CS_LEVEL_CHANGE;
+	strncpy(packet.levlname, MyPlayerCharacter->level_name, sizeof MyPlayerCharacter->level_name);
 
 	int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 }

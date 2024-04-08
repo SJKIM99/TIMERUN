@@ -91,4 +91,7 @@ public:
 public:
 	UFUNCTION(BlueprintCallable)
 	void SendPlayerJumpPacket();
+public:
+	UFUNCTION(BlueprintCallable)
+	void SendLevelChangePacket();
 };

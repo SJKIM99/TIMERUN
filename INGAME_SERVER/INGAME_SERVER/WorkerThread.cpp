@@ -270,6 +270,21 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			cl.send_gravitybox_dropped_packet(c_id, p->boxid);
 		}
 	}
+	case CS_LEVEL_CHANGE: {
+		CS_LEVEL_CHANGE_PACKET* p = reinterpret_cast<CS_LEVEL_CHANGE_PACKET*>(packet);
+		{
+			std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
+
+			std::cout << c_id << "번 클라이언트 레벨 이동" << std::endl;
+			strncpy(clients[c_id].m_level_name, p->levlname, sizeof p->levlname);
+		}
+		for (auto& cl : clients) {
+			if (cl.m_state == ST_FREE) break;
+			if (cl.m_id == c_id) continue;
+			cl.send_level_change_packet(c_id);
+		}
+	}
+						break;
 	}
 }
 
