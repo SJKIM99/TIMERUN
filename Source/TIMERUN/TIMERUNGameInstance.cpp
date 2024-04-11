@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "TIMERUNGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
+
 
 UTIMERUNGameInstance::UTIMERUNGameInstance() : nGravityBox(0)
 {
@@ -153,7 +153,6 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		characterRotation.Pitch = 0;
 		characterRotation.Roll = 0;
 
-		//MyPlayerCharacter->AddMovementInput(characterVelocity);
 		MyPlayerCharacter->SetActorLocation(characterLocation);
 		MyPlayerCharacter->SetActorRotation(characterRotation);
 
@@ -178,37 +177,34 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 				  break;
 	case SC_WORLD_UPDATE: {
 		SC_WORLD_UPDATE_PACKET* p = reinterpret_cast<SC_WORLD_UPDATE_PACKET*>(packet);
+		
+		ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
-		SortPlayerIndex();
+		if (strcmp(MyPlayerCharacter->level_name, p->levelname) == 0) {
+			UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
+			SortPlayerIndex();
 
-		FVector CharacterVelocity;
-		CharacterVelocity.X = p->velocity.x;
-		CharacterVelocity.Y = p->velocity.y;
-		CharacterVelocity.Z = p->velocity.z;
 
-		FVector CharacterLocation;
-		CharacterLocation.X = p->location.x;
-		CharacterLocation.Y = p->location.y;
-		CharacterLocation.Z = p->location.z;
+			FVector CharacterVelocity;
+			CharacterVelocity.X = p->velocity.x;
+			CharacterVelocity.Y = p->velocity.y;
+			CharacterVelocity.Z = p->velocity.z;
 
-		FRotator CharacterRotation;
-		CharacterRotation.Yaw = p->yaw;
-		CharacterRotation.Pitch = 0;
-		CharacterRotation.Roll = 0;
+			FVector CharacterLocation;
+			CharacterLocation.X = p->location.x;
+			CharacterLocation.Y = p->location.y;
+			CharacterLocation.Z = p->location.z;
 
-		ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
-		/* UCharacterMovementComponent* CharacterMovement = OtherPlayer->GetCharacterMovement();
-		 FVector NewVelocity = FVector(p->velocity.x, p->velocity.y, OtherPlayer->GetVelocity().Z);
-		 CharacterMovement->Velocity = NewVelocity;
-		 OtherPlayer->AddMovementInput(CharacterVelocity);*/
+			FRotator CharacterRotation;
+			CharacterRotation.Yaw = p->yaw;
+			CharacterRotation.Pitch = 0;
+			CharacterRotation.Roll = 0;
 
-		UpdatePosition(CharacterLocation, CharacterRotation, CharacterVelocity, p->id);
-		//OtherPlayer->SetActorLocation(CharacterLocation);
-		//OtherPlayer->SetActorRotation(CharacterRotation);
+			ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
+			UpdatePosition(CharacterLocation, CharacterRotation, CharacterVelocity, p->id);
 
-		OtherPlayer->HaveGravityGun = p->HaveGravityGun;
-
+			OtherPlayer->HaveGravityGun = p->HaveGravityGun;
+		}
 
 		//UE_LOG(LogTemp, Warning, TEXT("%f"), vec_size);
 	}
@@ -264,10 +260,6 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		OtherGravityBox->isGrabbed = p->isGrabbed;
 
 		UpdateGravityBoxPosition(GravityBoxLocation, GravityBoxRotation, GravityBoxVelocity, p->boxid);
-	/*	OtherGravityBox->AddMovementInput(GravityBoxVelocity);
-		OtherGravityBox->SetActorRotation(GravityBoxRotation);
-		OtherGravityBox->SetActorLocation(GravityBoxLocation);*/
-
 	}
 							 break;
 	case SC_PLAYER_JUMP: {
@@ -313,6 +305,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		strncpy(LevelChangePlayer->level_name, p->levelname, sizeof p->levelname);
 		//여기서 이제 레벨 이동한 캐릭터를 없애야 해
 		LevelChangePlayer->GetMesh()->SetHiddenInGame(true);
+		LevelChangePlayer->GetMesh()->SetVisibility(false);
 	}
 						break;
 	}
@@ -336,6 +329,7 @@ void UTIMERUNGameInstance::SendPlayerupdatePakcet()
 	packet.velocity.z = MyPlayerCharacter->GetVelocity().Z;
 	packet.yaw = MyPlayerCharacter->GetActorRotation().Yaw;
 	packet.HaveGravityGun = MyPlayerCharacter->HaveGravityGun;
+	strncpy(packet.levelname, MyPlayerCharacter->level_name, sizeof MyPlayerCharacter->level_name);
 
 	int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }

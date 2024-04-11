@@ -115,10 +115,11 @@ struct CS_PLAYER_UPDATE_PACKET {
 	unsigned char size;
 	char type;
 	int id;
-	double yaw;
+	float yaw;
 	vector_d3 location;
 	vector_d3 velocity;
 	bool HaveGravityGun;
+	char levelname[LEVELSIZE];
 };
 
 struct CS_GRAVITYBOX_ADD_PACKET {
@@ -218,6 +219,7 @@ struct SC_WORLD_UPDATE_PACKET {
 	vector_d3 location;
 	vector_d3 velocity;
 	bool HaveGravityGun;
+	char levelname[LEVELSIZE];
 };
 
 struct SC_GRAVITYBOX_ADD_PACKET {
