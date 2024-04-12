@@ -58,6 +58,7 @@ void Session::send_world_update_packet(int c_id)
 	packet.velocity.z = clients[c_id].m_velocity.z;
 	packet.yaw = clients[c_id].m_yaw;
 	packet.HaveGravityGun = clients[c_id].m_HaveGrabityGun;
+	strncpy(packet.levelname, clients[c_id].m_level_name, sizeof clients[c_id].m_level_name);
 	SendPacket(&packet);
 }
 

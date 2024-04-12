@@ -174,10 +174,11 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			clients[p->id].m_velocity.y = p->velocity.y;
 			clients[p->id].m_velocity.z = p->velocity.z;
 
-			//std::cout << sqrt(p->velocity.x * p->velocity.x + p->velocity.y * p->velocity.y + p->velocity.z * p->velocity.z) << std::endl;
-
 			clients[p->id].m_yaw = p->yaw;
+
 			clients[p->id].m_HaveGrabityGun = p->HaveGravityGun;
+
+			strncpy(clients[p->id].m_level_name, p->levelname, sizeof p->levelname);
 		}
 		for (auto& cl : clients) {
 			if (cl.m_state == ST_FREE) break;
