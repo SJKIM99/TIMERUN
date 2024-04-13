@@ -278,6 +278,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 		{
 			std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
 			clients[c_id].m_time = p->time;
+			std::cout << c_id << "번 클라이언트 " << p->time << "으로 타임 이동" << std::endl;
 		}
 		for (auto& cl : clients) {
 			if (cl.m_state == ST_FREE) break;

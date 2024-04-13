@@ -238,9 +238,6 @@ struct SC_GRAVITYBOX_UPDATE_PACKET {
 	vector_d3 location;
 	vector_d3 rotation;
 	vector_d3 velocity;
-	bool isMoving;
-	bool CanFall;
-	bool CanFixPos;
 };
 
 struct SC_PLAYER_JUMP_PACKET {

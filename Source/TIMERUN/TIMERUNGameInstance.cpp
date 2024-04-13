@@ -307,11 +307,11 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
 		if (MyPlayerCharacter->my_time != TimeChangePlayer->my_time) {
-			TimeChangePlayer->GetMesh()->SetVisibility(false);
+			TimeChangePlayer->GetMesh()->SetHiddenInGame(true);
 
 		}
 		else {
-			TimeChangePlayer->GetMesh()->SetVisibility(true);
+			TimeChangePlayer->GetMesh()->SetHiddenInGame(false);
 		}
 	}
 					   break;
