@@ -130,6 +130,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
 		FVector characterVelocity;
 
+
 		/*characterVelocity.X = p->velocity.x;
 		characterVelocity.Y = p->velocity.y;
 		characterVelocity.Z = p->velocity.z;*/
@@ -158,7 +159,14 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		SC_ADD_PLAYER_PACKET* p = reinterpret_cast<SC_ADD_PLAYER_PACKET*>(packet);
 		IsEnterNewPlayer = true;
 		other_id = p->id;
-		UpdateNewPlayer(other_id);
+
+		FVector OtherPlyaerLocation;
+
+		OtherPlyaerLocation.X = p->location.x;
+		OtherPlyaerLocation.Y = p->location.y;
+		OtherPlyaerLocation.Z = p->location.z;
+
+		UpdateNewPlayer(other_id, OtherPlyaerLocation);
 	}
 					  break;
 	case SC_LOGIN_FAIL: {
@@ -336,7 +344,7 @@ void UTIMERUNGameInstance::SendPlayerupdatePakcet()
 	int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 
-void UTIMERUNGameInstance::UpdateNewPlayer(int c_id)
+void UTIMERUNGameInstance::UpdateNewPlayer(int c_id, FVector location)
 {
 	UWorld* const world = GetWorld();
 
@@ -344,6 +352,7 @@ void UTIMERUNGameInstance::UpdateNewPlayer(int c_id)
 
 	SpawnCharacter->SpawnDefaultController();
 	SpawnCharacter->id = c_id;
+	SpawnCharacter->SetActorLocation(location);
 
 	IsEnterNewPlayer = false;
 }
