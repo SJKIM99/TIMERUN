@@ -22,7 +22,6 @@ ATIMERUNGameModeBase::ATIMERUNGameModeBase()
 	{
 		PlayerControllerClass = PlayerControllerBPClass.Class;
 	}
-	//PlayerControllerClass = ATIMERUNPlayerController::StaticClass();
-
+	bUseSeamlessTravel = true;
 }
  
