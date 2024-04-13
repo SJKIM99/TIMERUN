@@ -331,6 +331,7 @@ void UTIMERUNGameInstance::SendPlayerupdatePakcet()
 	packet.HaveGravityGun = MyPlayerCharacter->HaveGravityGun;
 	packet.time = MyPlayerCharacter->my_time;
 
+	if (*ingame_socket == NULL) return;
 	int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 
@@ -374,6 +375,7 @@ void UTIMERUNGameInstance::SendGravityBoxSpawn(FVector location, FRotator rotati
 	packet.rotation.y = rotation.Pitch;
 	packet.rotation.z = rotation.Roll;
 
+	if (*ingame_socket == NULL) return;
 	int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 
 	UE_LOG(LogTemp, Warning, TEXT("GravityBox Spawned"));
@@ -497,6 +499,7 @@ void UTIMERUNGameInstance::SendPlayerJumpPacket()
 	packet.type = CS_PLAYER_JUMP;
 	packet.id = my_id;
 
+	if (*ingame_socket == NULL) return;
 	int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 }
 
@@ -512,6 +515,7 @@ void UTIMERUNGameInstance::SendTimeChangePacket()
 	packet.id = my_id;
 	packet.time = MyPlayerCharacter->my_time;
 
+	if (*ingame_socket == NULL) return;
 	int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 }
 
