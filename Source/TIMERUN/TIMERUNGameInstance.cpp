@@ -296,6 +296,25 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		GravityBox->isGrabbed = p->isGrabbed;
 	}
 							  break;
+	case SC_TIME_CHANGE: {
+		SC_TIME_CHANGE_PACKET* p = reinterpret_cast<SC_TIME_CHANGE_PACKET*>(packet);
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
+		SortPlayerIndex();
+
+		ATIMERUNCharacter* TimeChangePlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
+		TimeChangePlayer->my_time = p->time;
+
+		ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+		if (MyPlayerCharacter->my_time != TimeChangePlayer->my_time) {
+			TimeChangePlayer->GetMesh()->SetVisibility(false);
+
+		}
+		else {
+			TimeChangePlayer->GetMesh()->SetVisibility(true);
+		}
+	}
+					   break;
 	}
 }
 
@@ -317,6 +336,7 @@ void UTIMERUNGameInstance::SendPlayerupdatePakcet()
 	packet.velocity.z = MyPlayerCharacter->GetVelocity().Z;
 	packet.yaw = MyPlayerCharacter->GetActorRotation().Yaw;
 	packet.HaveGravityGun = MyPlayerCharacter->HaveGravityGun;
+	packet.time = MyPlayerCharacter->my_time;
 
 	int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
@@ -483,6 +503,21 @@ void UTIMERUNGameInstance::SendPlayerJumpPacket()
 	packet.size = sizeof CS_PLAYER_JUMP_PACKET;
 	packet.type = CS_PLAYER_JUMP;
 	packet.id = my_id;
+
+	int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
+}
+
+void UTIMERUNGameInstance::SendTimeChangePacket()
+{
+	APlayerController* PlayerContoller = GetWorld()->GetFirstPlayerController();
+	APawn* ControlledPawn = PlayerContoller->GetPawn();
+	ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(ControlledPawn);
+
+	CS_TIME_CHANGE_PACKET packet;
+	packet.size = sizeof CS_TIME_CHANGE_PACKET;
+	packet.type = CS_TIME_CHANGE;
+	packet.id = my_id;
+	packet.time = MyPlayerCharacter->my_time;
 
 	int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 }

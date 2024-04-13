@@ -91,4 +91,7 @@ public:
 	FRotator current_rotation;
 	FVector current_velocity;
 	FTimerDelegate TimerCallback;
+public:
+	//시간이동할 때 쓰이는 변수
+	int box_time;
 };

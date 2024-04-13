@@ -78,4 +78,8 @@ public:
 	FVector prev_location;
 	FRotator prev_rotation;
 	FVector prev_velocity;
+public:
+	//시간이동할때 쓰이는 변수
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int my_time;
 };

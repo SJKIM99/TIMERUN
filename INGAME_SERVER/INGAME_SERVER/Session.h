@@ -61,6 +61,7 @@ public:
 	bool m_HaveGrabityGun;
 	double m_yaw;
 	int m_prev_remain_data;
+	int m_time;
 public:
 	bool m_online;
 public:
@@ -98,6 +99,7 @@ public:
 	void send_player_jump_packet(int c_id);
 	void send_gravitybox_grabbed_packet(int c_id, int box_id);
 	void send_gravitybox_dropped_packet(int c_id, int box_id);
+	void send_player_time_change_packet(int c_id);
 public:
 	void SendPacket(void* packet);
 	void RecvPacket();

@@ -178,11 +178,14 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 
 			clients[p->id].m_yaw = p->yaw;
 			clients[p->id].m_HaveGrabityGun = p->HaveGravityGun;
+
+			clients[p->id].m_time = p->time;
 		}
 		for (auto& cl : clients) {
 			if (cl.m_state == ST_FREE) break;
 			if (cl.m_id == p->id) continue;
-			cl.send_world_update_packet(c_id);
+			if (cl.m_time == p->time)
+				cl.send_world_update_packet(c_id);
 		}
 	}
 						 break;
@@ -270,6 +273,19 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			cl.send_gravitybox_dropped_packet(c_id, p->boxid);
 		}
 	}
+	case CS_TIME_CHANGE: {
+		CS_TIME_CHANGE_PACKET* p = reinterpret_cast<CS_TIME_CHANGE_PACKET*>(packet);
+		{
+			std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
+			clients[c_id].m_time = p->time;
+		}
+		for (auto& cl : clients) {
+			if (cl.m_state == ST_FREE) break;
+			if (cl.m_id == c_id) continue;
+			cl.send_player_time_change_packet(c_id);
+		}
+	}
+					   break;
 	}
 }
 

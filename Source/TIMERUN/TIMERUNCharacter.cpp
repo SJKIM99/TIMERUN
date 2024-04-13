@@ -10,7 +10,7 @@
 
 
 // Sets default values
-ATIMERUNCharacter::ATIMERUNCharacter()
+ATIMERUNCharacter::ATIMERUNCharacter() : my_time(0)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
