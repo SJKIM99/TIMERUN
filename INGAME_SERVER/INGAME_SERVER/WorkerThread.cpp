@@ -184,9 +184,8 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 		for (auto& cl : clients) {
 			if (cl.m_state == ST_FREE) break;
 			if (cl.m_id == p->id) continue;
-			if (cl.m_time == p->time)
 				cl.send_world_update_packet(c_id);
-		}
+			}
 	}
 						 break;
 	case CS_GRAVITYBOX_ADD: {
