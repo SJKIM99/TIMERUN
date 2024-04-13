@@ -200,13 +200,15 @@ struct SC_ADD_PLAYER_PACKET {
 	unsigned char size;
 	char type;
 	int id;
-	vector_d3 location;
 };
 
 struct SC_INGAME_SUCCESS_PACKET {
 	unsigned char size;
 	char type;
 	int id;
+	vector_d3 location;
+	vector_d3 velocity;
+	float yaw;
 };
 
 struct SC_WORLD_UPDATE_PACKET {

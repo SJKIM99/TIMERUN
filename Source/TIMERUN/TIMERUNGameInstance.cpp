@@ -130,26 +130,25 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
 		FVector characterVelocity;
 
-
-		/*characterVelocity.X = p->velocity.x;
+		characterVelocity.X = p->velocity.x;
 		characterVelocity.Y = p->velocity.y;
-		characterVelocity.Z = p->velocity.z;*/
+		characterVelocity.Z = p->velocity.z;
 
 		FVector characterLocation;
 
-		/*characterLocation.X = p->location.x;
+		characterLocation.X = p->location.x;
 		characterLocation.Y = p->location.y;
-		characterLocation.Z = p->location.z;*/
+		characterLocation.Z = p->location.z;
 
 		FRotator characterRotation;
 
-		/*characterRotation.Yaw = p->yaw;
+		characterRotation.Yaw = p->yaw;
 		characterRotation.Pitch = 0;
-		characterRotation.Roll = 0;*/
+		characterRotation.Roll = 0;
 
 		//MyPlayerCharacter->AddMovementInput(characterVelocity);
-		//MyPlayerCharacter->SetActorLocation(characterLocation);
-		//MyPlayerCharacter->SetActorRotation(characterRotation);
+		MyPlayerCharacter->SetActorLocation(characterLocation);
+		MyPlayerCharacter->SetActorRotation(characterRotation);
 
 		GetWorld()->GetTimerManager().SetTimer(SendPlayerInfoHandle, this, &UTIMERUNGameInstance::SendPlayerupdatePakcet, 0.1f, true);
 	}
@@ -159,14 +158,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		SC_ADD_PLAYER_PACKET* p = reinterpret_cast<SC_ADD_PLAYER_PACKET*>(packet);
 		IsEnterNewPlayer = true;
 		other_id = p->id;
-
-		FVector OtherPlyaerLocation;
-
-		OtherPlyaerLocation.X = p->location.x;
-		OtherPlyaerLocation.Y = p->location.y;
-		OtherPlyaerLocation.Z = p->location.z;
-
-		UpdateNewPlayer(other_id, OtherPlyaerLocation);
+		UpdateNewPlayer(other_id);
 	}
 					  break;
 	case SC_LOGIN_FAIL: {
@@ -344,7 +336,7 @@ void UTIMERUNGameInstance::SendPlayerupdatePakcet()
 	int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 
-void UTIMERUNGameInstance::UpdateNewPlayer(int c_id, FVector location)
+void UTIMERUNGameInstance::UpdateNewPlayer(int c_id)
 {
 	UWorld* const world = GetWorld();
 
@@ -352,7 +344,6 @@ void UTIMERUNGameInstance::UpdateNewPlayer(int c_id, FVector location)
 
 	SpawnCharacter->SpawnDefaultController();
 	SpawnCharacter->id = c_id;
-	SpawnCharacter->SetActorLocation(location);
 
 	IsEnterNewPlayer = false;
 }
