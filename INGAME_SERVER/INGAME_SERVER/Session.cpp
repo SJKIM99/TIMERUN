@@ -74,6 +74,7 @@ void Session::send_gravitybox_add_packet(int c_id, int box_id)
 	packet.rotation.x = gravitybox[box_id].rotation.x;
 	packet.rotation.y = gravitybox[box_id].rotation.y;
 	packet.rotation.z = gravitybox[box_id].rotation.z;
+	packet.time = gravitybox[box_id].time;
 	SendPacket(&packet);
 }
 

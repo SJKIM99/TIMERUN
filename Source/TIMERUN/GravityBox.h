@@ -52,7 +52,7 @@ public:
 	UStaticMeshComponent* StaticMeshComponent;
 
 	//스켈레탈 메쉬 컴포넌트 선언
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USkeletalMeshComponent* SkeletalMeshComponent;
 
 
@@ -92,6 +92,7 @@ public:
 	FVector current_velocity;
 	FTimerDelegate TimerCallback;
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	//시간이동할 때 쓰이는 변수
 	int box_time;
 };

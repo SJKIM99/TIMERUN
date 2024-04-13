@@ -228,6 +228,7 @@ struct SC_GRAVITYBOX_ADD_PACKET {
 	int boxid;
 	vector_d3 location;
 	vector_d3 rotation;
+	int box_time;
 };
 
 struct SC_GRAVITYBOX_UPDATE_PACKET {

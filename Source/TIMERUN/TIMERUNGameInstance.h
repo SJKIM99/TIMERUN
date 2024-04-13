@@ -72,7 +72,7 @@ public:
 	FTimerHandle SendPlayerInfoHandle;	// 동기화 타이머 핸들러
 	AGravityBox* gravitybox;
 	TArray<AActor*> spawnedGravityBox;
-	void UpdateNewGravityBox(FVector location, FRotator rotation, int box_id, int bywhoid);
+	void UpdateNewGravityBox(FVector location, FRotator rotation, int box_id, int bywhoid, int box_time);
 
 public:
 	//보간 코드 여기에 추가
@@ -94,4 +94,7 @@ public:
 public:
 	UFUNCTION(BlueprintCallable)
 	void SendTimeChangePacket();
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int TIMESIZE;
 };

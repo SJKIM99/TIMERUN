@@ -202,6 +202,8 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			gravitybox[BoxId].rotation.y = p->rotation.y;
 			gravitybox[BoxId].rotation.z = p->rotation.z;
 
+			gravitybox[BoxId].time = p->time;
+
 			for (auto& cl : clients) {
 				if (cl.m_state == ST_FREE) break;
 				cl.send_gravitybox_add_packet(c_id, BoxId);
