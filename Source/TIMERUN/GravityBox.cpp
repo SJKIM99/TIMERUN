@@ -46,7 +46,7 @@ AGravityBox::AGravityBox()
 
 	//기본 스테틱 메쉬 설정
 	StaticMeshComponent->SetHiddenInGame(true, true);
-	StaticMeshComponent->SetCastHiddenShadow(true);
+	StaticMeshComponent->SetCastShadow(false);
 
 	StaticMeshComponent->SetMassScale(NAME_None, 10.f);
 	StaticMeshComponent->SetSimulatePhysics(true); // Enable physics simulation for the static mesh
