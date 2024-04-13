@@ -205,7 +205,6 @@ void AGravityBox::SendGravityBoxMovePacket()
 			packet.velocity.y = GetVelocity().Y;
 			packet.velocity.z = GetVelocity().Z;
 
-            if (instance->ingame_socket == NULL) return;
 			int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 		}
 	}
@@ -218,8 +217,6 @@ void AGravityBox::SendGravityBoxGrabbedPacket()
     packet.type = CS_GRAVITYBOX_GRABBED;
     packet.boxid = BoxId;
     packet.isGrabbed = true;
-
-    if (instance->ingame_socket == NULL) return;
     int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 
@@ -230,8 +227,6 @@ void AGravityBox::SendGravityBoxDroppedPacket()
     packet.type = CS_GRAVITYBOX_DROPPED;
     packet.boxid = BoxId;
     packet.isGrabbed = false;
-
-    if (instance->ingame_socket == NULL) return;
     int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 

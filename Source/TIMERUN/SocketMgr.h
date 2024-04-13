@@ -18,7 +18,14 @@
 /**
  * 
  */
+struct Session {
+	int id;
+	char NickName[NAMESIZE];
+	bool online;
 
+	vector_d3 location;
+	float Yaw;
+};
 
 class TIMERUN_API SocketMgr
 {
