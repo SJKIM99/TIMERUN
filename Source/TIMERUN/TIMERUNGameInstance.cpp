@@ -130,25 +130,25 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
 		FVector characterVelocity;
 
-		characterVelocity.X = p->velocity.x;
+		/*characterVelocity.X = p->velocity.x;
 		characterVelocity.Y = p->velocity.y;
-		characterVelocity.Z = p->velocity.z;
+		characterVelocity.Z = p->velocity.z;*/
 
 		FVector characterLocation;
 
-		characterLocation.X = p->location.x;
+		/*characterLocation.X = p->location.x;
 		characterLocation.Y = p->location.y;
-		characterLocation.Z = p->location.z;
+		characterLocation.Z = p->location.z;*/
 
 		FRotator characterRotation;
 
-		characterRotation.Yaw = p->yaw;
+		/*characterRotation.Yaw = p->yaw;
 		characterRotation.Pitch = 0;
-		characterRotation.Roll = 0;
+		characterRotation.Roll = 0;*/
 
 		//MyPlayerCharacter->AddMovementInput(characterVelocity);
-		MyPlayerCharacter->SetActorLocation(characterLocation);
-		MyPlayerCharacter->SetActorRotation(characterRotation);
+		//MyPlayerCharacter->SetActorLocation(characterLocation);
+		//MyPlayerCharacter->SetActorRotation(characterRotation);
 
 		GetWorld()->GetTimerManager().SetTimer(SendPlayerInfoHandle, this, &UTIMERUNGameInstance::SendPlayerupdatePakcet, 0.1f, true);
 	}

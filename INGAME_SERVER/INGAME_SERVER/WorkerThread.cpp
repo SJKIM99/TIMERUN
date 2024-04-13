@@ -130,7 +130,7 @@ void WorkerThread::InitPlayerInfo(int player_id)
 	clients[player_id].m_online = true;
 	clients[player_id].m_location.x = 0;
 	clients[player_id].m_location.y = 0;
-	clients[player_id].m_location.z = 0;
+	clients[player_id].m_location.z = 300;
 	clients[player_id].m_yaw = 0;
 	clients[player_id].m_velocity.x = 0;
 	clients[player_id].m_velocity.y = 0;

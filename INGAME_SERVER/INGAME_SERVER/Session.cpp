@@ -21,14 +21,7 @@ void Session::send_ingame_login_sucess_packet(int c_id)
 	packet.id = c_id;
 	packet.size = sizeof SC_INGAME_SUCCESS_PACKET;
 	packet.type = SC_INGAME_SUCCESS;
-	packet.location.x = clients[c_id].m_location.x;
-	packet.location.y = clients[c_id].m_location.y;
-	packet.location.z = clients[c_id].m_location.z;
-	packet.velocity.x = clients[c_id].m_velocity.x;
-	packet.velocity.y = clients[c_id].m_velocity.y;
-	packet.velocity.z = clients[c_id].m_velocity.z;
-	packet.yaw = clients[c_id].m_yaw;
-
+	
 	SendPacket(&packet);
 }
 void Session::send_move_packet(int c_id)
@@ -74,7 +67,7 @@ void Session::send_gravitybox_add_packet(int c_id, int box_id)
 	packet.rotation.x = gravitybox[box_id].rotation.x;
 	packet.rotation.y = gravitybox[box_id].rotation.y;
 	packet.rotation.z = gravitybox[box_id].rotation.z;
-	packet.time = gravitybox[box_id].time;
+	packet.box_time = gravitybox[box_id].time;
 	SendPacket(&packet);
 }
 
