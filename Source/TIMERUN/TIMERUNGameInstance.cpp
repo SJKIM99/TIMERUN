@@ -158,7 +158,13 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		SC_ADD_PLAYER_PACKET* p = reinterpret_cast<SC_ADD_PLAYER_PACKET*>(packet);
 		IsEnterNewPlayer = true;
 		other_id = p->id;
-		UpdateNewPlayer(other_id);
+		
+		FVector OtherPlayerLocation;
+		OtherPlayerLocation.X = p->location.x;
+		OtherPlayerLocation.Y = p->location.y;
+		OtherPlayerLocation.Z = p->location.z;
+
+		UpdateNewPlayer(other_id, OtherPlayerLocation);
 	}
 					  break;
 	case SC_LOGIN_FAIL: {
@@ -336,11 +342,11 @@ void UTIMERUNGameInstance::SendPlayerupdatePakcet()
 	int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 
-void UTIMERUNGameInstance::UpdateNewPlayer(int c_id)
+void UTIMERUNGameInstance::UpdateNewPlayer(int c_id, FVector location)
 {
 	UWorld* const world = GetWorld();
 
-	ATIMERUNCharacter* SpawnCharacter = world->SpawnActor<ATIMERUNCharacter>();
+	ATIMERUNCharacter* SpawnCharacter = world->SpawnActor<ATIMERUNCharacter>(ATIMERUNCharacter::StaticClass(), location, FRotator::ZeroRotator);
 
 	SpawnCharacter->SpawnDefaultController();
 	SpawnCharacter->id = c_id;

@@ -59,7 +59,7 @@ public:
 public:
 	int nPlayers;
 	bool IsEnterNewPlayer;
-	void UpdateNewPlayer(int c_id);
+	void UpdateNewPlayer(int c_id, FVector location);
 	void SortPlayerIndex();
 
 	UFUNCTION(BlueprintCallable)
