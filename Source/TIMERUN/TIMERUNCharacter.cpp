@@ -77,6 +77,7 @@ void ATIMERUNCharacter::BeginPlay()
 	Super::BeginPlay();
 	GravityGunMesh = FindComponentByClass<UStaticMeshComponent>();
 
+
 	//중력총 설정
 	Muzzle = FindComponentByClass<UArrowComponent>();
 	Muzzle->AttachToComponent(GravityGunMesh, FAttachmentTransformRules::KeepRelativeTransform);

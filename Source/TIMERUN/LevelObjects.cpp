@@ -14,6 +14,9 @@ ALevelObjects::ALevelObjects()
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	RootComponent = StaticMeshComponent;
 
+	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
+	SkeletalMeshComponent->SetupAttachment(StaticMeshComponent); // Attach to Static Mesh Component
+
 	TimeLevel = 0;
 }
 
