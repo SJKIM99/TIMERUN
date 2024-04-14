@@ -246,29 +246,30 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
+		if (MyPlayerCharacter->my_time == p->grabbed_time) {
+			FVector GravityBoxLocation;
+			GravityBoxLocation.X = p->location.x;
+			GravityBoxLocation.Y = p->location.y;
+			GravityBoxLocation.Z = p->location.z;
 
-		FVector GravityBoxLocation;
-		GravityBoxLocation.X = p->location.x;
-		GravityBoxLocation.Y = p->location.y;
-		GravityBoxLocation.Z = p->location.z;
+			FRotator GravityBoxRotation;
+			GravityBoxRotation.Yaw = p->rotation.x;
+			GravityBoxRotation.Pitch = p->rotation.y;
+			GravityBoxRotation.Roll = p->rotation.z;
 
-		FRotator GravityBoxRotation;
-		GravityBoxRotation.Yaw = p->rotation.x;
-		GravityBoxRotation.Pitch = p->rotation.y;
-		GravityBoxRotation.Roll = p->rotation.z;
+			FVector GravityBoxVelocity;
+			GravityBoxVelocity.X = p->velocity.x;
+			GravityBoxVelocity.Y = p->velocity.y;
+			GravityBoxVelocity.Z = p->velocity.z;
 
-		FVector GravityBoxVelocity;
-		GravityBoxVelocity.X = p->velocity.x;
-		GravityBoxVelocity.Y = p->velocity.y;
-		GravityBoxVelocity.Z = p->velocity.z;
+			AGravityBox* OtherGravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
 
-		AGravityBox* OtherGravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
+			OtherGravityBox->ByWhoID = p->id;
+			OtherGravityBox->isGrabbed = p->isGrabbed;
+			OtherGravityBox->box_time = p->time;
 
-		OtherGravityBox->ByWhoID = p->id;
-		OtherGravityBox->isGrabbed = p->isGrabbed;
-		OtherGravityBox->box_time = p->time;
-
-		UpdateGravityBoxPosition(GravityBoxLocation, GravityBoxRotation, GravityBoxVelocity, p->boxid);
+			UpdateGravityBoxPosition(GravityBoxLocation, GravityBoxRotation, GravityBoxVelocity, p->boxid);
+		}
 	}
 							 break;
 	case SC_PLAYER_JUMP: {
