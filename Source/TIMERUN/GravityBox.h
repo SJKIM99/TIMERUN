@@ -95,4 +95,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	//시간이동할 때 쓰이는 변수
 	int box_time;
+
+	float timestate_location_x[TIMESIZE];
+	float timestate_location_y[TIMESIZE];
+	float timestate_location_z[TIMESIZE];
+
+	float timestate_rotation_yaw[TIMESIZE];
+	float timestate_rotation_pitch[TIMESIZE];
+	float timestate_rotation_roll[TIMESIZE];
 };

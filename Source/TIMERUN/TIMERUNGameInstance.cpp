@@ -240,7 +240,10 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 	}
 						  break;
 	case SC_GRAVITYBOX_UPDATE: {
+		//박스가 보이는 조건 :  박스스폰time <= 보이는 구간<=캐릭터가잡은time 
 		SC_GRAVITYBOX_UPDATE_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_UPDATE_PACKET*>(packet);
+
+		ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
 
@@ -263,12 +266,9 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
 		OtherGravityBox->ByWhoID = p->id;
 		OtherGravityBox->isGrabbed = p->isGrabbed;
+		OtherGravityBox->box_time = p->time;
 
 		UpdateGravityBoxPosition(GravityBoxLocation, GravityBoxRotation, GravityBoxVelocity, p->boxid);
-	/*	OtherGravityBox->AddMovementInput(GravityBoxVelocity);
-		OtherGravityBox->SetActorRotation(GravityBoxRotation);
-		OtherGravityBox->SetActorLocation(GravityBoxLocation);*/
-
 	}
 							 break;
 	case SC_PLAYER_JUMP: {
@@ -291,6 +291,10 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[p->box_id]);
 		GravityBox->ByWhoID = p->id;
 		GravityBox->isGrabbed = p->isGrabbed;
+		GravityBox->box_time = p->box_time;
+
+		//박스가 보이는 조건 :  박스스폰time <= 보이는 구간<=캐릭터가잡은time 
+		
 	}
 							  break;
 	case SC_GRAVIRTBOX_DROPPED: {
@@ -301,6 +305,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[p->box_id]);
 		GravityBox->ByWhoID = p->id;
 		GravityBox->isGrabbed = p->isGrabbed;
+		GravityBox->box_time = p->box_time;
 	}
 							  break;
 	case SC_TIME_CHANGE: {
@@ -310,9 +315,6 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
 		ATIMERUNCharacter* TimeChangePlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
 		TimeChangePlayer->my_time = p->time;
-
-		ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-
 	}
 					   break;
 	}
@@ -472,8 +474,6 @@ void UTIMERUNGameInstance::InterporlateGravityBoxPosition(AGravityBox* UpdateGra
 		FVector NewLocation = FMath::VInterpTo(UpdateGravityBox->GetActorLocation(), UpdateGravityBox->current_location, DeltaSeconds, InterpSpeed);
 		FRotator NewRotation = FMath::RInterpTo(UpdateGravityBox->GetActorRotation(), UpdateGravityBox->current_rotation, DeltaSeconds, InterpSpeed);
 		FVector NewVelocity = UpdateGravityBox->current_velocity;
-
-		UE_LOG(LogTemp, Warning, TEXT("%d, suh"), UpdateGravityBox->ByWhoID);
 
 		UpdateGravityBox->AddMovementInput(NewVelocity);
 		UpdateGravityBox->SetActorLocation(NewLocation);

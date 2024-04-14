@@ -2,6 +2,7 @@
 
 
 #include "GravityBox.h"
+#include "Kismet/GameplayStatics.h"
 #include "TIMERUNGameInstance.h"
 #include "TimerManager.h"
 
@@ -93,7 +94,7 @@ void AGravityBox::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 bool AGravityBox::IsMovingCheck()
 {
-	if (GetVelocity().Size() > 0.f) return true;
+	if (GetVelocity().Size() > 1.f) return true;
 	else return false;
 }
 
@@ -153,6 +154,26 @@ bool AGravityBox::CanFixPosCheck()
             SendGravityBoxMovePacket();
             StaticMeshComponent->SetSimulatePhysics(false);
         }
+
+        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+        for (int i = box_time; i <= MyPlayerCharacter->my_time; ++i) {
+            timestate_location_x[i] = BoxLocation.X;
+            timestate_location_y[i] = BoxLocation.Y;
+            timestate_location_z[i] = BoxLocation.Z;
+
+            timestate_rotation_yaw[i] = BoxRotation.Yaw;
+            timestate_rotation_pitch[i] = BoxRotation.Pitch;
+            timestate_rotation_roll[i] = BoxRotation.Roll;
+        }
+        
+        BoxLocation.X = timestate_location_x[MyPlayerCharacter->my_time];
+        BoxLocation.X = timestate_location_y[MyPlayerCharacter->my_time];
+        BoxLocation.X = timestate_location_z[MyPlayerCharacter->my_time];
+
+        BoxRotation.Yaw = timestate_rotation_yaw[MyPlayerCharacter->my_time];
+        BoxRotation.Pitch = timestate_rotation_pitch[MyPlayerCharacter->my_time];
+        BoxRotation.Roll = timestate_rotation_roll[MyPlayerCharacter->my_time];
         return true;
     }
     else
@@ -189,6 +210,8 @@ void AGravityBox::SendGravityBoxMovePacket()
 {
 	if (ByWhoID == instance->my_id) {
 		if (!CanFixPos) {
+            ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
 			CS_GRAVITYBOX_UPDATE_PACKET packet;
 			packet.type = CS_GRAVITYBOX_UPDATE;
 			packet.size = sizeof CS_GRAVITYBOX_UPDATE_PACKET;
@@ -204,6 +227,8 @@ void AGravityBox::SendGravityBoxMovePacket()
 			packet.velocity.x = GetVelocity().X;
 			packet.velocity.y = GetVelocity().Y;
 			packet.velocity.z = GetVelocity().Z;
+            packet.time = box_time;
+            packet.grabbed_time = MyPlayerCharacter->my_time;
 
             if (instance->ingame_socket == NULL) return;
 			int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
@@ -213,11 +238,15 @@ void AGravityBox::SendGravityBoxMovePacket()
 
 void AGravityBox::SendGravityBoxGrabbedPacket()
 {
+    ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
     CS_GRAVITYBOX_GRABBED_PACKET packet;
     packet.size = sizeof CS_GRAVITYBOX_GRABBED_PACKET;
     packet.type = CS_GRAVITYBOX_GRABBED;
     packet.boxid = BoxId;
     packet.isGrabbed = true;
+    packet.time = box_time;
+    packet.grabbed_time = MyPlayerCharacter->my_time;
 
     if (instance->ingame_socket == NULL) return;
     int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
@@ -225,11 +254,15 @@ void AGravityBox::SendGravityBoxGrabbedPacket()
 
 void AGravityBox::SendGravityBoxDroppedPacket()
 {
+    ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
     CS_GRAVITYBOX_DROPPED_PACKET packet;
     packet.size = sizeof CS_GRAVITYBOX_DROPPED_PACKET;
     packet.type = CS_GRAVITYBOX_DROPPED;
     packet.boxid = BoxId;
     packet.isGrabbed = false;
+    packet.time = box_time;
+    packet.grabbed_time = MyPlayerCharacter->my_time;
 
     if (instance->ingame_socket == NULL) return;
     int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);

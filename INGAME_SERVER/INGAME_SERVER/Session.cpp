@@ -100,6 +100,8 @@ void Session::send_gravitybox_update_packet(int c_id, int box_id)
 	packet.velocity.x = gravitybox[box_id].velocity.x;
 	packet.velocity.y = gravitybox[box_id].velocity.y;
 	packet.velocity.z = gravitybox[box_id].velocity.z;
+	packet.time = gravitybox[box_id].time;
+	packet.grabbed_time = gravitybox[box_id].grabbed_time;
 
 	SendPacket(&packet);
 }
@@ -121,6 +123,8 @@ void Session::send_gravitybox_grabbed_packet(int c_id, int box_id)
 	packet.id = c_id;
 	packet.box_id = box_id;
 	packet.isGrabbed = gravitybox[box_id].isGrabbed;
+	packet.box_time = gravitybox[box_id].time;
+	packet.grabbed_time = gravitybox[box_id].grabbed_time;
 	SendPacket(&packet);
 }
 
@@ -132,6 +136,8 @@ void Session::send_gravitybox_dropped_packet(int c_id, int box_id)
 	packet.id = c_id;
 	packet.box_id = box_id;
 	packet.isGrabbed = gravitybox[box_id].isGrabbed;
+	packet.box_time = gravitybox[box_id].time;
+	packet.grabbed_time = gravitybox[box_id].grabbed_time;
 	SendPacket(&packet);
 }
 

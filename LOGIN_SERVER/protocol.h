@@ -39,6 +39,8 @@ constexpr int IPSIZE = 20;
 constexpr int MAX_USER = 10;
 constexpr int MAX_GRAVITYBOX = 100;
 
+constexpr int TIMESIZE = 10;
+
 
 //C2S
 constexpr char CS_LOGIN = 0;
@@ -138,6 +140,8 @@ struct CS_GRAVITYBOX_UPDATE_PACKET {
 	vector_d3 location;
 	vector_d3 rotation;
 	vector_d3 velocity;
+	int time;
+	int grabbed_time;
 };
 
 struct CS_PLAYER_JUMP_PACKET {
@@ -151,6 +155,8 @@ struct CS_GRAVITYBOX_GRABBED_PACKET {
 	char type;
 	int boxid;
 	bool isGrabbed;
+	int grabbed_time;
+	int time;
 };
 
 struct CS_GRAVITYBOX_DROPPED_PACKET {
@@ -158,6 +164,8 @@ struct CS_GRAVITYBOX_DROPPED_PACKET {
 	char type;
 	int boxid;
 	bool isGrabbed;
+	int time;
+	int grabbed_time;
 };
 
 struct CS_TIME_CHANGE_PACKET {
@@ -241,6 +249,8 @@ struct SC_GRAVITYBOX_UPDATE_PACKET {
 	vector_d3 location;
 	vector_d3 rotation;
 	vector_d3 velocity;
+	int time;
+	int grabbed_time;
 };
 
 struct SC_PLAYER_JUMP_PACKET {
@@ -255,6 +265,8 @@ struct SC_GRAVIRTBOX_GRABBED_PACKET {
 	int id;
 	int box_id;
 	bool isGrabbed;
+	int box_time;
+	int grabbed_time;
 };
 
 struct SC_GRAVIRTBOX_DROPPED_PACKET {
@@ -263,6 +275,8 @@ struct SC_GRAVIRTBOX_DROPPED_PACKET {
 	int id;
 	int box_id;
 	bool isGrabbed;
+	int box_time;
+	int grabbed_time;
 };
 
 struct SC_TIME_CHANGE_PACKET {
