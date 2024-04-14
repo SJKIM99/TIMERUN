@@ -155,7 +155,6 @@ struct CS_GRAVITYBOX_GRABBED_PACKET {
 	char type;
 	int boxid;
 	bool isGrabbed;
-	int grabbed_time;
 };
 
 struct CS_GRAVITYBOX_DROPPED_PACKET {
@@ -163,7 +162,6 @@ struct CS_GRAVITYBOX_DROPPED_PACKET {
 	char type;
 	int boxid;
 	bool isGrabbed;
-	int grabbed_time;
 };
 
 struct CS_TIME_CHANGE_PACKET {
@@ -263,8 +261,6 @@ struct SC_GRAVIRTBOX_GRABBED_PACKET {
 	int id;
 	int box_id;
 	bool isGrabbed;
-	int box_time;
-	int grabbed_time;
 };
 
 struct SC_GRAVIRTBOX_DROPPED_PACKET {
@@ -273,8 +269,6 @@ struct SC_GRAVIRTBOX_DROPPED_PACKET {
 	int id;
 	int box_id;
 	bool isGrabbed;
-	int box_time;
-	int grabbed_time;
 };
 
 struct SC_TIME_CHANGE_PACKET {
