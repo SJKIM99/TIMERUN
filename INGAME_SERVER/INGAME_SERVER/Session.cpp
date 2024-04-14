@@ -123,7 +123,6 @@ void Session::send_gravitybox_grabbed_packet(int c_id, int box_id)
 	packet.id = c_id;
 	packet.box_id = box_id;
 	packet.isGrabbed = gravitybox[box_id].isGrabbed;
-	packet.box_time = gravitybox[box_id].time;
 	packet.grabbed_time = gravitybox[box_id].grabbed_time;
 	SendPacket(&packet);
 }
@@ -136,7 +135,6 @@ void Session::send_gravitybox_dropped_packet(int c_id, int box_id)
 	packet.id = c_id;
 	packet.box_id = box_id;
 	packet.isGrabbed = gravitybox[box_id].isGrabbed;
-	packet.box_time = gravitybox[box_id].time;
 	packet.grabbed_time = gravitybox[box_id].grabbed_time;
 	SendPacket(&packet);
 }

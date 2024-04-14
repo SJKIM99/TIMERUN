@@ -256,7 +256,6 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			std::cout << p->boxid << "번 박스 그랩 " <<std::endl;
 			std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
 			gravitybox[p->boxid].isGrabbed = p->isGrabbed;
-			gravitybox[p->boxid].time = p->time;
 			gravitybox[p->boxid].grabbed_time = p->grabbed_time;
 			
 		}
@@ -273,7 +272,6 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			std::cout << p->boxid << "번 박스 드롭 " << std::endl;
 			std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
 			gravitybox[p->boxid].isGrabbed = p->isGrabbed;
-			gravitybox[p->boxid].time = p->time;
 			gravitybox[p->boxid].grabbed_time = p->grabbed_time;
 		}
 		for (auto& cl : clients) {

@@ -156,7 +156,6 @@ struct CS_GRAVITYBOX_GRABBED_PACKET {
 	int boxid;
 	bool isGrabbed;
 	int grabbed_time;
-	int time;
 };
 
 struct CS_GRAVITYBOX_DROPPED_PACKET {
@@ -164,7 +163,6 @@ struct CS_GRAVITYBOX_DROPPED_PACKET {
 	char type;
 	int boxid;
 	bool isGrabbed;
-	int time;
 	int grabbed_time;
 };
 

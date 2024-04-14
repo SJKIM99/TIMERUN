@@ -292,7 +292,6 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[p->box_id]);
 		GravityBox->ByWhoID = p->id;
 		GravityBox->isGrabbed = p->isGrabbed;
-		GravityBox->box_time = p->box_time;
 
 		//박스가 보이는 조건 :  박스스폰time <= 보이는 구간<=캐릭터가잡은time 
 		
@@ -306,7 +305,6 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[p->box_id]);
 		GravityBox->ByWhoID = p->id;
 		GravityBox->isGrabbed = p->isGrabbed;
-		GravityBox->box_time = p->box_time;
 	}
 							  break;
 	case SC_TIME_CHANGE: {

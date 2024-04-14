@@ -245,7 +245,6 @@ void AGravityBox::SendGravityBoxGrabbedPacket()
     packet.type = CS_GRAVITYBOX_GRABBED;
     packet.boxid = BoxId;
     packet.isGrabbed = true;
-    packet.time = box_time;
     packet.grabbed_time = MyPlayerCharacter->my_time;
 
     if (instance->ingame_socket == NULL) return;
@@ -261,7 +260,6 @@ void AGravityBox::SendGravityBoxDroppedPacket()
     packet.type = CS_GRAVITYBOX_DROPPED;
     packet.boxid = BoxId;
     packet.isGrabbed = false;
-    packet.time = box_time;
     packet.grabbed_time = MyPlayerCharacter->my_time;
 
     if (instance->ingame_socket == NULL) return;
