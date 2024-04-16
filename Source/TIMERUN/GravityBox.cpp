@@ -2,6 +2,7 @@
 
 
 #include "GravityBox.h"
+#include "Kismet/GameplayStatics.h"
 #include "TIMERUNGameInstance.h"
 #include "TimerManager.h"
 
@@ -93,7 +94,7 @@ void AGravityBox::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 bool AGravityBox::IsMovingCheck()
 {
-	if (GetVelocity().Size() > 0.f) return true;
+	if (GetVelocity().Size() > 1.f) return true;
 	else return false;
 }
 
@@ -189,6 +190,8 @@ void AGravityBox::SendGravityBoxMovePacket()
 {
 	if (ByWhoID == instance->my_id) {
 		if (!CanFixPos) {
+            ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
 			CS_GRAVITYBOX_UPDATE_PACKET packet;
 			packet.type = CS_GRAVITYBOX_UPDATE;
 			packet.size = sizeof CS_GRAVITYBOX_UPDATE_PACKET;
@@ -204,6 +207,8 @@ void AGravityBox::SendGravityBoxMovePacket()
 			packet.velocity.x = GetVelocity().X;
 			packet.velocity.y = GetVelocity().Y;
 			packet.velocity.z = GetVelocity().Z;
+            packet.time = box_time;
+            packet.grabbed_time = MyPlayerCharacter->my_time;
 
             if (instance->ingame_socket == NULL) return;
 			int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
@@ -213,24 +218,28 @@ void AGravityBox::SendGravityBoxMovePacket()
 
 void AGravityBox::SendGravityBoxGrabbedPacket()
 {
+    ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
     CS_GRAVITYBOX_GRABBED_PACKET packet;
     packet.size = sizeof CS_GRAVITYBOX_GRABBED_PACKET;
     packet.type = CS_GRAVITYBOX_GRABBED;
     packet.boxid = BoxId;
     packet.isGrabbed = true;
-
+  
     if (instance->ingame_socket == NULL) return;
     int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 
 void AGravityBox::SendGravityBoxDroppedPacket()
 {
+    ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
     CS_GRAVITYBOX_DROPPED_PACKET packet;
     packet.size = sizeof CS_GRAVITYBOX_DROPPED_PACKET;
     packet.type = CS_GRAVITYBOX_DROPPED;
     packet.boxid = BoxId;
     packet.isGrabbed = false;
-
+ 
     if (instance->ingame_socket == NULL) return;
     int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }

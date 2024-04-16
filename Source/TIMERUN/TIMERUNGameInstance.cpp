@@ -158,7 +158,13 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		SC_ADD_PLAYER_PACKET* p = reinterpret_cast<SC_ADD_PLAYER_PACKET*>(packet);
 		IsEnterNewPlayer = true;
 		other_id = p->id;
-		UpdateNewPlayer(other_id);
+		
+		FVector OtherPlayerLocation;
+		OtherPlayerLocation.X = p->location.x;
+		OtherPlayerLocation.Y = p->location.y;
+		OtherPlayerLocation.Z = p->location.z;
+
+		UpdateNewPlayer(other_id, OtherPlayerLocation);
 	}
 					  break;
 	case SC_LOGIN_FAIL: {
@@ -237,7 +243,6 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		SC_GRAVITYBOX_UPDATE_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_UPDATE_PACKET*>(packet);
 
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
-
 		FVector GravityBoxLocation;
 		GravityBoxLocation.X = p->location.x;
 		GravityBoxLocation.Y = p->location.y;
@@ -257,12 +262,9 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
 		OtherGravityBox->ByWhoID = p->id;
 		OtherGravityBox->isGrabbed = p->isGrabbed;
+		OtherGravityBox->box_time = p->time;
 
 		UpdateGravityBoxPosition(GravityBoxLocation, GravityBoxRotation, GravityBoxVelocity, p->boxid);
-	/*	OtherGravityBox->AddMovementInput(GravityBoxVelocity);
-		OtherGravityBox->SetActorRotation(GravityBoxRotation);
-		OtherGravityBox->SetActorLocation(GravityBoxLocation);*/
-
 	}
 							 break;
 	case SC_PLAYER_JUMP: {
@@ -272,8 +274,6 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		SortPlayerIndex();
 
 		ATIMERUNCharacter* JumpPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
-
-		//JumpPlayer->IsJump = true;
 		JumpPlayer->Jump();
 	}
 					   break;
@@ -304,9 +304,6 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
 		ATIMERUNCharacter* TimeChangePlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
 		TimeChangePlayer->my_time = p->time;
-
-		ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-
 	}
 					   break;
 	}
@@ -336,11 +333,11 @@ void UTIMERUNGameInstance::SendPlayerupdatePakcet()
 	int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 
-void UTIMERUNGameInstance::UpdateNewPlayer(int c_id)
+void UTIMERUNGameInstance::UpdateNewPlayer(int c_id, FVector location)
 {
 	UWorld* const world = GetWorld();
 
-	ATIMERUNCharacter* SpawnCharacter = world->SpawnActor<ATIMERUNCharacter>();
+	ATIMERUNCharacter* SpawnCharacter = world->SpawnActor<ATIMERUNCharacter>(ATIMERUNCharacter::StaticClass(), location, FRotator::ZeroRotator);
 
 	SpawnCharacter->SpawnDefaultController();
 	SpawnCharacter->id = c_id;
@@ -466,8 +463,6 @@ void UTIMERUNGameInstance::InterporlateGravityBoxPosition(AGravityBox* UpdateGra
 		FVector NewLocation = FMath::VInterpTo(UpdateGravityBox->GetActorLocation(), UpdateGravityBox->current_location, DeltaSeconds, InterpSpeed);
 		FRotator NewRotation = FMath::RInterpTo(UpdateGravityBox->GetActorRotation(), UpdateGravityBox->current_rotation, DeltaSeconds, InterpSpeed);
 		FVector NewVelocity = UpdateGravityBox->current_velocity;
-
-		UE_LOG(LogTemp, Warning, TEXT("%d, suh"), UpdateGravityBox->ByWhoID);
 
 		UpdateGravityBox->AddMovementInput(NewVelocity);
 		UpdateGravityBox->SetActorLocation(NewLocation);

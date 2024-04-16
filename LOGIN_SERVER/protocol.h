@@ -39,6 +39,8 @@ constexpr int IPSIZE = 20;
 constexpr int MAX_USER = 10;
 constexpr int MAX_GRAVITYBOX = 100;
 
+constexpr int TIMESIZE = 10;
+
 
 //C2S
 constexpr char CS_LOGIN = 0;
@@ -138,6 +140,8 @@ struct CS_GRAVITYBOX_UPDATE_PACKET {
 	vector_d3 location;
 	vector_d3 rotation;
 	vector_d3 velocity;
+	int time;
+	int grabbed_time;
 };
 
 struct CS_PLAYER_JUMP_PACKET {
@@ -200,6 +204,7 @@ struct SC_ADD_PLAYER_PACKET {
 	unsigned char size;
 	char type;
 	int id;
+	vector_d3 location;
 };
 
 struct SC_INGAME_SUCCESS_PACKET {
@@ -240,6 +245,8 @@ struct SC_GRAVITYBOX_UPDATE_PACKET {
 	vector_d3 location;
 	vector_d3 rotation;
 	vector_d3 velocity;
+	int time;
+	int grabbed_time;
 };
 
 struct SC_PLAYER_JUMP_PACKET {

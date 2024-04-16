@@ -12,6 +12,10 @@ void Session::send_add_player_packet(int c_id)
 	packet.id = c_id;
 	packet.size = sizeof SC_ADD_PLAYER_PACKET;
 	packet.type = SC_ADD_PLAYER;
+	packet.location.x = clients[c_id].m_location.x;
+	packet.location.y = clients[c_id].m_location.y;
+	packet.location.z = clients[c_id].m_location.z;
+
 	SendPacket(&packet);
 }
 
@@ -96,6 +100,8 @@ void Session::send_gravitybox_update_packet(int c_id, int box_id)
 	packet.velocity.x = gravitybox[box_id].velocity.x;
 	packet.velocity.y = gravitybox[box_id].velocity.y;
 	packet.velocity.z = gravitybox[box_id].velocity.z;
+	packet.time = gravitybox[box_id].time;
+	packet.grabbed_time = gravitybox[box_id].grabbed_time;
 
 	SendPacket(&packet);
 }

@@ -37,6 +37,7 @@ struct GravityBox {
 	vector_d3 rotation;
 	vector_d3 velocity;
 	int time;
+	int grabbed_time;
 };
 
 class Session
