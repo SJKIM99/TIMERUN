@@ -5,14 +5,14 @@
 class IngameMain
 {
 	WSADATA WsaData;
+	HANDLE h_iocp;
 	SOCKADDR_IN server_addr;
 	SOCKADDR_IN client_addr;
 
+	OVER_EXP g_a_over;
+private:
 	std::vector <std::thread> worker_threads;
 	WorkerThread workerThread;
-	OVER_EXP g_a_over;
-public:
-	HANDLE h_iocp;
 public:
 	IngameMain();
 	~IngameMain();

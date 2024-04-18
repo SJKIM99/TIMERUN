@@ -26,19 +26,6 @@ public:
 };
 
 enum S_STATE { ST_FREE, ST_ALLOC, ST_INGAME };
-enum GravityBox_STATE { ST_NULL, ST_OCCUPY };
-
-struct GravityBox {
-	int ByWhoId;
-	int BoxId;
-	bool isGrabbed;
-	GravityBox_STATE gravitybox_state;
-	vector_d3 locaton;
-	vector_d3 rotation;
-	vector_d3 velocity;
-	int time;
-	int grabbed_time;
-};
 
 class Session
 {
@@ -49,20 +36,16 @@ public:
 	std::mutex m_container_lock;
 	std::mutex m_state_lock;
 	std::mutex m_channel_lock;
-	std::mutex m_update_lock;
-	std::mutex m_gravitybox_lock;
 	int m_channel;
 	int m_client_in_channel_id;
 	int m_id;
 	char m_name[NAMESIZE];
 	vector_d3 m_location;
-	vector_d3 m_velocity;
-	bool m_HaveGrabityGun;
 	double m_yaw;
 	int m_prev_remain_data;
-	int m_time;
 public:
 	bool m_online;
+
 public:
 	Session() {
 		m_socket = 0;
@@ -92,13 +75,6 @@ public:
 	void send_add_player_packet(int c_id);
 	void send_ingame_login_sucess_packet(int c_id);
 	void send_move_packet(int c_id);
-	void send_world_update_packet(int c_id);
-	void send_gravitybox_add_packet(int c_id, int box_id);
-	void send_gravitybox_update_packet(int c_id, int box_id);
-	void send_player_jump_packet(int c_id);
-	void send_gravitybox_grabbed_packet(int c_id, int box_id);
-	void send_gravitybox_dropped_packet(int c_id, int box_id);
-	void send_player_time_change_packet(int c_id);
 public:
 	void SendPacket(void* packet);
 	void RecvPacket();
@@ -112,7 +88,7 @@ public:
 };
 
 extern std::array<Session, MAX_USER> clients;
-extern std::array<GravityBox, MAX_GRAVITYBOX> gravitybox;
+extern std::vector<std::queue<Session>> channels;
 
 void disconnect(int c_id);
 

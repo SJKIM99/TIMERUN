@@ -2,7 +2,10 @@
 
 #pragma once
 
+#include "C:/Users/user/Desktop/TIMERUN/LOGIN_SERVER/protocol.h"
 #include "CoreMinimal.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Character.h"
 #include "TIMERUNCharacter.generated.h"
 
@@ -18,68 +21,22 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+private:
+	UPROPERTY(VisibleAnywhere)
+	USpringArmComponent* SpringArm;
 
+	UPROPERTY(VisibleAnywhere)
+	UCameraComponent* Camera;
 
-	void UpdateGravityGunVisibility();
-
-	void DoJump();
-	
-
+	UPROPERTY(EditAnywhere)
+	USkeletalMesh* TIMERUNMesh; // 외부에서 가져온 메시를 저장하기 위한 변수
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
-	UStaticMeshComponent* GravityGunMesh;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Arrow_REF")
-	UArrowComponent* Muzzle;
-
-
-public:
-	/*UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsJump;*/
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float WalkSpeed;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float RunSpeed;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float GunWalkSpeed;
-
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float GravityGunRange;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool HaveGravityGun;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsGrabbingObject;
-
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int id;
 	char nickname[NAME_SIZE];
-	//보간때 쓰이는 변수들
-	FVector current_location;
-	FRotator current_rotation;
-	FVector current_velocity;
-
-	FVector prev_location;
-	FRotator prev_rotation;
-	FVector prev_velocity;
-public:
-	//시간이동할때 쓰이는 변수
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int my_time;
 };

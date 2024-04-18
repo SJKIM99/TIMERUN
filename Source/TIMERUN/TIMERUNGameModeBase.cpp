@@ -4,6 +4,7 @@
 #include "TIMERUNGameModeBase.h"
 #include "TIMERUNCharacter.h"
 
+#include "TIMERUNPlayerController.h"
 
 ATIMERUNGameModeBase::ATIMERUNGameModeBase()
 {	
@@ -16,8 +17,7 @@ ATIMERUNGameModeBase::ATIMERUNGameModeBase()
 	
 	//DefaultPawnClass = ATIMERUNCharacter::StaticClass();
 
-	static ConstructorHelpers::FClassFinder<AController> PlayerControllerBPClass(TEXT("/Game/Player/Control/BP_TIMERUNController"));
-	//static ConstructorHelpers::FClassFinder<AController> PlayerControllerBPClass(TEXT("/Game/Player/Control/BP_TestController"));
+	static ConstructorHelpers::FClassFinder<AController> PlayerControllerBPClass(TEXT("/Game/Player/BP_TIMERUNController_Ver2"));
 	if (PlayerControllerBPClass.Class != NULL)
 	{
 		PlayerControllerClass = PlayerControllerBPClass.Class;

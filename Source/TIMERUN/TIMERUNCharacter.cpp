@@ -3,106 +3,65 @@
 
 #include "TIMERUNCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Components/ArrowComponent.h"
-
-
-
-
 
 // Sets default values
-ATIMERUNCharacter::ATIMERUNCharacter() : my_time(0)
+ATIMERUNCharacter::ATIMERUNCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//플레이어 케릭터
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Game/Player/Resource/Male_Rigged"));
-	if (MeshAsset.Succeeded())
-	{
-		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
-		GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FRotator(0.0f, -90.0f, 0.0f));
-	}
 
-	//애니메이션 블루프린터 연결
-	//GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	//static ConstructorHelpers::FClassFinder<UAnimInstance> AnimationClass(TEXT("/Game/Player/Resource/Animation/BP_CharacterAnim"));
-	//if (AnimationClass.Succeeded())
-	//{
-	//	//애니메이션 블루프린트 클래스를 가져와서 설정
-	//	GetMesh()->SetAnimInstanceClass(AnimationClass.Class);
-	//}
-	
+    // Spring Arm 생성
+    SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+    SpringArm->SetupAttachment(RootComponent);
+    SpringArm->TargetArmLength = 300.0f; // 카메라와 캐릭터 사이의 거리
+    SpringArm->SetRelativeRotation(FRotator(0.f, 0.f, 0.f)); // 카메라 각도 조절
+    SpringArm->bUsePawnControlRotation = true; // 스프링암이 캐릭터의 회전을 따르도록 설정
 
-	// 중력총
-	GravityGunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GravityGun"));
-	if (GravityGunMesh)
-	{
-		static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshAsset(TEXT("/Game/GravityGun/GravityGun"));
-		if (StaticMeshAsset.Succeeded())
-		{
-			GravityGunMesh->SetStaticMesh(StaticMeshAsset.Object);
-		}
+    // 카메라 생성 및 설정
+    Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+    Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
+    Camera->bUsePawnControlRotation = false; // 카메라가 캐릭터의 회전을 따르지 않도록 설정
 
-		FName GravityGunSocket(TEXT("GravityGunSocket"));
-		GravityGunMesh->SetupAttachment(GetMesh(), GravityGunSocket);
-	}
+    GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FRotator(0.0f, -90.0f, 0.0f));
 
-	//중력총 총구 REF
-	Muzzle = CreateDefaultSubobject<UArrowComponent>(TEXT("Muzzle"));
-	Muzzle->ArrowSize = 0.5f;
-	Muzzle->ArrowColor = FColor::Blue;
+    // 메쉬 불러오기
+    static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Game/Player/Resource/Male_Rigged"));
+    if (MeshAsset.Succeeded()) {
+        UE_LOG(LogTemp, Warning, TEXT("SkeletMesh Spawn Success"));
+        TIMERUNMesh = MeshAsset.Object;
+        GetMesh()->SetSkeletalMesh(TIMERUNMesh);
+    }
 
-	//변수 초기화
-	WalkSpeed = 250.f;
-	RunSpeed = 600.f;
-	GunWalkSpeed = 150.f;
+    //애니메이션 블루프린터 연결
+    static ConstructorHelpers::FClassFinder<UAnimInstance> AnimationClass(TEXT("/Game/Player/Resource/Animation/BP_PlayerAnimation"));
+    if (AnimationClass.Succeeded())
+    {
+        // 애니메이션 블루프린트 클래스를 가져와서 설정
+        GetMesh()->SetAnimInstanceClass(AnimationClass.Class);
+    }
+    
+    //캐릭터 기본 세팅
+    bUseControllerRotationPitch = false;
+    bUseControllerRotationYaw = false;
+    bUseControllerRotationRoll = false;
 
-	GravityGunRange = 300.f;
-	HaveGravityGun = false;
-	IsGrabbingObject = false;
-
-	//캐릭터 기본 세팅
-	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = false;
-	bUseControllerRotationRoll = false;
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
-	GetCharacterMovement()->BrakingFrictionFactor = 0.01;
-	GetCharacterMovement()->JumpZVelocity = 500.f;
+    // Configure character movement
+    GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
 }
 
 // Called when the game starts or when spawned
 void ATIMERUNCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	GravityGunMesh = FindComponentByClass<UStaticMeshComponent>();
-
-
-	//중력총 설정
-	Muzzle = FindComponentByClass<UArrowComponent>();
-	Muzzle->AttachToComponent(GravityGunMesh, FAttachmentTransformRules::KeepRelativeTransform);
-	FVector MuzzleLocation(0.f, 20.5f, 4.5f);
-	FRotator MuzzleRotation(0.0f, 90.0f, 0.f);
-	Muzzle->SetRelativeLocation(MuzzleLocation);
-	Muzzle->SetRelativeRotation(MuzzleRotation);
+	
 }
 
 // Called every frame
 void ATIMERUNCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	UpdateGravityGunVisibility();
-	DoJump();
 
-	if (HaveGravityGun)
-	{
-		GetCharacterMovement()->bOrientRotationToMovement = false;
-		GetCharacterMovement()->MaxWalkSpeed = GunWalkSpeed;
-	}
-	else
-	{
-		GetCharacterMovement()->bOrientRotationToMovement = true;
-	}
 }
 
 // Called to bind functionality to input
@@ -110,26 +69,5 @@ void ATIMERUNCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	
 }
-
-
-
-void ATIMERUNCharacter::UpdateGravityGunVisibility()
-{
-	if (GravityGunMesh) {
-		GravityGunMesh->SetHiddenInGame(!HaveGravityGun);
-	}
-}
-
-void ATIMERUNCharacter::DoJump()
-{
-	/*if (IsJump)
-	{
-		Jump();
-	}
-	
-	IsJump = false;*/
-}
-
 
