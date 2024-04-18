@@ -40,4 +40,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int TimeLevel;
+
+
 };

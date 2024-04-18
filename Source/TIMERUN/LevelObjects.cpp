@@ -5,6 +5,7 @@
 
 #include "Kismet/GameplayStatics.h"
 
+
 // Sets default values
 ALevelObjects::ALevelObjects()
 {
@@ -18,6 +19,7 @@ ALevelObjects::ALevelObjects()
 	SkeletalMeshComponent->SetupAttachment(StaticMeshComponent); // Attach to Static Mesh Component
 
 	TimeLevel = 0;
+
 }
 
 // Called when the game starts or when spawned
@@ -26,6 +28,8 @@ void ALevelObjects::BeginPlay()
 	Super::BeginPlay();
 
 	MyCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+	
 	
 }
 
@@ -37,4 +41,5 @@ void ALevelObjects::Tick(float DeltaTime)
 	TimeLevel = MyCharacter->my_time;
 
 }
+
 
