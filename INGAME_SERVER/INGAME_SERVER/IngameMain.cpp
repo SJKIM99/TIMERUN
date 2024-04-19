@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "IngameMain.h"
 
-IngameMain::IngameMain()
+IngameMain::IngameMain() 
 {
 }
 
@@ -36,12 +36,16 @@ void IngameMain::ServeurRun()
 	int num_threads = std::thread::hardware_concurrency();
 	worker_threads.reserve(num_threads);
 
-	for (int i = 0; i < num_threads; ++i)
+	for (int i = 0; i < num_threads-2; ++i)
 		worker_threads.emplace_back([this]() {workerThread.woker_thread(h_iocp); });
 
-	std::cout << "ServerRun" << std::endl;
+	//std::thread timer_threads([&]() { workerThread.timer_thread(); });
+	//std::thread update_thread([&]() { workerThread.world_update_thread(); });
 
+	std::cout << "ServerRun" << std::endl;
 	for (auto& th : worker_threads)
 		th.join();
+	//timer_threads.join();
+	//update_thread.join();
 }
 
