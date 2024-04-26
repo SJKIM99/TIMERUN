@@ -154,6 +154,16 @@ bool AGravityBox::CanFixPosCheck()
             SendGravityBoxMovePacket();
             StaticMeshComponent->SetSimulatePhysics(false);
         }
+
+        for (int i = box_time; i < TIMESIZE; ++i) {
+            timestate_location_x[i] = BoxLocation.X;
+            timestate_location_y[i] = BoxLocation.Y;
+            timestate_location_z[i] = BoxLocation.Z;
+
+            timestate_rotation_yaw[i] = BoxRotation.Yaw;
+            timestate_rotation_pitch[i] = BoxRotation.Pitch;
+            timestate_rotation_roll[i] = BoxRotation.Roll;
+        }
         return true;
     }
     else
@@ -209,6 +219,9 @@ void AGravityBox::SendGravityBoxMovePacket()
 			packet.velocity.z = GetVelocity().Z;
             packet.time = box_time;
             packet.grabbed_time = MyPlayerCharacter->my_time;
+            packet.ismoving = IsMoving;
+            packet.canfixpos = CanFixPos;
+            packet.canfall = CanFall;
 
             if (instance->ingame_socket == NULL) return;
 			int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);

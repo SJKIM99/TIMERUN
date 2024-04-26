@@ -111,9 +111,9 @@ bool DataBase::IsIDRegistered(std::string ID)
 	std::wstring sqlQuery = L"EXEC isIDRegistered ?";
 	m_retcode = SQLPrepare(m_hstmt, (SQLWCHAR*)sqlQuery.c_str(), SQL_NTS);
 	m_retcode = SQLBindParameter(m_hstmt, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, 20, 0, (SQLPOINTER)ID.c_str(), 0, NULL);
-	
+
 	m_retcode = SQLExecute(m_hstmt);
-	
+
 	if (m_retcode == SQL_SUCCESS || m_retcode == SQL_SUCCESS_WITH_INFO) {
 		m_retcode = SQLBindCol(m_hstmt, 1, SQL_BIT, &isRegistered, sizeof(isRegistered), &cb_isRegistered);
 	}
@@ -122,7 +122,7 @@ bool DataBase::IsIDRegistered(std::string ID)
 	}
 
 	m_retcode = SQLFetch(m_hstmt);
-	
+
 	if (m_retcode == SQL_ERROR) {
 		show_error(m_hstmt, SQL_HANDLE_STMT, m_retcode);
 	}
@@ -143,8 +143,8 @@ bool DataBase::IsPASSWDRegistered(std::string PASSWD)
 
 	std::wstring sqlQuery = L"EXEC isPASSWDRegistered ?";
 	m_retcode = SQLPrepare(m_hstmt, (SQLWCHAR*)sqlQuery.c_str(), SQL_NTS);
-	m_retcode = SQLBindParameter(m_hstmt, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, 20, 0, (SQLPOINTER)PASSWD.c_str(), 0, NULL); 
-	
+	m_retcode = SQLBindParameter(m_hstmt, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, 20, 0, (SQLPOINTER)PASSWD.c_str(), 0, NULL);
+
 	m_retcode = SQLExecute(m_hstmt);
 
 	if (m_retcode == SQL_SUCCESS || m_retcode == SQL_SUCCESS_WITH_INFO) {
@@ -155,7 +155,7 @@ bool DataBase::IsPASSWDRegistered(std::string PASSWD)
 	}
 
 	m_retcode = SQLFetch(m_hstmt);
-	
+
 	if (m_retcode == SQL_ERROR) {
 		show_error(m_hstmt, SQL_HANDLE_STMT, m_retcode);
 	}
@@ -169,15 +169,15 @@ bool DataBase::IsPASSWDRegistered(std::string PASSWD)
 	}
 }
 
-bool DataBase::RegisteredAccount(int client_id, std::string ID, std::string PASSWD,std::string NICKNAME)
+bool DataBase::RegisteredAccount(int client_id, std::string ID, std::string PASSWD, std::string NICKNAME)
 {
 	//SQLINTEGER ID{};
 	SQLCHAR player_id[IDSIZE];
 	SQLCHAR player_passwd[PASSWDSIZE];
 	SQLCHAR player_nickname[NAMESIZE];
 	SQLLEN cb_id{}, cb_passwd{}, cb_nickname{};
-	SQLCHAR successFlag = 0; // Assuming 1 byte for BIT type
-	
+	SQLCHAR successFlag; // Assuming 1 byte for BIT type
+
 	std::wstring sqlQuery = L"EXEC RegisteredAccount ?, ?, ?, ?";
 	m_retcode = SQLPrepare(m_hstmt, (SQLWCHAR*)sqlQuery.c_str(), SQL_NTS);
 	m_retcode = SQLBindParameter(m_hstmt, 1, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, 20, 0, (SQLPOINTER)ID.c_str(), 0, NULL);
@@ -203,21 +203,23 @@ bool DataBase::RegisteredAccount(int client_id, std::string ID, std::string PASS
 		show_error(m_hstmt, SQL_HANDLE_STMT, m_retcode);
 	}
 	else if (m_retcode == SQL_SUCCESS || m_retcode == SQL_SUCCESS_WITH_INFO) {
-		SQLFreeStmt(m_hstmt, SQL_RESET_PARAMS);  // 매개변수 재설정
-		SQLCloseCursor(m_hstmt);  // 문장과 연결된 커서 닫기
-		return true;
-	}
-	else {
-		return false;
+		if (0 == successFlag) {
+			SQLFreeStmt(m_hstmt, SQL_RESET_PARAMS);  // 매개변수 재설정
+			SQLCloseCursor(m_hstmt);  // 문장과 연결된 커서 닫기
+			return false;
+
+		}
+		else {
+			SQLFreeStmt(m_hstmt, SQL_RESET_PARAMS);  // 매개변수 재설정
+			SQLCloseCursor(m_hstmt);  // 문장과 연결된 커서 닫기
+			return true;
+		}
 	}
 }
 
 PlayerInfo DataBase::ExtractPlayerInfo(std::string ID, std::string PASSWD)
 {
 	PlayerInfo playerinfo;
-
-	SQLINTEGER player_id;
-	SQLLEN cb_playerid{};
 
 	SQLCHAR player_nickname[NAMESIZE];
 	SQLLEN cb_nickname{};
@@ -228,8 +230,7 @@ PlayerInfo DataBase::ExtractPlayerInfo(std::string ID, std::string PASSWD)
 	m_retcode = SQLBindParameter(m_hstmt, 2, SQL_PARAM_INPUT, SQL_C_CHAR, SQL_VARCHAR, 20, 0, (SQLPOINTER)PASSWD.c_str(), 0, NULL);
 	m_retcode = SQLExecute(m_hstmt);
 	// Bind columns 1
-	m_retcode = SQLBindCol(m_hstmt, 1, SQL_INTEGER, &player_id, 4, &cb_playerid);
-	m_retcode = SQLBindCol(m_hstmt, 2, SQL_CHAR, &player_nickname, NAMESIZE, &cb_nickname);
+	m_retcode = SQLBindCol(m_hstmt, 1, SQL_CHAR, player_nickname, NAMESIZE, &cb_nickname);
 
 	m_retcode = SQLFetch(m_hstmt);
 
@@ -239,7 +240,6 @@ PlayerInfo DataBase::ExtractPlayerInfo(std::string ID, std::string PASSWD)
 	else if (m_retcode == SQL_SUCCESS || m_retcode == SQL_SUCCESS_WITH_INFO) {
 		SQLFreeStmt(m_hstmt, SQL_RESET_PARAMS);  // 매개변수 재설정
 		SQLCloseCursor(m_hstmt);  // 문장과 연결된 커서 닫기
-		playerinfo.player_id = player_id;
 		memcpy(playerinfo.player_nickname, reinterpret_cast<const char*>(player_nickname), sizeof player_nickname);
 		return playerinfo;
 	}
