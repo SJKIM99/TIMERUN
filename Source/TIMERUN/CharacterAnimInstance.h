@@ -19,6 +19,9 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	FVector Velocity;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Pawn, Meta=(AllowPrivateAccess=true))
 	float MoveSpeed;
 

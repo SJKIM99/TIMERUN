@@ -29,6 +29,8 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(Pawn);
 
+		Velocity = MyPlayerCharacter->GetVelocity();
+
 		MoveSpeed = MyPlayerCharacter->GetVelocity().Size();
 
 		if (MoveSpeed > 3.f) ShouldMove = true;
