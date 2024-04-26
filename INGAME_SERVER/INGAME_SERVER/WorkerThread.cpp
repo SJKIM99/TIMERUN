@@ -232,6 +232,10 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 
 			gravitybox[p->boxid].time = p->time;
 			gravitybox[p->boxid].grabbed_time = p->grabbed_time;
+
+			gravitybox[p->boxid].IsMoving = p->ismoving;
+			gravitybox[p->boxid].CanFixPos = p->canfixpos;
+			gravitybox[p->boxid].CanFall = p->canfall;
 		}
 		for (auto& cl : clients) {
 			if (cl.m_state == ST_FREE) break;
@@ -277,6 +281,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			if (cl.m_id == c_id) continue;
 			cl.send_gravitybox_dropped_packet(c_id, p->boxid);
 		}
+		break;
 	}
 	case CS_TIME_CHANGE: {
 		CS_TIME_CHANGE_PACKET* p = reinterpret_cast<CS_TIME_CHANGE_PACKET*>(packet);

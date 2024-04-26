@@ -38,6 +38,9 @@ struct GravityBox {
 	vector_d3 velocity;
 	int time;
 	int grabbed_time;
+	bool IsMoving;
+	bool CanFixPos;
+	bool CanFall;
 };
 
 class Session

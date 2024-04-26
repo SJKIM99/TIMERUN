@@ -2,13 +2,13 @@
 
 #define	BUF_SIZE		8192
 #define MAX_CLIENTS		100
-#define LOGIN_SERVERIP "25.52.149.86"
-
-#define INGAME_SERVERIP "25.58.12.4"
-
-//#define LOGIN_SERVERIP "127.0.0.1"
+//#define LOGIN_SERVERIP "25.52.149.86"
 //
-//#define INGAME_SERVERIP "127.0.0.1"
+//#define INGAME_SERVERIP "25.58.12.4"
+
+#define LOGIN_SERVERIP "127.0.0.1"
+
+#define INGAME_SERVERIP "127.0.0.1"
 
 enum COMP_TYPE {
 	OP_ACCEPT,
@@ -71,6 +71,7 @@ constexpr char SC_PLAYER_JUMP = 11;
 constexpr char SC_GRAVIRTBOX_GRABBED = 12;
 constexpr char SC_GRAVIRTBOX_DROPPED = 13;
 constexpr char SC_TIME_CHANGE = 14;
+constexpr char SC_SIGNUP_FAIL = 15;
 
 
 #pragma pack (push, 1)
@@ -142,6 +143,9 @@ struct CS_GRAVITYBOX_UPDATE_PACKET {
 	vector_d3 velocity;
 	int time;
 	int grabbed_time;
+	bool ismoving;
+	bool canfixpos;
+	bool canfall;
 };
 
 struct CS_PLAYER_JUMP_PACKET {
@@ -247,6 +251,9 @@ struct SC_GRAVITYBOX_UPDATE_PACKET {
 	vector_d3 velocity;
 	int time;
 	int grabbed_time;
+	bool ismoving;
+	bool Canfixpos;
+	bool canfall;
 };
 
 struct SC_PLAYER_JUMP_PACKET {
@@ -276,5 +283,10 @@ struct SC_TIME_CHANGE_PACKET {
 	char type;
 	int id;
 	int time;
+};
+
+struct SC_SIGNUP_FAIL_PACKET {
+	unsigned char size;
+	char type;
 };
 #pragma pack(pop)
