@@ -1,12 +1,12 @@
 #pragma once
 #include "DataBase.h"
 
-enum EVENT_TYPE { EV_SAVE_INFO };
+enum DB_EVENT_TYPE { EV_SAVE_INFO };
 
 struct DB_EVENT {
 	int player_id;
 	std::chrono::system_clock::time_point wakeup_time;
-	EVENT_TYPE event;
+	TIMER_EVENT_TYPE event;
 	constexpr bool operator < (const DB_EVENT& L) const
 	{
 		return (wakeup_time > L.wakeup_time);

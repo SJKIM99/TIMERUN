@@ -6,7 +6,7 @@
 class LoginMain
 {
 	WSADATA WsaData;
-	HANDLE h_iocp;
+	//HANDLE h_iocp;
 	SOCKADDR_IN server_addr;
 	SOCKADDR_IN client_addr;
 

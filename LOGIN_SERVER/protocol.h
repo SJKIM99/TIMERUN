@@ -13,10 +13,10 @@
 enum COMP_TYPE {
 	OP_ACCEPT,
 	OP_RECV, OP_SEND, 
-	OP_WORLD_UPDATE
+	OP_GAME_START
 };
 
-enum direction { forward, back, left, right };
+enum TIMER_EVENT_TYPE { EV_GAME_START };
 
 struct vector_d3 {
 	float x;
@@ -55,6 +55,7 @@ constexpr char CS_PLAYER_JUMP= 8;
 constexpr char CS_GRAVITYBOX_GRABBED= 9;
 constexpr char CS_GRAVITYBOX_DROPPED = 10;
 constexpr char CS_TIME_CHANGE = 11;
+constexpr char CS_READY = 12;
 
 //S2C
 constexpr char SC_LOGIN_SUCCESS = 1;
@@ -72,6 +73,8 @@ constexpr char SC_GRAVIRTBOX_GRABBED = 12;
 constexpr char SC_GRAVIRTBOX_DROPPED = 13;
 constexpr char SC_TIME_CHANGE = 14;
 constexpr char SC_SIGNUP_FAIL = 15;
+constexpr char SC_READY = 16;
+constexpr char SC_GAME_START = 17;
 
 
 #pragma pack (push, 1)
@@ -96,7 +99,6 @@ struct CS_MOVE_PACKET {
 	unsigned char size;
 	char type;
 	int id;
-	direction direction;
 	double yaw;
 	vector_d3 location;
 };
@@ -174,6 +176,11 @@ struct CS_TIME_CHANGE_PACKET {
 	int id;
 	int time;
 };
+
+struct CS_READY_PACKET {
+	unsigned char size;
+	char type;
+};
 //S2C
 struct SC_SIGNUP_PACKET {
 	unsigned char size;
@@ -199,7 +206,7 @@ struct SC_MOVE_PACKET {
 	vector_d3 location;
 };
 
-struct SC_LOGIN_FAIL {
+struct SC_LOGIN_FAIL_PACKET {
 	unsigned char size;
 	char type;
 };
@@ -286,6 +293,17 @@ struct SC_TIME_CHANGE_PACKET {
 };
 
 struct SC_SIGNUP_FAIL_PACKET {
+	unsigned char size;
+	char type;
+};
+
+struct SC_READY_PACKET {
+	unsigned char size;
+	char type;
+	bool ready;
+};
+
+struct SC_GAME_START_PACKET {
 	unsigned char size;
 	char type;
 };

@@ -142,7 +142,6 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 {
 	switch (packet[1]) {
 	case CS_INGAME_LOGIN: {
-		isEnterPlayer = true;
 		CS_INGAME_LOGIN_PACKET* p = reinterpret_cast<CS_INGAME_LOGIN_PACKET*>(packet);
 		std::cout << c_id << "번 클라이언트 인게임 로그인 성공" << std::endl;
 

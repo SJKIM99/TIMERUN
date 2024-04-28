@@ -26,9 +26,14 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	FString NICKNAME;
 
+	UPROPERTY(BlueprintReadWrite)
+	bool READY;
+
 public:
 	UFUNCTION(BlueprintCallable)
 	bool SendLoginPacket();
 	UFUNCTION(BlueprintCallable)
 	bool SendSignUpPacket();
+	UFUNCTION(BlueprintCallable)
+	void SendReadyPacket();
 };
