@@ -321,6 +321,8 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		int ret = send(*ingame_socket, reinterpret_cast<char*>(&login_packet), sizeof(login_packet), 0);
 
 		IsActiveIngameSocket = true;
+		
+		GameStart = true;
 	}
 					  break;
 	}

@@ -100,7 +100,6 @@ void WorkerThread::timer()
 			}
 			switch (timer_event.event) {
 			case EV_GAME_START: {
-				std::cout << "TIMER ¸î¹ø È£ÃâµÅ?" << std::endl;
 				OVER_EXP* ov = new OVER_EXP;
 				ov->comp_type = OP_GAME_START;
 				PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
@@ -170,7 +169,6 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			if (true == clients[0].m_ready && true == clients[1].m_ready) {
 				TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_GAME_START,0 };
 				timer_queue.push(event);
-				std::cout << "CS_READY ¸î¹ø È£ÃâµÅ?" << std::endl;
 			}
 		}
 		clients[c_id].send_ready_packet(c_id);
