@@ -76,7 +76,39 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
 			delete ex_over;
 		}
 					break;
+		case OP_GAME_START: {
+			for (auto& cl : clients) {
+				if (ST_FREE == cl.m_state) break;
+				cl.send_game_start_packet();
+			}
+			delete ex_over;
 		}
+						  break;
+		}
+	}
+}
+
+void WorkerThread::timer()
+{
+	while (true) {
+		TIMER_EVENT timer_event;
+		auto current_time = std::chrono::system_clock::now();
+		if (true == timer_queue.try_pop(timer_event)) {
+			if (timer_event.wakeup_time > current_time) {
+				timer_queue.push(timer_event);
+				continue;
+			}
+			switch (timer_event.event) {
+			case EV_GAME_START: {
+				OVER_EXP* ov = new OVER_EXP;
+				ov->comp_type = OP_GAME_START;
+				PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
+			}
+							  break;
+			}
+			continue;
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 }
 
@@ -84,8 +116,10 @@ int WorkerThread::get_new_client_id()
 {
 	for (int i = 0; i < MAX_USER; ++i) {
 		std::lock_guard <std::mutex> ll{ clients[i].m_state_lock };
-		if (clients[i].m_state == ST_FREE)
+		if (clients[i].m_state == ST_FREE) {
+			clients[i].m_state = ST_ALLOC;
 			return i;
+		}
 	}
 	return -1;
 }
@@ -109,7 +143,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			clients[c_id].send_login_success_packet(dbThreadInstance->GetDatabase()->ExtractPlayerInfo(p->id, p->passwd));
 		}
 		else {
-			clients[c_id].send_signup_packet();
+			clients[c_id].send_login_fail_packet();
 		}
 	}
 				 break;
@@ -119,9 +153,26 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 			clients[c_id].send_signup_success_packet();
 		}
 		else {
-
+			clients[c_id].send_signup_fail_packet();
 		}
 	}
 				  break;
+	case CS_READY: {
+		CS_READY_PACKET* p = reinterpret_cast<CS_READY_PACKET*>(packet);
+		{
+			std::cout << c_id << "번 클라 레디패킷 전송" << std::endl;
+			std::lock_guard<std::mutex> readylock(clients[c_id].m_ready_lock);
+
+			if (false == clients[c_id].m_ready)clients[c_id].m_ready = true;
+			else clients[c_id].m_ready = false;
+
+			if (true == clients[0].m_ready && true == clients[1].m_ready) {
+				TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_GAME_START,0 };
+				timer_queue.push(event);
+			}
+		}
+		clients[c_id].send_ready_packet(c_id);
+	}
+				 break;
 	}
 }

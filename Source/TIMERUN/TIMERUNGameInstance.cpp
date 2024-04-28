@@ -98,7 +98,7 @@ void UTIMERUNGameInstance::RecvPacketFromIngameServer()
 void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 {
 	switch (packet[1]) {
-	case SC_LOGIN_SUCCESS: {
+	/*case SC_LOGIN_SUCCESS: {
 		SC_LOGIN_SUCCESS_PACKET* p = reinterpret_cast<SC_LOGIN_SUCCESS_PACKET*>(packet);
 
 		auto myplayer = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
@@ -116,7 +116,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
 		IsActiveIngameSocket = true;
 	}
-						 break;
+						 break;*/
 	case SC_INGAME_SUCCESS: {
 
 		SC_INGAME_SUCCESS_PACKET* p = reinterpret_cast<SC_INGAME_SUCCESS_PACKET*>(packet);
@@ -309,6 +309,22 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		TimeChangePlayer->my_time = p->time;
 	}
 					   break;
+	case SC_GAME_START: {
+		UE_LOG(LogTemp, Warning, TEXT("GameStart"));
+		socketmgr.ConnectIngameServer();
+		ingame_socket = socketmgr.GetIngameSocket();
+
+		CS_INGAME_LOGIN_PACKET login_packet;
+		login_packet.size = sizeof CS_INGAME_LOGIN_PACKET;
+		login_packet.type = CS_INGAME_LOGIN;
+
+		int ret = send(*ingame_socket, reinterpret_cast<char*>(&login_packet), sizeof(login_packet), 0);
+
+		IsActiveIngameSocket = true;
+		
+		GameStart = true;
+	}
+					  break;
 	}
 }
 

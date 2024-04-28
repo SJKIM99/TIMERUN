@@ -33,8 +33,10 @@ public:
 	SOCKET m_socket;
 	S_STATE m_state;
 	std::mutex m_state_lock;
+	std::mutex m_ready_lock;
 	int m_id;
 	char m_name[NAMESIZE];
+	bool m_ready = false;
 	int m_prev_remain_data;
 public:
 	bool m_online;
@@ -51,6 +53,10 @@ public:
 	void send_signup_packet();
 	void send_signup_success_packet();
 	void send_login_success_packet(PlayerInfo playerinfo);
+	void send_login_fail_packet();
+	void send_signup_fail_packet();
+	void send_ready_packet(int c_id);
+	void send_game_start_packet();
 public:
 	void SendPacket(void* packet);
 	void RecvPacket();

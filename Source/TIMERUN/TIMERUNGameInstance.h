@@ -97,4 +97,6 @@ public:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int TIMESIZE;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool GameStart = false;
 };

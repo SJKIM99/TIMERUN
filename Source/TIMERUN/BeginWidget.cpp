@@ -3,10 +3,12 @@
 
 #include "BeginWidget.h"
 #include "TIMERUNGameInstance.h"
+#include "Kismet/GameplayStatics.h"
 
 void UBeginWidget::NativeOnInitialized()
 {
 	instance = Cast<UTIMERUNGameInstance>(GetWorld()->GetGameInstance());
+
 }
 
 bool UBeginWidget::SendLoginPacket()
@@ -33,7 +35,19 @@ bool UBeginWidget::SendLoginPacket()
 	case SC_LOGIN_SUCCESS: {
 		SC_LOGIN_SUCCESS_PACKET* p = reinterpret_cast<SC_LOGIN_SUCCESS_PACKET*>(recv_buf);
 		NICKNAME = p->nickname;
-		UE_LOG(LogTemp, Warning, TEXT("NICKNAME : "),*NICKNAME);
+		auto myplayer = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+		memcpy(myplayer->nickname, p->nickname, sizeof p->nickname);
+
+		/*instance->socketmgr.ConnectIngameServer();
+		instance->ingame_socket = instance->socketmgr.GetIngameSocket();
+
+		CS_INGAME_LOGIN_PACKET login_packet;
+		login_packet.size = sizeof CS_INGAME_LOGIN_PACKET;
+		login_packet.type = CS_INGAME_LOGIN;
+
+		int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&login_packet), sizeof(login_packet), 0);
+
+		instance->IsActiveIngameSocket = true;*/
 		return true;
 	}
 	case SC_LOGIN_FAIL: {
@@ -60,6 +74,10 @@ bool UBeginWidget::SendSignUpPacket()
 	char recv_buf[BUFSIZ];
 
 	recv(*instance->login_socket, reinterpret_cast<char*>(recv_buf), BUFSIZ, 0);
+
+	u_long nonblockingmode = 1;
+	ioctlsocket(*instance->login_socket, FIONBIO, &nonblockingmode);
+
 	switch (recv_buf[1]) {
 	case SC_SIGNUP_SUCCESS: {
 		return true;
@@ -69,6 +87,33 @@ bool UBeginWidget::SendSignUpPacket()
 	}
 	}
 	return false;
+}
+
+void UBeginWidget::SendReadyPacket()
+{
+	u_long blockingmode = 0;
+	ioctlsocket(*instance->login_socket, FIONBIO, &blockingmode);
+
+	CS_READY_PACKET packet;
+	packet.size = sizeof CS_READY_PACKET;
+	packet.type = CS_READY;
+
+	send(*instance->login_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
+
+	char recv_buf[BUFSIZ];
+
+	recv(*instance->login_socket, reinterpret_cast<char*>(recv_buf), BUFSIZ, 0);
+	
+	u_long nonblockingmode = 1;
+	ioctlsocket(*instance->login_socket, FIONBIO, &nonblockingmode);
+
+	switch (recv_buf[1]) {
+	case SC_READY: {
+		SC_READY_PACKET* p = reinterpret_cast<SC_READY_PACKET*>(recv_buf);
+		READY = p->ready;
+	}
+				 break;
+	}
 }
 
 

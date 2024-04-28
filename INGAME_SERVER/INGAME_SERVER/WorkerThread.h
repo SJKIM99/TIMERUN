@@ -21,7 +21,6 @@ public:
 	void InitPlayerInfo(int player_id);
 	void ProcessPacket(int c_id, char* packet);
 	int get_new_gravitybox_id();
-	bool isEnterPlayer = false;
 };
 
 

@@ -44,6 +44,40 @@ void Session::send_login_success_packet(PlayerInfo playerinfo)
 	SendPacket(&packet);
 }
 
+void Session::send_login_fail_packet()
+{
+	SC_LOGIN_FAIL_PACKET packet;
+	packet.size = sizeof SC_LOGIN_FAIL_PACKET;
+	packet.type = SC_LOGIN_FAIL;
+	SendPacket(&packet);
+
+}
+
+void Session::send_signup_fail_packet()
+{
+	SC_SIGNUP_FAIL_PACKET packet;
+	packet.size = sizeof SC_SIGNUP_FAIL_PACKET;
+	packet.type = SC_SIGNUP_FAIL;
+	SendPacket(&packet);
+}
+
+void Session::send_ready_packet(int c_id)
+{
+	SC_READY_PACKET packet;
+	packet.size = sizeof SC_READY_PACKET;
+	packet.type = SC_READY;
+	packet.ready = clients[c_id].m_ready;
+	SendPacket(&packet);
+}
+
+void Session::send_game_start_packet()
+{
+	SC_GAME_START_PACKET packet;
+	packet.size = sizeof SC_GAME_START_PACKET;
+	packet.type = SC_GAME_START;
+	SendPacket(&packet);
+}
+
 void disconnect(int c_id)
 {
 

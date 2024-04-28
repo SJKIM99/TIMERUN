@@ -190,27 +190,33 @@ bool DataBase::RegisteredAccount(int client_id, std::string ID, std::string PASS
 	strcpy_s(reinterpret_cast<char*>(player_passwd), sizeof(player_id), PASSWD.c_str());
 	strcpy_s(reinterpret_cast<char*>(player_nickname), sizeof(player_id), NICKNAME.c_str());
 
-	if (m_retcode == SQL_SUCCESS || m_retcode == SQL_SUCCESS_WITH_INFO) {
+	/*if (m_retcode == SQL_SUCCESS || m_retcode == SQL_SUCCESS_WITH_INFO) {
 		m_retcode = SQLBindCol(m_hstmt, 1, SQL_CHAR, player_id, IDSIZE, &cb_id);
 		m_retcode = SQLBindCol(m_hstmt, 2, SQL_CHAR, player_passwd, PASSWDSIZE, &cb_passwd);
 		m_retcode = SQLBindCol(m_hstmt, 3, SQL_CHAR, player_nickname, NAMESIZE, &cb_nickname);
 	}
 	else {
 		show_error(m_hstmt, SQL_HANDLE_STMT, m_retcode);
-	}
+	}*/
 
 	if (m_retcode == SQL_ERROR) {
 		show_error(m_hstmt, SQL_HANDLE_STMT, m_retcode);
 	}
 	else if (m_retcode == SQL_SUCCESS || m_retcode == SQL_SUCCESS_WITH_INFO) {
 		if (0 == successFlag) {
-			SQLFreeStmt(m_hstmt, SQL_RESET_PARAMS);  // 매개변수 재설정
+			SQLFreeStmt(m_hstmt, SQL_CLOSE);
+			SQLFreeStmt(m_hstmt, SQL_UNBIND);
+			SQLFreeStmt(m_hstmt, SQL_RESET_PARAMS);
+			//SQLFreeStmt(m_hstmt, SQL_RESET_PARAMS);  // 매개변수 재설정
 			SQLCloseCursor(m_hstmt);  // 문장과 연결된 커서 닫기
 			return false;
 
 		}
 		else {
-			SQLFreeStmt(m_hstmt, SQL_RESET_PARAMS);  // 매개변수 재설정
+			SQLFreeStmt(m_hstmt, SQL_CLOSE);
+			SQLFreeStmt(m_hstmt, SQL_UNBIND);
+			SQLFreeStmt(m_hstmt, SQL_RESET_PARAMS);
+			//SQLFreeStmt(m_hstmt, SQL_RESET_PARAMS);  // 매개변수 재설정
 			SQLCloseCursor(m_hstmt);  // 문장과 연결된 커서 닫기
 			return true;
 		}
