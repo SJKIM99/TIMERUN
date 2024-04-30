@@ -15,6 +15,7 @@ UCharacterAnimInstance::UCharacterAnimInstance()
 
 	HaveGravityGun = false;
 	IsGrabbingObject = false;
+	HaveTimeMachine = false;
 	Direction = 0.f;
 
 }
@@ -39,6 +40,8 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		IsFalling = MyPlayerCharacter->GetMovementComponent()->IsFalling();
 
 		HaveGravityGun = MyPlayerCharacter->HaveGravityGun;
+
+		HaveTimeMachine = MyPlayerCharacter->HaveTimeMachine;
 
 		IsGrabbingObject = MyPlayerCharacter->IsGrabbingObject;
 

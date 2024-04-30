@@ -61,6 +61,8 @@ ATIMERUNCharacter::ATIMERUNCharacter() : my_time(0)
 	HaveGravityGun = false;
 	IsGrabbingObject = false;
 
+	HaveTimeMachine = false;
+
 	//캐릭터 기본 세팅
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;

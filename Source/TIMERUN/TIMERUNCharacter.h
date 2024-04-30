@@ -66,6 +66,10 @@ public:
 	bool IsGrabbingObject;
 
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool HaveTimeMachine;
+
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int id;
