@@ -187,11 +187,19 @@ void AGravityBox::DoGrabbingRotate(bool when)
             FRotator RotationValue(0.f, 0.05f, 0.05f);
             StaticMeshComponent->AddWorldRotation(RotationValue);
         }
+        else
+        {
+            StaticMeshComponent->SetCollisionProfileName("NoCollision");
+            StaticMeshComponent->SetSimulatePhysics(false);
+        }
     }
     else if( StaticMeshComponent && !when){
         StaticMeshComponent->SetEnableGravity(true);
-
+        StaticMeshComponent->SetCollisionProfileName("BlockAll");
+        StaticMeshComponent->SetSimulatePhysics(true);
     }
+
+  
 }
 
 
