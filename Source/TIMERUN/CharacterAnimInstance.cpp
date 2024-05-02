@@ -16,6 +16,7 @@ UCharacterAnimInstance::UCharacterAnimInstance()
 	HaveGravityGun = false;
 	IsGrabbingObject = false;
 	HaveTimeMachine = false;
+	IsTimeChanging = false;
 	Direction = 0.f;
 
 }
