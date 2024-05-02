@@ -16,6 +16,8 @@ UCharacterAnimInstance::UCharacterAnimInstance()
 	HaveGravityGun = false;
 	IsGrabbingObject = false;
 	HaveTimeMachine = false;
+	IsTimeChanging = false;
+	IsTimeChangeStart = false;
 	Direction = 0.f;
 
 }
@@ -26,6 +28,7 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	auto Pawn = TryGetPawnOwner();
 	
+
 	if (::IsValid(Pawn))
 	{
 		ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(Pawn);
@@ -42,6 +45,7 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		HaveGravityGun = MyPlayerCharacter->HaveGravityGun;
 
 		HaveTimeMachine = MyPlayerCharacter->HaveTimeMachine;
+		IsTimeChanging = MyPlayerCharacter->IsTimeChanging;
 
 		IsGrabbingObject = MyPlayerCharacter->IsGrabbingObject;
 

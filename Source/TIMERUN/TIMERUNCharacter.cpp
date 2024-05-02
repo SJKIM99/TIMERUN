@@ -62,6 +62,7 @@ ATIMERUNCharacter::ATIMERUNCharacter() : my_time(0)
 	IsGrabbingObject = false;
 
 	HaveTimeMachine = false;
+	IsTimeChanging = false;
 
 	//캐릭터 기본 세팅
 	bUseControllerRotationPitch = false;

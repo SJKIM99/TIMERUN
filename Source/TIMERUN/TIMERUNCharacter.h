@@ -68,6 +68,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool HaveTimeMachine;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IsTimeChanging;
 
 
 public:
