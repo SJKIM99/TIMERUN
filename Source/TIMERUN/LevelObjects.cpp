@@ -30,7 +30,7 @@ void ALevelObjects::BeginPlay()
 	MyCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
 	
-	
+	TimeLevel = (float)(MyCharacter->my_time) / 10.0;
 }
 
 // Called every frame
@@ -38,7 +38,7 @@ void ALevelObjects::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	TimeLevel = MyCharacter->my_time;
+	
 
 }
 

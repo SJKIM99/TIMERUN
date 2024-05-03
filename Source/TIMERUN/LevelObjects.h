@@ -39,7 +39,7 @@ public:
 	USkeletalMeshComponent* SkeletalMeshComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int TimeLevel;
+	float TimeLevel;
 
 
 };
