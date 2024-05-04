@@ -291,33 +291,43 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
         }
         for (auto& cl : clients) {
             if (cl.m_state == ST_FREE) break;
-			//if (cl.m_id == c_id) continue;
-			cl.send_player_time_change_packet(c_id);
-		}
-	}
-					   break;
-	case CS_GRAVITYBOX_TIME_STATE: {
-		CS_GRAVITYBOX_TIME_STATE_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_TIME_STATE_PACKET*>(packet);
-		{
-			std::cout << "여기는 와?" << std::endl;
-			std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
-			gravitybox[p->boxid].timestate = p->my_time;
+            //if (cl.m_id == c_id) continue;
+            cl.send_player_time_change_packet(c_id);
+        }
+    }
+                       break;
+    case CS_GRAVITYBOX_TIME_STATE: {
+        CS_GRAVITYBOX_TIME_STATE_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_TIME_STATE_PACKET*>(packet);
+        {
+            std::cout << "여기는 와?" << std::endl;
+            std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
+            gravitybox[p->boxid].timestate = p->my_time;
 
-			gravitybox[p->boxid].location.x = p->location.x;
-			gravitybox[p->boxid].location.y = p->location.y;
-			gravitybox[p->boxid].location.z = p->location.z;
+            gravitybox[p->boxid].location.x = p->location.x;
+            gravitybox[p->boxid].location.y = p->location.y;
+            gravitybox[p->boxid].location.z = p->location.z;
 
-			gravitybox[p->boxid].rotation.x = p->rotation.x;
-			gravitybox[p->boxid].rotation.y = p->rotation.y;
-			gravitybox[p->boxid].rotation.z = p->rotation.z;
-		}
-		for (auto& cl : clients) {
-			if (cl.m_state == ST_FREE) break;
-			if (cl.m_id == c_id) continue;
-			cl.send_gravitybox_time_state_packet(c_id, p->boxid);
-		}
-	}
-								 break;
+            gravitybox[p->boxid].rotation.x = p->rotation.x;
+            gravitybox[p->boxid].rotation.y = p->rotation.y;
+            gravitybox[p->boxid].rotation.z = p->rotation.z;
+        }
+        for (auto& cl : clients) {
+            if (cl.m_state == ST_FREE) break;
+            if (cl.m_id == c_id) continue;
+            cl.send_gravitybox_time_state_packet(c_id, p->boxid);
+        }
+    }
+                                 break;
+    case CS_PLAYER_LANDED: {
+        CS_PLAYER_LANDED_PACKET* p = reinterpret_cast<CS_PLAYER_LANDED_PACKET*>(packet);
+
+        for (auto& cl : clients) {
+            if (cl.m_state == ST_FREE) break;
+            if (cl.m_id == c_id) continue;
+            cl.send_player_jump_packet(c_id);
+        }
+    }
+                         break;
     }
 }
 

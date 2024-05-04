@@ -166,6 +166,16 @@ void Session::send_gravitybox_time_state_packet(int c_id, int box_id)
     SendPacket(&packet);
 }
 
+void Session::send_player_landed_packet(int c_id)
+{
+    SC_PLAYER_LANDED_PACKET packet;
+    packet.type = SC_PLAYER_LANDED;
+    packet.size = sizeof SC_PLAYER_LANDED_PACKET;
+    packet.id = c_id;
+    SendPacket(&packet);
+}
+
+
 void Session::SendPacket(void* packet)
 {
     OVER_EXP* SendData = new OVER_EXP{ reinterpret_cast<char*>(packet) };

@@ -120,7 +120,7 @@ void ATIMERUNCharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 
-	instance->SendPlayerupdatePakcet();
+	instance->SendPlayerLandedPacket();
 }
 
 
