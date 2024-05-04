@@ -288,6 +288,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         ATIMERUNCharacter* JumpPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
         JumpPlayer->Jump();
         JumpPlayer->isLanded = p->isjump;
+        UE_LOG(LogTemp, Warning, TEXT("JumpPlayer->isLanded %d"), JumpPlayer->isLanded);
     }
                        break;
     case SC_GRAVIRTBOX_GRABBED: {
@@ -402,6 +403,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
         ATIMERUNCharacter* LandedPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
         LandedPlayer->isLanded = p->isjump;
+        UE_LOG(LogTemp, Warning, TEXT("LandedPlayer->isLanded %d"), LandedPlayer->isLanded);
     }
                          break;
     }
