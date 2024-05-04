@@ -120,17 +120,6 @@ void ATIMERUNCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	
 }
 
-void ATIMERUNCharacter::Landed(const FHitResult& Hit)
-{
-	Super::Landed(Hit);
-
-	if (instance->GameStart) {
-		isLanded = true;
-		instance->SendPlayerLandedPacket();
-	}
-}
-
-
 
 void ATIMERUNCharacter::UpdateGravityGunVisibility()
 {
