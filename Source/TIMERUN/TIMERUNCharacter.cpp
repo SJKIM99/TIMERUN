@@ -71,6 +71,9 @@ ATIMERUNCharacter::ATIMERUNCharacter() : my_time(0)
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	GetCharacterMovement()->BrakingFrictionFactor = 0.01;
 	GetCharacterMovement()->JumpZVelocity = 500.f;
+
+	GetMesh()->BodyInstance.bOverrideMass = true; 
+	GetMesh()->BodyInstance.SetMassOverride(0.f);// instead of just SetMassOverrideInKG();
 }
 
 // Called when the game starts or when spawned
