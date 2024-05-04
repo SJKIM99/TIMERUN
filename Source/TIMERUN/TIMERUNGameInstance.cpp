@@ -191,7 +191,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         FVector CharacterLocation;
         CharacterLocation.X = p->location.x;
         CharacterLocation.Y = p->location.y;
-        CharacterLocation.Z = p->location.z;
+        //CharacterLocation.Z = p->location.z;
 
         FRotator CharacterRotation;
         CharacterRotation.Yaw = p->yaw;
@@ -254,7 +254,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
             FVector GravityBoxLocation;
             GravityBoxLocation.X = p->location.x;
             GravityBoxLocation.Y = p->location.y;
-            //GravityBoxLocation.Z = p->location.z;
+            GravityBoxLocation.Z = p->location.z;
 
             FRotator GravityBoxRotation;
             GravityBoxRotation.Yaw = p->rotation.x;
