@@ -72,6 +72,8 @@ ATIMERUNCharacter::ATIMERUNCharacter() : my_time(0)
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	GetCharacterMovement()->BrakingFrictionFactor = 0.01;
 	GetCharacterMovement()->JumpZVelocity = 500.f;
+
+
 }
 
 // Called when the game starts or when spawned
@@ -88,6 +90,9 @@ void ATIMERUNCharacter::BeginPlay()
 	FRotator MuzzleRotation(0.0f, 90.0f, 0.f);
 	Muzzle->SetRelativeLocation(MuzzleLocation);
 	Muzzle->SetRelativeRotation(MuzzleRotation);
+
+	instance = Cast<UTIMERUNGameInstance>(GetWorld()->GetGameInstance());
+	instance->GetSocketMgr()->GetIngameSocket();
 }
 
 // Called every frame
