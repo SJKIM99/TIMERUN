@@ -590,15 +590,6 @@ void UTIMERUNGameInstance::SendPlayerJumpPacket()
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 }
 
-void UTIMERUNGameInstance::SendPlayerLandedPacket() 
-{
-    CS_PLAYER_LANDED_PACKET packet;
-    packet.size = sizeof CS_PLAYER_LANDED_PACKET;
-    packet.type = CS_PLAYER_LANDED;
-
-    int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
-}
-
 void UTIMERUNGameInstance::SendTimeChangePacket()
 {
     APlayerController* PlayerContoller = GetWorld()->GetFirstPlayerController();
