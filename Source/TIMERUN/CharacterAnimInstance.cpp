@@ -39,6 +39,7 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		else ShouldMove = false;
 
 		IsFalling = MyPlayerCharacter->GetMovementComponent()->IsFalling();
+		isLanded = MyPlayerCharacter->isLanded;
 
 		HaveGravityGun = MyPlayerCharacter->HaveGravityGun;
 

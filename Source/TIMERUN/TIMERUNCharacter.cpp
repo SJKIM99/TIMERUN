@@ -126,6 +126,8 @@ void ATIMERUNCharacter::Landed(const FHitResult& Hit)
 	if (instance->GameStart) {
 		instance->SendPlayerLandedPacket();
 	}
+
+	isLanded = true;
 }
 
 
