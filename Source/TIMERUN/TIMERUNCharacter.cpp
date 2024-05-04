@@ -110,9 +110,6 @@ void ATIMERUNCharacter::Tick(float DeltaTime)
 	{
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 	}
-
-	if (GetCharacterMovement()->IsFalling()) isLanded = false;
-	else isLanded = true;
 }
 
 // Called to bind functionality to input
