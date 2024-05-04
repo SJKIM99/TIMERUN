@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "TIMERUNCharacter.generated.h"
 
+class UTIMERUNGameInstance;
+
 UCLASS()
 class TIMERUN_API ATIMERUNCharacter : public ACharacter
 {
@@ -26,6 +28,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+	virtual void Landed(const FHitResult& Hit);
 
 
 	void UpdateGravityGunVisibility();
@@ -86,4 +90,6 @@ public:
 	//시간이동할때 쓰이는 변수
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int my_time;
+public:
+	UTIMERUNGameInstance* instance;
 };

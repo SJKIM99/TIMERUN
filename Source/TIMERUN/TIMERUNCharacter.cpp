@@ -4,6 +4,7 @@
 #include "TIMERUNCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/ArrowComponent.h"
+#include "TIMERUNGameInstance.h"
 
 
 
@@ -113,6 +114,13 @@ void ATIMERUNCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	
+}
+
+void ATIMERUNCharacter::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+
+	instance->SendPlayerLandedPacket();
 }
 
 
