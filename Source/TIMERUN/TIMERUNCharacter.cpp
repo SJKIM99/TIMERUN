@@ -88,6 +88,10 @@ void ATIMERUNCharacter::BeginPlay()
 	FRotator MuzzleRotation(0.0f, 90.0f, 0.f);
 	Muzzle->SetRelativeLocation(MuzzleLocation);
 	Muzzle->SetRelativeRotation(MuzzleRotation);
+
+
+	instance = Cast<UTIMERUNGameInstance>(GetWorld()->GetGameInstance());
+	instance->GetSocketMgr()->GetIngameSocket();
 }
 
 // Called every frame
@@ -119,8 +123,9 @@ void ATIMERUNCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 void ATIMERUNCharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
-
-	instance->SendPlayerLandedPacket();
+	if (instance->GameStart) {
+		instance->SendPlayerLandedPacket();
+	}
 }
 
 

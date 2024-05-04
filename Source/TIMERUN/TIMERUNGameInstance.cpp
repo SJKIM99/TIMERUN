@@ -287,6 +287,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
         ATIMERUNCharacter* JumpPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
         JumpPlayer->Jump();
+        JumpPlayer->isLanded = p->isjump;
     }
                        break;
     case SC_GRAVIRTBOX_GRABBED: {
@@ -400,7 +401,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         SortPlayerIndex();
 
         ATIMERUNCharacter* LandedPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
-        LandedPlayer->Landed();
+        LandedPlayer->isLanded = true;
     }
                          break;
     }
@@ -591,10 +592,13 @@ void UTIMERUNGameInstance::InitIngameSocket()
 
 void UTIMERUNGameInstance::SendPlayerJumpPacket()
 {
+    ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
     CS_PLAYER_JUMP_PACKET packet;
     packet.size = sizeof CS_PLAYER_JUMP_PACKET;
     packet.type = CS_PLAYER_JUMP;
     packet.id = my_id;
+    packet.isjump = MyPlayerCharacter->isLanded;
 
     if (ingame_socket == NULL) return;
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);

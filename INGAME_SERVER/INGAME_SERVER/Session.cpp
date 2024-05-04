@@ -115,6 +115,7 @@ void Session::send_player_jump_packet(int c_id)
     packet.type = SC_PLAYER_JUMP;
     packet.size = sizeof SC_PLAYER_JUMP_PACKET;
     packet.id = c_id;
+    packet.isjump = clients[c_id].m_isjump;
     SendPacket(&packet);
 }
 

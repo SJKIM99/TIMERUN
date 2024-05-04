@@ -159,6 +159,7 @@ struct CS_PLAYER_JUMP_PACKET {
     unsigned char size;
     char type;
     int id;
+    bool isjump;
 };
 
 struct CS_GRAVITYBOX_GRABBED_PACKET {
@@ -288,6 +289,7 @@ struct SC_PLAYER_JUMP_PACKET {
     unsigned char size;
     char type;
     int id;
+    bool isjump;
 };
 
 struct SC_GRAVIRTBOX_GRABBED_PACKET {
