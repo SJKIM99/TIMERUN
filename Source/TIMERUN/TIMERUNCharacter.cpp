@@ -119,9 +119,8 @@ void ATIMERUNCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 void ATIMERUNCharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
-	if (instance->GameStart) {
-		instance->SendPlayerupdatePakcet();
-	}
+
+	instance->SendPlayerupdatePakcet();
 }
 
 
