@@ -122,9 +122,10 @@ void ATIMERUNCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 void ATIMERUNCharacter::Landed(const FHitResult& Hit)
 {
-	isLanded = true;
 	Super::Landed(Hit);
+
 	if (instance->GameStart) {
+		isLanded = true;
 		instance->SendPlayerLandedPacket();
 	}
 }
