@@ -393,16 +393,6 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         }
     }
                                  break;
-    case SC_PLAYER_LANDED: {
-        SC_PLAYER_LANDED_PACKET* p = reinterpret_cast<SC_PLAYER_LANDED_PACKET*>(packet);
-
-        UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
-        SortPlayerIndex();
-
-        ATIMERUNCharacter* LandedPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
-        LandedPlayer->Landed();
-    }
-                         break;
     }
 }
 
