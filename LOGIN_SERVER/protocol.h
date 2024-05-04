@@ -201,6 +201,7 @@ struct CS_PLAYER_LANDED_PACKET {
     unsigned char size;
     char type;
     int id;
+    bool isjump;
 };
 
 //S2C
@@ -344,5 +345,6 @@ struct SC_PLAYER_LANDED_PACKET {
     unsigned char size;
     char type;
     int id;
+    bool isjump;
 };
 #pragma pack(pop)

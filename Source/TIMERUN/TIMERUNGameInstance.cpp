@@ -401,7 +401,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         SortPlayerIndex();
 
         ATIMERUNCharacter* LandedPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
-        LandedPlayer->isLanded = true;
+        LandedPlayer->isLanded = p->isjump;
     }
                          break;
     }
@@ -606,9 +606,12 @@ void UTIMERUNGameInstance::SendPlayerJumpPacket()
 
 void UTIMERUNGameInstance::SendPlayerLandedPacket() 
 {
+    ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
     CS_PLAYER_LANDED_PACKET packet;
     packet.size = sizeof CS_PLAYER_LANDED_PACKET;
     packet.type = CS_PLAYER_LANDED;
+    packet.isjump = MyPlayerCharacter->isLanded;
 
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 }

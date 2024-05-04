@@ -173,6 +173,7 @@ void Session::send_player_landed_packet(int c_id)
     packet.type = SC_PLAYER_LANDED;
     packet.size = sizeof SC_PLAYER_LANDED_PACKET;
     packet.id = c_id;
+    packet.isjump = clients[c_id].m_isjump;
     SendPacket(&packet);
 }
 
