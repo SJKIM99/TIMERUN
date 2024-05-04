@@ -105,7 +105,6 @@ public:
     void send_gravitybox_dropped_packet(int c_id, int box_id);
     void send_player_time_change_packet(int c_id);
     void send_gravitybox_time_state_packet(int c_id, int box_id);
-    void send_player_landed_packet(int c_id);
 public:
     void SendPacket(void* packet);
     void RecvPacket();

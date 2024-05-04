@@ -58,7 +58,7 @@ constexpr char CS_GRAVITYBOX_DROPPED = 10;
 constexpr char CS_TIME_CHANGE = 11;
 constexpr char CS_READY = 12;
 constexpr char CS_GRAVITYBOX_TIME_STATE = 13;
-constexpr char CS_PLAYER_LANDED = 14;
+
 
 //S2C
 constexpr char SC_LOGIN_SUCCESS = 1;
@@ -79,7 +79,7 @@ constexpr char SC_SIGNUP_FAIL = 15;
 constexpr char SC_READY = 16;
 constexpr char SC_GAME_START = 17;
 constexpr char SC_GRAVITYBOX_TIME_STATE = 18;
-constexpr char SC_PLAYER_LANDED = 19;
+
 
 
 #pragma pack (push, 1)
@@ -128,6 +128,7 @@ struct CS_PLAYER_UPDATE_PACKET {
     vector_d3 velocity;
     bool HaveGravityGun;
     int time;
+    bool isLanded;
 };
 
 struct CS_GRAVITYBOX_ADD_PACKET {
@@ -159,7 +160,6 @@ struct CS_PLAYER_JUMP_PACKET {
     unsigned char size;
     char type;
     int id;
-    bool isjump;
 };
 
 struct CS_GRAVITYBOX_GRABBED_PACKET {
@@ -195,13 +195,6 @@ struct CS_GRAVITYBOX_TIME_STATE_PACKET {
     int my_time;
     vector_d3 location;
     vector_d3 rotation;
-};
-
-struct CS_PLAYER_LANDED_PACKET {
-    unsigned char size;
-    char type;
-    int id;
-    bool isjump;
 };
 
 //S2C
@@ -258,6 +251,7 @@ struct SC_WORLD_UPDATE_PACKET {
     vector_d3 location;
     vector_d3 velocity;
     bool HaveGravityGun;
+    bool isLanded;
 };
 
 struct SC_GRAVITYBOX_ADD_PACKET {
@@ -290,7 +284,6 @@ struct SC_PLAYER_JUMP_PACKET {
     unsigned char size;
     char type;
     int id;
-    bool isjump;
 };
 
 struct SC_GRAVIRTBOX_GRABBED_PACKET {
@@ -339,12 +332,5 @@ struct SC_GRAVITYBOX_TIME_STATE_PACKET {
     int timestate;
     vector_d3 location;
     vector_d3 rotation;
-};
-
-struct SC_PLAYER_LANDED_PACKET {
-    unsigned char size;
-    char type;
-    int id;
-    bool isjump;
 };
 #pragma pack(pop)

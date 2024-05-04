@@ -63,6 +63,7 @@ void Session::send_world_update_packet(int c_id)
     packet.velocity.z = clients[c_id].m_velocity.z;
     packet.yaw = clients[c_id].m_yaw;
     packet.HaveGravityGun = clients[c_id].m_HaveGrabityGun;
+    packet.isLanded = clients[c_id].m_isjump;
     SendPacket(&packet);
 }
 
@@ -115,7 +116,6 @@ void Session::send_player_jump_packet(int c_id)
     packet.type = SC_PLAYER_JUMP;
     packet.size = sizeof SC_PLAYER_JUMP_PACKET;
     packet.id = c_id;
-    packet.isjump = clients[c_id].m_isjump;
     SendPacket(&packet);
 }
 
@@ -164,16 +164,6 @@ void Session::send_gravitybox_time_state_packet(int c_id, int box_id)
     packet.rotation.x = gravitybox[box_id].rotation.x;
     packet.rotation.y = gravitybox[box_id].rotation.y;
     packet.rotation.z = gravitybox[box_id].rotation.z;
-    SendPacket(&packet);
-}
-
-void Session::send_player_landed_packet(int c_id)
-{
-    SC_PLAYER_LANDED_PACKET packet;
-    packet.type = SC_PLAYER_LANDED;
-    packet.size = sizeof SC_PLAYER_LANDED_PACKET;
-    packet.id = c_id;
-    packet.isjump = clients[c_id].m_isjump;
     SendPacket(&packet);
 }
 

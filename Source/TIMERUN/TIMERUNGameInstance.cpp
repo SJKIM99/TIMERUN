@@ -209,6 +209,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         //OtherPlayer->SetActorRotation(CharacterRotation);
 
         OtherPlayer->HaveGravityGun = p->HaveGravityGun;
+        OtherPlayer->isLanded = p->isLanded;
 
 
         //UE_LOG(LogTemp, Warning, TEXT("%f"), vec_size);
@@ -287,7 +288,6 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
         ATIMERUNCharacter* JumpPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
         JumpPlayer->Jump();
-        JumpPlayer->isLanded = p->isjump;
         UE_LOG(LogTemp, Warning, TEXT("JumpPlayer->isLanded %d"), JumpPlayer->isLanded);
     }
                        break;
@@ -395,17 +395,6 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         }
     }
                                  break;
-    case SC_PLAYER_LANDED: {
-        SC_PLAYER_LANDED_PACKET* p = reinterpret_cast<SC_PLAYER_LANDED_PACKET*>(packet);
-
-        UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
-        SortPlayerIndex();
-
-        ATIMERUNCharacter* LandedPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
-        LandedPlayer->isLanded = p->isjump;
-        UE_LOG(LogTemp, Warning, TEXT("LandedPlayer->isLanded %d"), LandedPlayer->isLanded);
-    }
-                         break;
     }
 }
 
@@ -429,6 +418,7 @@ void UTIMERUNGameInstance::SendPlayerupdatePakcet()
     packet.yaw = MyPlayerCharacter->GetActorRotation().Yaw;
     packet.HaveGravityGun = MyPlayerCharacter->HaveGravityGun;
     packet.time = MyPlayerCharacter->my_time;
+    packet.isLanded = MyPlayerCharacter->isLanded;
 
     if (ingame_socket == NULL) return;
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
@@ -600,22 +590,13 @@ void UTIMERUNGameInstance::SendPlayerJumpPacket()
     packet.size = sizeof CS_PLAYER_JUMP_PACKET;
     packet.type = CS_PLAYER_JUMP;
     packet.id = my_id;
-    packet.isjump = MyPlayerCharacter->isLanded;
-
+ 
     if (ingame_socket == NULL) return;
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 }
 
-void UTIMERUNGameInstance::SendPlayerLandedPacket() 
+void UTIMERUNGameInstance::SendPlayerLandedPacket()
 {
-    ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-
-    CS_PLAYER_LANDED_PACKET packet;
-    packet.size = sizeof CS_PLAYER_LANDED_PACKET;
-    packet.type = CS_PLAYER_LANDED;
-    packet.isjump = MyPlayerCharacter->isLanded;
-
-    int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 }
 
 void UTIMERUNGameInstance::SendTimeChangePacket()
