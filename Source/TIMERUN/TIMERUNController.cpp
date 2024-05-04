@@ -21,14 +21,6 @@ void ATIMERUNController::BeginPlay()
 	instance->GetSocketMgr()->ConnectLoginServer();
 
 	instance->login_socket = instance->GetSocketMgr()->GetLoginSocket();
-
-	/*CS_LOGIN_PACKET packet;
-	packet.size = sizeof CS_LOGIN_PACKET;
-	packet.type = CS_LOGIN;
-	strcpy_s(packet.id, "sungjun4264");
-	strcpy_s(packet.passwd, "wkd5306s");
-
-	int ret = send(*instance->login_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);*/
 }
 
 void ATIMERUNController::Tick(float DeltaTime)
@@ -39,4 +31,5 @@ void ATIMERUNController::Tick(float DeltaTime)
 		instance->RecvPacketFromLoginServer();
 	else
 		instance->RecvPacketFromIngameServer();
+
 }

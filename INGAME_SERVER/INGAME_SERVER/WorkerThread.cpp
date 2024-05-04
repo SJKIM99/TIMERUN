@@ -318,6 +318,16 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
         }
     }
                                  break;
+    case CS_PLAYER_LANDED: {
+        CS_PLAYER_LANDED_PACKET* p = reinterpret_cast<CS_PLAYER_LANDED_PACKET*>(packet);
+
+        for (auto& cl : clients) {
+            if (cl.m_state == ST_FREE) break;
+            if (cl.m_id == c_id) continue;
+            cl.send_player_jump_packet(c_id);
+        }
+    }
+                         break;
     }
 }
 
