@@ -136,7 +136,8 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
         FVector characterLocation;
 
-        characterLocation.X = p->location.x;
+        //characterLocation.X = p->location.x;
+        characterLocation.X = static_cast<float>(rand() % 200);
         characterLocation.Y = p->location.y;
         characterLocation.Z = p->location.z;
 
