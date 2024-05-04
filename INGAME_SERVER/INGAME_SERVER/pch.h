@@ -29,7 +29,7 @@
 #pragma comment(lib, "WS2_32.lib")
 #pragma comment(lib, "MSWSock.lib")
 
-#define SERVER_PORT		9000
+#define SERVER_PORT      9000
 
 extern SOCKET g_server_socket;
 extern SOCKET g_client_socket;
@@ -37,14 +37,14 @@ extern SOCKET g_client_socket;
 enum EVENT_TYPE { EV_WORLD_UPDATE };
 
 struct TIMER_EVENT {
-	int object_id;
-	std::chrono::system_clock::time_point wakeup_time;
-	EVENT_TYPE event;
-	int target_id;
-	constexpr bool operator < (const TIMER_EVENT& L) const
-	{
-		return (wakeup_time > L.wakeup_time);
-	}
+    int object_id;
+    std::chrono::system_clock::time_point wakeup_time;
+    EVENT_TYPE event;
+    int target_id;
+    constexpr bool operator < (const TIMER_EVENT& L) const
+    {
+        return (wakeup_time > L.wakeup_time);
+    }
 };
 
 #endif //PCH_H

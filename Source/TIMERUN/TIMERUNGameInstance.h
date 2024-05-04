@@ -24,79 +24,79 @@
 #include "TIMERUNGameInstance.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class TIMERUN_API UTIMERUNGameInstance : public UGameInstance
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 public:
-	UTIMERUNGameInstance();
+    UTIMERUNGameInstance();
 public:
-	SocketMgr socketmgr;
-	SOCKET* login_socket;
-	SOCKET* ingame_socket;
+    SocketMgr socketmgr;
+    SOCKET* login_socket;
+    SOCKET* ingame_socket;
 
-	int my_id;
-	int other_id;
+    int my_id;
+    int other_id;
 public:
-	void RecvPacketFromLoginServer();
-	void RecvPacketFromIngameServer();
-	void ProcessPakcet(char* packet);
-	void SendPlayerupdatePakcet();
+    void RecvPacketFromLoginServer();
+    void RecvPacketFromIngameServer();
+    void ProcessPakcet(char* packet);
+    void SendPlayerupdatePakcet();
 
-	//RecvFromLoginn
-	int login_prev_remain_data;
-	int login_prev_packet_size;
-	char login_prev_packet_buf[10000];
+    //RecvFromLoginn
+    int login_prev_remain_data;
+    int login_prev_packet_size;
+    char login_prev_packet_buf[10000];
 
-	//RecvFromIngame
-	int ingame_prev_remain_data;
-	int ingame_prev_packet_size;
-	char ingame_prev_packet_buf[10000];
+    //RecvFromIngame
+    int ingame_prev_remain_data;
+    int ingame_prev_packet_size;
+    char ingame_prev_packet_buf[10000];
 
-	bool IsActiveIngameSocket = false;
+    bool IsActiveIngameSocket = false;
 public:
-	int nPlayers;
-	bool IsEnterNewPlayer;
-	void UpdateNewPlayer(int c_id, FVector location);
-	void SortPlayerIndex();
+    int nPlayers;
+    bool IsEnterNewPlayer;
+    void UpdateNewPlayer(int c_id, FVector location);
+    void SortPlayerIndex();
 
-	UFUNCTION(BlueprintCallable)
-	void SendGravityBoxSpawn(FVector location, FRotator rotation);
+    UFUNCTION(BlueprintCallable)
+    void SendGravityBoxSpawn(FVector location, FRotator rotation);
 
-	int nGravityBox;
-
-public:
-	TArray<AActor*> spawnedCharacters;	//플레이어 동기화 배열 
-	FTimerHandle SendPlayerInfoHandle;	// 동기화 타이머 핸들러
-	AGravityBox* gravitybox;
-	TArray<AActor*> spawnedGravityBox;
-	void UpdateNewGravityBox(FVector location, FRotator rotation, int box_id, int bywhoid, int box_time);
+    int nGravityBox;
 
 public:
-	//보간 코드 여기에 추가
-	void UpdatePosition(FVector new_location, FRotator new_rotation, FVector new_velocity, int player_id);
-	void InterpolatePosition(ATIMERUNCharacter* UpdatePlayer);
-	FTimerHandle MoveTimerHandle;	// 동기화 타이머 핸들러
+    TArray<AActor*> spawnedCharacters;   //플레이어 동기화 배열 
+    FTimerHandle SendPlayerInfoHandle;   // 동기화 타이머 핸들러
+    AGravityBox* gravitybox;
+    TArray<AActor*> spawnedGravityBox;
+    void UpdateNewGravityBox(FVector location, FRotator rotation, int box_id, int bywhoid, int box_time);
 
-	void UpdateGravityBoxPosition(FVector new_location, FRotator new_rotation, FVector new_velocity, int box_id);
-	void InterporlateGravityBoxPosition(AGravityBox* UpdateGravityBox);
 public:
-	SocketMgr* GetSocketMgr() {
-		return &socketmgr;
-	}
-	void InitLoginSocket();
-	void InitIngameSocket();
+    //보간 코드 여기에 추가
+    void UpdatePosition(FVector new_location, FRotator new_rotation, FVector new_velocity, int player_id);
+    void InterpolatePosition(ATIMERUNCharacter* UpdatePlayer);
+    FTimerHandle MoveTimerHandle;   // 동기화 타이머 핸들러
+
+    void UpdateGravityBoxPosition(FVector new_location, FRotator new_rotation, FVector new_velocity, int box_id);
+    void InterporlateGravityBoxPosition(AGravityBox* UpdateGravityBox);
 public:
-	UFUNCTION(BlueprintCallable)
-	void SendPlayerJumpPacket();
+    SocketMgr* GetSocketMgr() {
+        return &socketmgr;
+    }
+    void InitLoginSocket();
+    void InitIngameSocket();
 public:
-	UFUNCTION(BlueprintCallable)
-	void SendTimeChangePacket();
+    UFUNCTION(BlueprintCallable)
+    void SendPlayerJumpPacket();
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int TIMESIZE;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool GameStart = false;
+    UFUNCTION(BlueprintCallable)
+    void SendTimeChangePacket();
+public:
+    /*UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    int TIMESIZE;*/
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    bool GameStart = false;
 };

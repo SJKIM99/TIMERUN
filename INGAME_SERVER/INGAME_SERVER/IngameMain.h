@@ -20,4 +20,3 @@ public:
 	bool InitSocket();
 	void ServeurRun();
 };
-

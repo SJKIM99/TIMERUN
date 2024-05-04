@@ -3,12 +3,10 @@
 
 int main()
 {
-	IngameMain ingameMain;
+    IngameMain ingameMain;
 
-	if (!ingameMain.InitSocket()) {
-		return -1;
-	}
-	ingameMain.ServeurRun();
+    if (!ingameMain.InitSocket()) {
+        return -1;
+    }
+    ingameMain.ServeurRun();
 }
-
-

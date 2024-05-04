@@ -34,7 +34,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -61,16 +61,16 @@ public:
 	bool IsMoving;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) // 에디터, 블루프린트 안에서 수정 가능
-	bool isGrabbed; 
+		bool isGrabbed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) // 에디터, 블루프린트 안에서 수정 가능
-	bool CanFall;
+		bool CanFall;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) // 에디터, 블루프린트 안에서 수정 가능
-	bool CanFixPos;
+		bool CanFixPos;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) // 에디터, 블루프린트 안에서 수정 가능
-	int ByWhoID;
+		int ByWhoID;
 
 
 	FVector BoxLocation;
@@ -78,7 +78,7 @@ public:
 	int BoxId;
 
 	UTIMERUNGameInstance* instance;
-	FTimerHandle SendGravityBoxInfoHandle;	// 동기화 타이머 핸들러
+	FTimerHandle SendGravityBoxInfoHandle;   // 동기화 타이머 핸들러
 	void SendGravityBoxMovePacket();
 	UFUNCTION(BlueprintCallable)
 	void SendGravityBoxGrabbedPacket();
@@ -96,11 +96,8 @@ public:
 	//시간이동할 때 쓰이는 변수
 	int box_time;
 
-	float timestate_location_x[TIMESIZE];
-	float timestate_location_y[TIMESIZE];
-	float timestate_location_z[TIMESIZE];
-
-	float timestate_rotation_yaw[TIMESIZE];
-	float timestate_rotation_pitch[TIMESIZE];
-	float timestate_rotation_roll[TIMESIZE];
+	TArray<FVector> timestate_location;
+	TArray<FRotator> timestate_rotation;
+public:
+	bool OneTimeSend = false;
 };

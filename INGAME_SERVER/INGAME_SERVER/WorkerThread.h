@@ -23,4 +23,3 @@ public:
 	int get_new_gravitybox_id();
 };
 
-

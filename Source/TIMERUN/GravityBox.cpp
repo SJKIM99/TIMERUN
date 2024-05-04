@@ -9,35 +9,35 @@
 // Sets default values
 AGravityBox::AGravityBox()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+    // Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+    PrimaryActorTick.bCanEverTick = true;
 
-	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
-	RootComponent = StaticMeshComponent;
+    StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
+    RootComponent = StaticMeshComponent;
 
-	// Load Static Mesh Asset
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshAsset(TEXT("StaticMesh'/Game/GravityBox/Resource/GravityBox'"));
-	if (StaticMeshAsset.Succeeded())
-	{
-		StaticMeshComponent->SetStaticMesh(StaticMeshAsset.Object);
-	}
+    // Load Static Mesh Asset
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshAsset(TEXT("StaticMesh'/Game/GravityBox/Resource/GravityBox'"));
+    if (StaticMeshAsset.Succeeded())
+    {
+        StaticMeshComponent->SetStaticMesh(StaticMeshAsset.Object);
+    }
 
-	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
-	SkeletalMeshComponent->SetupAttachment(StaticMeshComponent); // Attach to Static Mesh Component
+    SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
+    SkeletalMeshComponent->SetupAttachment(StaticMeshComponent); // Attach to Static Mesh Component
 
-	// Load Skeletal Mesh Asset
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMeshAsset(TEXT("SkeletalMesh'/Game/GravityBox/Resource/GravityBox_Rigged'"));
-	if (SkeletalMeshAsset.Succeeded())
-	{
-	    SkeletalMeshComponent->SetSkeletalMesh(SkeletalMeshAsset.Object);
-	}
+    // Load Skeletal Mesh Asset
+    static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMeshAsset(TEXT("SkeletalMesh'/Game/GravityBox/Resource/GravityBox_Rigged'"));
+    if (SkeletalMeshAsset.Succeeded())
+    {
+        SkeletalMeshComponent->SetSkeletalMesh(SkeletalMeshAsset.Object);
+    }
 
     //애니메이션 블루프린터 연결
     SkeletalMeshComponent->SetAnimationMode(EAnimationMode::AnimationBlueprint);
     static ConstructorHelpers::FClassFinder<UAnimInstance> AnimationClass(TEXT("/Game/GravityBox/Resource/Animation/BP_GravityBoxAnimInstance_C"));
     if (AnimationClass.Succeeded())
     {
-    	//애니메이션 블루프린트 클래스를 가져와서 설정
+        //애니메이션 블루프린트 클래스를 가져와서 설정
         SkeletalMeshComponent->SetAnimInstanceClass(AnimationClass.Class);
     }
 
@@ -45,19 +45,22 @@ AGravityBox::AGravityBox()
     isGrabbed = false;
     CanFixPos = false;
 
-	//기본 스테틱 메쉬 설정
-	StaticMeshComponent->SetHiddenInGame(true, true);
-	StaticMeshComponent->SetCastShadow(false);
+    //기본 스테틱 메쉬 설정
+    StaticMeshComponent->SetHiddenInGame(true, true);
+    StaticMeshComponent->SetCastShadow(false);
 
-	StaticMeshComponent->SetMassScale(NAME_None, 10.f);
-	StaticMeshComponent->SetSimulatePhysics(true); // Enable physics simulation for the static mesh
-	StaticMeshComponent->SetLinearDamping(1.f);
+    StaticMeshComponent->SetMassScale(NAME_None, 10.f);
+    StaticMeshComponent->SetSimulatePhysics(true); // Enable physics simulation for the static mesh
+    StaticMeshComponent->SetLinearDamping(1.f);
+
+    timestate_location.Init(FVector::ZeroVector, TIMESIZE);
+    timestate_rotation.Init(FRotator::ZeroRotator, TIMESIZE);
 }
 
 // Called when the game starts or when spawned
 void AGravityBox::BeginPlay()
 {
-	Super::BeginPlay();
+    Super::BeginPlay();
 
 
     StaticMeshComponent = FindComponentByClass<UStaticMeshComponent>();
@@ -81,21 +84,55 @@ void AGravityBox::Tick(float DeltaTime)
     DoGrabbingRotate(isGrabbed);
 
     CanFixPos = CanFixPosCheck();
+    if (CanFixPos == true) {
+        if (OneTimeSend == false) {
+            SendGravityBoxMovePacket();
+            ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
-    //OtherGrappedCheck();
+            for (int i = MyPlayerCharacter->my_time; i < TIMESIZE; ++i) {
+                timestate_location[i].X = BoxLocation.X;
+                timestate_location[i].Y = BoxLocation.Y;
+                timestate_location[i].Z = BoxLocation.Z;
+
+                timestate_rotation[i].Yaw = BoxRotation.Yaw;
+                timestate_rotation[i].Pitch = BoxRotation.Pitch;
+                timestate_rotation[i].Roll = BoxRotation.Roll;
+            }
+
+            if (ByWhoID == instance->my_id) {
+                CS_GRAVITYBOX_TIME_STATE_PACKET packet;
+                packet.size = sizeof CS_GRAVITYBOX_TIME_STATE_PACKET;
+                packet.type = CS_GRAVITYBOX_TIME_STATE;
+                packet.boxid = BoxId;
+                packet.my_time = MyPlayerCharacter->my_time;
+                packet.location.x = BoxLocation.X;
+                packet.location.y = BoxLocation.Y;
+                packet.location.z = BoxLocation.Z;
+                packet.rotation.x = BoxRotation.Yaw;
+                packet.rotation.y = BoxRotation.Pitch;
+                packet.rotation.z = BoxRotation.Roll;
+
+                send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
+            }
+            OneTimeSend = true;
+        }
+    }
+    else {
+        OneTimeSend = false;
+    }
 }
 
 // Called to bind functionality to input
 void AGravityBox::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+    Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
 
 bool AGravityBox::IsMovingCheck()
 {
-	if (GetVelocity().Size() > 1.f) return true;
-	else return false;
+    if (GetVelocity().Size() > 1.f) return true;
+    else return false;
 }
 
 void AGravityBox::CanFallCheck()
@@ -140,7 +177,7 @@ void AGravityBox::CanFallCheck()
         0, // DepthPriority
         0.f // 지속시간 (0은 지속적으로 그림)
     );
-	
+
 }
 
 bool AGravityBox::CanFixPosCheck()
@@ -148,21 +185,9 @@ bool AGravityBox::CanFixPosCheck()
 
     if (!IsMoving && !isGrabbed && !CanFall)
     {
-
         if (StaticMeshComponent)
         {
-            SendGravityBoxMovePacket();
             StaticMeshComponent->SetSimulatePhysics(false);
-        }
-
-        for (int i = box_time; i < TIMESIZE; ++i) {
-            timestate_location_x[i] = BoxLocation.X;
-            timestate_location_y[i] = BoxLocation.Y;
-            timestate_location_z[i] = BoxLocation.Z;
-
-            timestate_rotation_yaw[i] = BoxRotation.Yaw;
-            timestate_rotation_pitch[i] = BoxRotation.Pitch;
-            timestate_rotation_roll[i] = BoxRotation.Roll;
         }
         return true;
     }
@@ -194,38 +219,42 @@ void AGravityBox::DoGrabbingRotate(bool when)
         }
 
     }
-    else if( StaticMeshComponent && !when){
+    else if (StaticMeshComponent && !when) {
         StaticMeshComponent->SetEnableGravity(true);
         StaticMeshComponent->SetCollisionProfileName("BlockAll");
         StaticMeshComponent->SetSimulatePhysics(true);
     }
-
-  
 }
 
 
 
 void AGravityBox::SendGravityBoxMovePacket()
 {
-	if (ByWhoID == instance->my_id) {
-		if (!CanFixPos) {
-            ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+    //UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), instance->spawnedCharacters);
+    //instance->SortPlayerIndex();
+    //ATIMERUNCharacter* OhterPlayerCharacter = Cast<ATIMERUNCharacter>(instance->spawnedCharacters[ByWhoID]);
+    ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
-			CS_GRAVITYBOX_UPDATE_PACKET packet;
-			packet.type = CS_GRAVITYBOX_UPDATE;
-			packet.size = sizeof CS_GRAVITYBOX_UPDATE_PACKET;
-			packet.bywhoid = ByWhoID;
-			packet.boxid = BoxId;
-			packet.isgrabbed = isGrabbed;
-			packet.location.x = BoxLocation.X;
-			packet.location.y = BoxLocation.Y;
-			packet.location.z = BoxLocation.Z;
-			packet.rotation.x = BoxRotation.Yaw;
-			packet.rotation.y = BoxRotation.Pitch;
-			packet.rotation.z = BoxRotation.Roll;
-			packet.velocity.x = GetVelocity().X;
-			packet.velocity.y = GetVelocity().Y;
-			packet.velocity.z = GetVelocity().Z;
+    //if (MyPlayerCharacter->my_time != OhterPlayerCharacter->my_time) return;
+
+    if (ByWhoID == instance->my_id) {
+        if (!CanFixPos) {
+
+            CS_GRAVITYBOX_UPDATE_PACKET packet;
+            packet.type = CS_GRAVITYBOX_UPDATE;
+            packet.size = sizeof CS_GRAVITYBOX_UPDATE_PACKET;
+            packet.bywhoid = ByWhoID;
+            packet.boxid = BoxId;
+            packet.isgrabbed = isGrabbed;
+            packet.location.x = BoxLocation.X;
+            packet.location.y = BoxLocation.Y;
+            packet.location.z = BoxLocation.Z;
+            packet.rotation.x = BoxRotation.Yaw;
+            packet.rotation.y = BoxRotation.Pitch;
+            packet.rotation.z = BoxRotation.Roll;
+            packet.velocity.x = GetVelocity().X;
+            packet.velocity.y = GetVelocity().Y;
+            packet.velocity.z = GetVelocity().Z;
             packet.time = box_time;
             packet.grabbed_time = MyPlayerCharacter->my_time;
             packet.ismoving = IsMoving;
@@ -233,37 +262,46 @@ void AGravityBox::SendGravityBoxMovePacket()
             packet.canfall = CanFall;
 
             if (instance->ingame_socket == NULL) return;
-			int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
-		}
-	}
+            int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
+        }
+    }
 }
 
 void AGravityBox::SendGravityBoxGrabbedPacket()
 {
+    /*UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), instance->spawnedCharacters);
+    instance->SortPlayerIndex();
+    ATIMERUNCharacter* OhterPlayerCharacter = Cast<ATIMERUNCharacter>(instance->spawnedCharacters[ByWhoID]);
     ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+    if (MyPlayerCharacter->my_time != OhterPlayerCharacter->my_time) return;*/
 
     CS_GRAVITYBOX_GRABBED_PACKET packet;
     packet.size = sizeof CS_GRAVITYBOX_GRABBED_PACKET;
     packet.type = CS_GRAVITYBOX_GRABBED;
     packet.boxid = BoxId;
     packet.isGrabbed = true;
-  
+
     if (instance->ingame_socket == NULL) return;
     int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 
 void AGravityBox::SendGravityBoxDroppedPacket()
 {
+    /*UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), instance->spawnedCharacters);
+    instance->SortPlayerIndex();
+    ATIMERUNCharacter* OhterPlayerCharacter = Cast<ATIMERUNCharacter>(instance->spawnedCharacters[ByWhoID]);
     ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+    if (MyPlayerCharacter->my_time != OhterPlayerCharacter->my_time) return;*/
 
     CS_GRAVITYBOX_DROPPED_PACKET packet;
     packet.size = sizeof CS_GRAVITYBOX_DROPPED_PACKET;
     packet.type = CS_GRAVITYBOX_DROPPED;
     packet.boxid = BoxId;
     packet.isGrabbed = false;
- 
+
     if (instance->ingame_socket == NULL) return;
     int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
-
 
