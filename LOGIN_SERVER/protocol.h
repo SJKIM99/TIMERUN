@@ -40,7 +40,7 @@ constexpr int IPSIZE = 20;
 constexpr int MAX_USER = 1000;
 constexpr int MAX_GRAVITYBOX = 100;
 
-constexpr int TIMESIZE = 10;
+constexpr int TIMESIZE = 11;
 
 
 //C2S

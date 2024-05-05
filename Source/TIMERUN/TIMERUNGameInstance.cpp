@@ -371,30 +371,45 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         GameStart = true;
     }
                       break;
-    case SC_GRAVITYBOX_TIME_STATE: {
-        UE_LOG(LogTemp, Warning, TEXT("SC_GRAVITYBOX_TIME_STATE"));
+	case SC_GRAVITYBOX_TIME_STATE: {
+		UE_LOG(LogTemp, Warning, TEXT("SC_GRAVITYBOX_TIME_STATE"));
 
-        SC_GRAVITYBOX_TIME_STATE_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_TIME_STATE_PACKET*>(packet);
+		SC_GRAVITYBOX_TIME_STATE_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_TIME_STATE_PACKET*>(packet);
 
-        UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
 
-        AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
+		AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
 
-        for (int i = p->timestate; i < TIMESIZE; ++i) {
-            GravityBox->timestate_location[i].X = p->location.x;
-            GravityBox->timestate_location[i].Y = p->location.y;
-            GravityBox->timestate_location[i].Z = p->location.z;
+		FVector ThisTimeLocation;
+		FRotator ThisTimeRotation;
 
-            GravityBox->timestate_rotation[i].Yaw = p->rotation.x;
-            GravityBox->timestate_rotation[i].Pitch = p->rotation.y;
-            GravityBox->timestate_rotation[i].Roll = p->rotation.z;
-        }
+		ThisTimeLocation.X = p->location.x;
+		ThisTimeLocation.Y = p->location.y;
+		ThisTimeLocation.Z = p->location.z;
 
-        for (int i = 0; i < TIMESIZE; ++i) {
-            UE_LOG(LogTemp, Warning, TEXT("asdasdf"));
-        }
-    }
-                                 break;
+		ThisTimeRotation.Yaw = p->rotation.x;
+		ThisTimeRotation.Pitch = p->rotation.y;
+		ThisTimeRotation.Roll = p->rotation.z;
+
+		for (int i = p->timestate; i < TIMESIZE; ++i) {
+			GravityBox->timestate_location[i].X = p->location.x;
+			GravityBox->timestate_location[i].Y = p->location.y;
+			GravityBox->timestate_location[i].Z = p->location.z;
+
+			GravityBox->timestate_rotation[i].Yaw = p->rotation.x;
+			GravityBox->timestate_rotation[i].Pitch = p->rotation.y;
+			GravityBox->timestate_rotation[i].Roll = p->rotation.z;
+
+		}
+
+		ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+		if (MyPlayerCharacter->my_time >= p->timestate) {
+			GravityBox->SetActorLocation(ThisTimeLocation);
+			GravityBox->SetActorRotation(ThisTimeRotation);
+		}
+	}
+								 break;
     }
 }
 
