@@ -42,6 +42,7 @@ ATIMERUNCharacter::ATIMERUNCharacter() : my_time(0)
 		if (StaticMeshAsset.Succeeded())
 		{
 			GravityGunMesh->SetStaticMesh(StaticMeshAsset.Object);
+			GravityGunMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
 
 		FName GravityGunSocket(TEXT("GravityGunSocket"));
