@@ -181,6 +181,8 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
             clients[p->id].m_time = p->time;
 
             clients[p->id].m_isjump = p->isLanded;
+
+            clients[p->id].m_HaveTimeMachine = p->HaveTimeMachine;
         }
         for (auto& cl : clients) {
             if (cl.m_state == ST_FREE) break;

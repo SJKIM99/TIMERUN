@@ -210,7 +210,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
         OtherPlayer->HaveGravityGun = p->HaveGravityGun;
         OtherPlayer->isLanded = p->isLanded;
-
+        OtherPlayer->HaveTimeMachine = p->HaveTimeMachine;
 
         //UE_LOG(LogTemp, Warning, TEXT("%f"), vec_size);
     }
@@ -434,6 +434,7 @@ void UTIMERUNGameInstance::SendPlayerupdatePakcet()
     packet.HaveGravityGun = MyPlayerCharacter->HaveGravityGun;
     packet.time = MyPlayerCharacter->my_time;
     packet.isLanded = MyPlayerCharacter->isLanded;
+    packet.HaveTimeMachine = MyPlayerCharacter->HaveTimeMachine;
 
     if (ingame_socket == NULL) return;
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
