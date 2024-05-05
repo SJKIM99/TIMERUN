@@ -532,6 +532,8 @@ void UTIMERUNGameInstance::InterpolatePosition(ATIMERUNCharacter* UpdatePlayer)
     FVector NewLocation = FMath::VInterpTo(UpdatePlayer->GetActorLocation(), UpdatePlayer->current_location, DeltaSeconds, InterpSpeed);
     FRotator NewRotation = FMath::RInterpTo(UpdatePlayer->GetActorRotation(), UpdatePlayer->current_rotation, DeltaSeconds, InterpSpeed);
     FVector NewVelocity = UpdatePlayer->current_velocity;
+    //FVector NewVelocity = FMath::VInterpTo(UpdatePlayer->GetVelocity(), UpdatePlayer->current_velocity, DeltaSeconds, InterpSpeed);
+
 
     UCharacterMovementComponent* CharacterMovement = UpdatePlayer->GetCharacterMovement();
     CharacterMovement->Velocity = NewVelocity;

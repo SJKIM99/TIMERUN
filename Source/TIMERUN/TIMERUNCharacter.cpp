@@ -98,7 +98,7 @@ void ATIMERUNCharacter::BeginPlay()
 void ATIMERUNCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	UpdateGravityGunVisibility();
+	//UpdateGravityGunVisibility();
 	DoJump();
 
 	if (HaveGravityGun)
@@ -109,6 +109,7 @@ void ATIMERUNCharacter::Tick(float DeltaTime)
 	else
 	{
 		GetCharacterMovement()->bOrientRotationToMovement = true;
+		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	}
 }
 
