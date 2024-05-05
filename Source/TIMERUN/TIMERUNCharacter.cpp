@@ -110,7 +110,7 @@ void ATIMERUNCharacter::Tick(float DeltaTime)
 	else
 	{
 		GetCharacterMovement()->bOrientRotationToMovement = true;
-		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+		//GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	}
 }
 
