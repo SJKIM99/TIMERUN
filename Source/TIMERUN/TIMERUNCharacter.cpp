@@ -4,6 +4,7 @@
 #include "TIMERUNCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/ArrowComponent.h"
+#include "TIMERUNGameInstance.h"
 
 
 
@@ -41,6 +42,7 @@ ATIMERUNCharacter::ATIMERUNCharacter() : my_time(0)
 		if (StaticMeshAsset.Succeeded())
 		{
 			GravityGunMesh->SetStaticMesh(StaticMeshAsset.Object);
+			GravityGunMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
 
 		FName GravityGunSocket(TEXT("GravityGunSocket"));
@@ -87,13 +89,17 @@ void ATIMERUNCharacter::BeginPlay()
 	FRotator MuzzleRotation(0.0f, 90.0f, 0.f);
 	Muzzle->SetRelativeLocation(MuzzleLocation);
 	Muzzle->SetRelativeRotation(MuzzleRotation);
+
+
+	instance = Cast<UTIMERUNGameInstance>(GetWorld()->GetGameInstance());
+	instance->GetSocketMgr()->GetIngameSocket();
 }
 
 // Called every frame
 void ATIMERUNCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	UpdateGravityGunVisibility();
+	//UpdateGravityGunVisibility();
 	DoJump();
 
 	if (HaveGravityGun)
@@ -104,6 +110,7 @@ void ATIMERUNCharacter::Tick(float DeltaTime)
 	else
 	{
 		GetCharacterMovement()->bOrientRotationToMovement = true;
+		//GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	}
 }
 
@@ -114,7 +121,6 @@ void ATIMERUNCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 	
 }
-
 
 
 void ATIMERUNCharacter::UpdateGravityGunVisibility()

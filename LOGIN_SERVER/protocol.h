@@ -40,7 +40,7 @@ constexpr int IPSIZE = 20;
 constexpr int MAX_USER = 1000;
 constexpr int MAX_GRAVITYBOX = 100;
 
-constexpr int TIMESIZE = 10;
+constexpr int TIMESIZE = 11;
 
 
 //C2S
@@ -58,6 +58,7 @@ constexpr char CS_GRAVITYBOX_DROPPED = 10;
 constexpr char CS_TIME_CHANGE = 11;
 constexpr char CS_READY = 12;
 constexpr char CS_GRAVITYBOX_TIME_STATE = 13;
+
 
 //S2C
 constexpr char SC_LOGIN_SUCCESS = 1;
@@ -78,6 +79,7 @@ constexpr char SC_SIGNUP_FAIL = 15;
 constexpr char SC_READY = 16;
 constexpr char SC_GAME_START = 17;
 constexpr char SC_GRAVITYBOX_TIME_STATE = 18;
+
 
 
 #pragma pack (push, 1)
@@ -126,6 +128,7 @@ struct CS_PLAYER_UPDATE_PACKET {
     vector_d3 velocity;
     bool HaveGravityGun;
     int time;
+    bool isLanded;
 };
 
 struct CS_GRAVITYBOX_ADD_PACKET {
@@ -193,6 +196,7 @@ struct CS_GRAVITYBOX_TIME_STATE_PACKET {
     vector_d3 location;
     vector_d3 rotation;
 };
+
 //S2C
 struct SC_SIGNUP_PACKET {
     unsigned char size;
@@ -247,6 +251,7 @@ struct SC_WORLD_UPDATE_PACKET {
     vector_d3 location;
     vector_d3 velocity;
     bool HaveGravityGun;
+    bool isLanded;
 };
 
 struct SC_GRAVITYBOX_ADD_PACKET {

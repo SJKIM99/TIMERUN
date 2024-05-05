@@ -45,4 +45,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsTimeChanging;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool isLanded;
 };

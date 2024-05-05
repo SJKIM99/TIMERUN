@@ -65,6 +65,7 @@ public:
     double m_yaw;
     int m_prev_remain_data;
     int m_time;
+    bool m_isjump;
 public:
     bool m_online;
 public:

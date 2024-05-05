@@ -209,6 +209,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         //OtherPlayer->SetActorRotation(CharacterRotation);
 
         OtherPlayer->HaveGravityGun = p->HaveGravityGun;
+        OtherPlayer->isLanded = p->isLanded;
 
 
         //UE_LOG(LogTemp, Warning, TEXT("%f"), vec_size);
@@ -287,6 +288,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
         ATIMERUNCharacter* JumpPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
         JumpPlayer->Jump();
+        UE_LOG(LogTemp, Warning, TEXT("JumpPlayer->isLanded %d"), JumpPlayer->isLanded);
     }
                        break;
     case SC_GRAVIRTBOX_GRABBED: {
@@ -369,30 +371,45 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         GameStart = true;
     }
                       break;
-    case SC_GRAVITYBOX_TIME_STATE: {
-        UE_LOG(LogTemp, Warning, TEXT("SC_GRAVITYBOX_TIME_STATE"));
+	case SC_GRAVITYBOX_TIME_STATE: {
+		UE_LOG(LogTemp, Warning, TEXT("SC_GRAVITYBOX_TIME_STATE"));
 
-        SC_GRAVITYBOX_TIME_STATE_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_TIME_STATE_PACKET*>(packet);
+		SC_GRAVITYBOX_TIME_STATE_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_TIME_STATE_PACKET*>(packet);
 
-        UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
 
-        AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
+		AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
 
-        for (int i = p->timestate; i < TIMESIZE; ++i) {
-            GravityBox->timestate_location[i].X = p->location.x;
-            GravityBox->timestate_location[i].Y = p->location.y;
-            GravityBox->timestate_location[i].Z = p->location.z;
+		FVector ThisTimeLocation;
+		FRotator ThisTimeRotation;
 
-            GravityBox->timestate_rotation[i].Yaw = p->rotation.x;
-            GravityBox->timestate_rotation[i].Pitch = p->rotation.y;
-            GravityBox->timestate_rotation[i].Roll = p->rotation.z;
-        }
+		ThisTimeLocation.X = p->location.x;
+		ThisTimeLocation.Y = p->location.y;
+		ThisTimeLocation.Z = p->location.z;
 
-        for (int i = 0; i < TIMESIZE; ++i) {
-            UE_LOG(LogTemp, Warning, TEXT("asdasdf"));
-        }
-    }
-                                 break;
+		ThisTimeRotation.Yaw = p->rotation.x;
+		ThisTimeRotation.Pitch = p->rotation.y;
+		ThisTimeRotation.Roll = p->rotation.z;
+
+		for (int i = p->timestate; i < TIMESIZE; ++i) {
+			GravityBox->timestate_location[i].X = p->location.x;
+			GravityBox->timestate_location[i].Y = p->location.y;
+			GravityBox->timestate_location[i].Z = p->location.z;
+
+			GravityBox->timestate_rotation[i].Yaw = p->rotation.x;
+			GravityBox->timestate_rotation[i].Pitch = p->rotation.y;
+			GravityBox->timestate_rotation[i].Roll = p->rotation.z;
+
+		}
+
+		ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+		if (MyPlayerCharacter->my_time >= p->timestate) {
+			GravityBox->SetActorLocation(ThisTimeLocation);
+			GravityBox->SetActorRotation(ThisTimeRotation);
+		}
+	}
+								 break;
     }
 }
 
@@ -416,6 +433,7 @@ void UTIMERUNGameInstance::SendPlayerupdatePakcet()
     packet.yaw = MyPlayerCharacter->GetActorRotation().Yaw;
     packet.HaveGravityGun = MyPlayerCharacter->HaveGravityGun;
     packet.time = MyPlayerCharacter->my_time;
+    packet.isLanded = MyPlayerCharacter->isLanded;
 
     if (ingame_socket == NULL) return;
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
@@ -514,6 +532,8 @@ void UTIMERUNGameInstance::InterpolatePosition(ATIMERUNCharacter* UpdatePlayer)
     FVector NewLocation = FMath::VInterpTo(UpdatePlayer->GetActorLocation(), UpdatePlayer->current_location, DeltaSeconds, InterpSpeed);
     FRotator NewRotation = FMath::RInterpTo(UpdatePlayer->GetActorRotation(), UpdatePlayer->current_rotation, DeltaSeconds, InterpSpeed);
     FVector NewVelocity = UpdatePlayer->current_velocity;
+    //FVector NewVelocity = FMath::VInterpTo(UpdatePlayer->GetVelocity(), UpdatePlayer->current_velocity, DeltaSeconds, InterpSpeed);
+
 
     UCharacterMovementComponent* CharacterMovement = UpdatePlayer->GetCharacterMovement();
     CharacterMovement->Velocity = NewVelocity;
@@ -581,13 +601,19 @@ void UTIMERUNGameInstance::InitIngameSocket()
 
 void UTIMERUNGameInstance::SendPlayerJumpPacket()
 {
+    ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
     CS_PLAYER_JUMP_PACKET packet;
     packet.size = sizeof CS_PLAYER_JUMP_PACKET;
     packet.type = CS_PLAYER_JUMP;
     packet.id = my_id;
-
+ 
     if (ingame_socket == NULL) return;
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
+}
+
+void UTIMERUNGameInstance::SendPlayerLandedPacket()
+{
 }
 
 void UTIMERUNGameInstance::SendTimeChangePacket()

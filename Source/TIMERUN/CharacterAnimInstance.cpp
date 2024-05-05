@@ -38,7 +38,8 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		if (MoveSpeed > 3.f) ShouldMove = true;
 		else ShouldMove = false;
 
-		IsFalling = MyPlayerCharacter->GetMovementComponent()->IsFalling();
+		isLanded = MyPlayerCharacter->isLanded;
+		IsFalling = !isLanded;
 
 		HaveGravityGun = MyPlayerCharacter->HaveGravityGun;
 

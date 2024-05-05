@@ -179,6 +179,8 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
             clients[p->id].m_HaveGrabityGun = p->HaveGravityGun;
 
             clients[p->id].m_time = p->time;
+
+            clients[p->id].m_isjump = p->isLanded;
         }
         for (auto& cl : clients) {
             if (cl.m_state == ST_FREE) break;
@@ -245,7 +247,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
                              break;
     case CS_PLAYER_JUMP: {
         CS_PLAYER_JUMP_PACKET* p = reinterpret_cast<CS_PLAYER_JUMP_PACKET*>(packet);
-
+      
         for (auto& cl : clients) {
             if (cl.m_state == ST_FREE) break;
             if (cl.m_id == c_id) continue;
