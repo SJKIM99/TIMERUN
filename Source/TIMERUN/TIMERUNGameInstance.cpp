@@ -339,14 +339,14 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
             for (int i = 0; i < spawnedGravityBox.Num(); ++i) {
                 AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[i]);
                 FVector ThisTimeLocation;
-                ThisTimeLocation.X = GravityBox[i].timestate_location[p->time].X;
-                ThisTimeLocation.Y = GravityBox[i].timestate_location[p->time].Y;
-                ThisTimeLocation.Z = GravityBox[i].timestate_location[p->time].Z;
+                ThisTimeLocation.X = GravityBox->timestate_location[p->time].X;
+                ThisTimeLocation.Y = GravityBox->timestate_location[p->time].Y;
+                ThisTimeLocation.Z = GravityBox->timestate_location[p->time].Z;
 
                 FRotator ThisTimeRotation;
-                ThisTimeRotation.Yaw = GravityBox[i].timestate_rotation[TimeChangePlayer->my_time].Yaw;
-                ThisTimeRotation.Pitch = GravityBox[i].timestate_rotation[TimeChangePlayer->my_time].Pitch;
-                ThisTimeRotation.Roll = GravityBox[i].timestate_rotation[TimeChangePlayer->my_time].Roll;
+                ThisTimeRotation.Yaw = GravityBox->timestate_rotation[TimeChangePlayer->my_time].Yaw;
+                ThisTimeRotation.Pitch = GravityBox->timestate_rotation[TimeChangePlayer->my_time].Pitch;
+                ThisTimeRotation.Roll = GravityBox->timestate_rotation[TimeChangePlayer->my_time].Roll;
 
                 GravityBox->SetActorLocation(ThisTimeLocation);
                 GravityBox->SetActorRotation(ThisTimeRotation);
