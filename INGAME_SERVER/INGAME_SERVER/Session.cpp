@@ -64,6 +64,7 @@ void Session::send_world_update_packet(int c_id)
     packet.yaw = clients[c_id].m_yaw;
     packet.HaveGravityGun = clients[c_id].m_HaveGrabityGun;
     packet.isLanded = clients[c_id].m_isjump;
+    packet.HaveTimeMachine = clients[c_id].m_HaveTimeMachine;
     SendPacket(&packet);
 }
 

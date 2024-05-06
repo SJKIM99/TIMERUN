@@ -66,6 +66,7 @@ public:
     int m_prev_remain_data;
     int m_time;
     bool m_isjump;
+    bool m_HaveTimeMachine;
 public:
     bool m_online;
 public:

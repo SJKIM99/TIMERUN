@@ -129,6 +129,7 @@ struct CS_PLAYER_UPDATE_PACKET {
     bool HaveGravityGun;
     int time;
     bool isLanded;
+    bool HaveTimeMachine;
 };
 
 struct CS_GRAVITYBOX_ADD_PACKET {
@@ -252,6 +253,7 @@ struct SC_WORLD_UPDATE_PACKET {
     vector_d3 velocity;
     bool HaveGravityGun;
     bool isLanded;
+    bool HaveTimeMachine;
 };
 
 struct SC_GRAVITYBOX_ADD_PACKET {

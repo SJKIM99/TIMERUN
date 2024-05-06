@@ -210,7 +210,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
         OtherPlayer->HaveGravityGun = p->HaveGravityGun;
         OtherPlayer->isLanded = p->isLanded;
-
+        OtherPlayer->HaveTimeMachine = p->HaveTimeMachine;
 
         //UE_LOG(LogTemp, Warning, TEXT("%f"), vec_size);
     }
@@ -339,14 +339,14 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
             for (int i = 0; i < spawnedGravityBox.Num(); ++i) {
                 AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[i]);
                 FVector ThisTimeLocation;
-                ThisTimeLocation.X = GravityBox[i].timestate_location[p->time].X;
-                ThisTimeLocation.Y = GravityBox[i].timestate_location[p->time].Y;
-                ThisTimeLocation.Z = GravityBox[i].timestate_location[p->time].Z;
+                ThisTimeLocation.X = GravityBox->timestate_location[p->time].X;
+                ThisTimeLocation.Y = GravityBox->timestate_location[p->time].Y;
+                ThisTimeLocation.Z = GravityBox->timestate_location[p->time].Z;
 
                 FRotator ThisTimeRotation;
-                ThisTimeRotation.Yaw = GravityBox[i].timestate_rotation[TimeChangePlayer->my_time].Yaw;
-                ThisTimeRotation.Pitch = GravityBox[i].timestate_rotation[TimeChangePlayer->my_time].Pitch;
-                ThisTimeRotation.Roll = GravityBox[i].timestate_rotation[TimeChangePlayer->my_time].Roll;
+                ThisTimeRotation.Yaw = GravityBox->timestate_rotation[TimeChangePlayer->my_time].Yaw;
+                ThisTimeRotation.Pitch = GravityBox->timestate_rotation[TimeChangePlayer->my_time].Pitch;
+                ThisTimeRotation.Roll = GravityBox->timestate_rotation[TimeChangePlayer->my_time].Roll;
 
                 GravityBox->SetActorLocation(ThisTimeLocation);
                 GravityBox->SetActorRotation(ThisTimeRotation);
@@ -434,6 +434,7 @@ void UTIMERUNGameInstance::SendPlayerupdatePakcet()
     packet.HaveGravityGun = MyPlayerCharacter->HaveGravityGun;
     packet.time = MyPlayerCharacter->my_time;
     packet.isLanded = MyPlayerCharacter->isLanded;
+    packet.HaveTimeMachine = MyPlayerCharacter->HaveTimeMachine;
 
     if (ingame_socket == NULL) return;
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
