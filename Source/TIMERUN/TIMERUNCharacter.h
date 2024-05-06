@@ -69,6 +69,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool HaveTimeMachine;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool DoingTimeTravel;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool isLanded = false;
