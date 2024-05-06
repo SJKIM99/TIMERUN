@@ -68,6 +68,11 @@ public:
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool HaveCameraShot;
+
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool HaveTimeMachine;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool DoingTimeTravel;
@@ -79,6 +84,7 @@ public:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int id;
+
 	char nickname[NAME_SIZE];
 	//보간때 쓰이는 변수들
 	FVector current_location;

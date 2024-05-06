@@ -63,6 +63,8 @@ ATIMERUNCharacter::ATIMERUNCharacter() : my_time(0)
 	HaveGravityGun = false;
 	IsGrabbingObject = false;
 
+	HaveCameraShot = false;
+
 	HaveTimeMachine = false;
 	DoingTimeTravel = false;
 
