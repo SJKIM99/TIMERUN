@@ -49,12 +49,15 @@ AGravityBox::AGravityBox()
     StaticMeshComponent->SetHiddenInGame(true, true);
     StaticMeshComponent->SetCastShadow(false);
 
-    StaticMeshComponent->SetMassScale(NAME_None, 10.f);
+    //StaticMeshComponent->SetMassScale(NAME_None, 10.f);
     StaticMeshComponent->SetSimulatePhysics(true); // Enable physics simulation for the static mesh
     StaticMeshComponent->SetLinearDamping(1.f);
 
     timestate_location.Init(FVector::ZeroVector, TIMESIZE);
     timestate_rotation.Init(FRotator::ZeroRotator, TIMESIZE);
+
+    StaticMeshComponent->BodyInstance.bOverrideMass = true; 
+    StaticMeshComponent->BodyInstance.SetMassOverride(10.f);
 }
 
 // Called when the game starts or when spawned
