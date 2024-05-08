@@ -146,6 +146,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
         if (dbThreadInstance->GetDatabase()->IsIDRegistered(p->id) && dbThreadInstance->GetDatabase()->IsPASSWDRegistered(p->passwd)) {
             //여기서 클라이언트에게 다시 session정보와 인게임서버토큰을 전송한다
             clients[c_id].send_login_success_packet(dbThreadInstance->GetDatabase()->ExtractPlayerInfo(p->id, p->passwd));
+            strcpy_s(clients[c_id].m_name, dbThreadInstance->GetDatabase()->ExtractPlayerInfo(p->id, p->passwd).player_nickname);
         }
         else {
             clients[c_id].send_login_fail_packet();
@@ -176,7 +177,10 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
                 timer_queue.push(event);
             }
         }
-        clients[c_id].send_ready_packet(c_id);
+        for (auto& cl : clients) {
+            if (cl.m_state == ST_FREE) break;
+            cl.send_ready_packet(c_id);
+        }
     }
                  break;
     }

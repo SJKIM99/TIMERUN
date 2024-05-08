@@ -55,6 +55,7 @@ public:
     std::mutex m_channel_lock;
     std::mutex m_update_lock;
     std::mutex m_gravitybox_lock;
+    std::mutex m_enter_lock;
     int m_channel;
     int m_client_in_channel_id;
     int m_id;
@@ -106,6 +107,7 @@ public:
     void send_gravitybox_dropped_packet(int c_id, int box_id);
     void send_player_time_change_packet(int c_id);
     void send_gravitybox_time_state_packet(int c_id, int box_id);
+    void send_team_change_packet();
 public:
     void SendPacket(void* packet);
     void RecvPacket();
@@ -122,4 +124,3 @@ extern std::array<Session, MAX_USER> clients;
 extern std::array<GravityBox, MAX_GRAVITYBOX> gravitybox;
 
 void disconnect(int c_id);
-

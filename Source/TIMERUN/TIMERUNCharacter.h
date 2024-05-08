@@ -22,7 +22,7 @@ protected:
 	virtual void BeginPlay() override;
 
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -32,7 +32,7 @@ public:
 	void UpdateGravityGunVisibility();
 
 	void DoJump();
-	
+
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
@@ -84,8 +84,8 @@ public:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int id;
-
-	char nickname[NAME_SIZE];
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FString nickname;
 	//보간때 쓰이는 변수들
 	FVector current_location;
 	FRotator current_rotation;

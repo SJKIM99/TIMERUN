@@ -67,6 +67,7 @@ void Session::send_ready_packet(int c_id)
     packet.size = sizeof SC_READY_PACKET;
     packet.type = SC_READY;
     packet.ready = clients[c_id].m_ready;
+    strcpy_s(packet.nickname, clients[c_id].m_name);
     SendPacket(&packet);
 }
 

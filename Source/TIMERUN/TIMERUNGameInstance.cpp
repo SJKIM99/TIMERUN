@@ -147,6 +147,8 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         characterRotation.Pitch = 0;
         characterRotation.Roll = 0;
 
+        MyPlayerCharacter->nickname = FString(ANSI_TO_TCHAR(p->nickname));
+
         //MyPlayerCharacter->AddMovementInput(characterVelocity);
         MyPlayerCharacter->SetActorLocation(characterLocation);
         MyPlayerCharacter->SetActorRotation(characterRotation);
@@ -165,7 +167,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         OtherPlayerLocation.Y = p->location.y;
         OtherPlayerLocation.Z = p->location.z;
 
-        UpdateNewPlayer(other_id, OtherPlayerLocation);
+        UpdateNewPlayer(other_id, OtherPlayerLocation, FString(ANSI_TO_TCHAR(p->nickname)));
     }
                       break;
     case SC_LOGIN_FAIL: {
@@ -353,6 +355,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
             }
         }
+
     }
                        break;
     case SC_GAME_START: {
@@ -360,9 +363,12 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         socketmgr.ConnectIngameServer();
         ingame_socket = socketmgr.GetIngameSocket();
 
+        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
         CS_INGAME_LOGIN_PACKET login_packet;
         login_packet.size = sizeof CS_INGAME_LOGIN_PACKET;
         login_packet.type = CS_INGAME_LOGIN;
+        strcpy_s(login_packet.nickname, TCHAR_TO_ANSI(*MyPlayerCharacter->nickname));
 
         int ret = send(*ingame_socket, reinterpret_cast<char*>(&login_packet), sizeof(login_packet), 0);
 
@@ -371,45 +377,49 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         GameStart = true;
     }
                       break;
-	case SC_GRAVITYBOX_TIME_STATE: {
-		UE_LOG(LogTemp, Warning, TEXT("SC_GRAVITYBOX_TIME_STATE"));
+    case SC_GRAVITYBOX_TIME_STATE: {
+        UE_LOG(LogTemp, Warning, TEXT("SC_GRAVITYBOX_TIME_STATE"));
 
-		SC_GRAVITYBOX_TIME_STATE_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_TIME_STATE_PACKET*>(packet);
+        SC_GRAVITYBOX_TIME_STATE_PACKET* p = reinterpret_cast<SC_GRAVITYBOX_TIME_STATE_PACKET*>(packet);
 
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
 
-		AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
+        AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[p->boxid]);
 
-		FVector ThisTimeLocation;
-		FRotator ThisTimeRotation;
+        FVector ThisTimeLocation;
+        FRotator ThisTimeRotation;
 
-		ThisTimeLocation.X = p->location.x;
-		ThisTimeLocation.Y = p->location.y;
-		ThisTimeLocation.Z = p->location.z;
+        ThisTimeLocation.X = p->location.x;
+        ThisTimeLocation.Y = p->location.y;
+        ThisTimeLocation.Z = p->location.z;
 
-		ThisTimeRotation.Yaw = p->rotation.x;
-		ThisTimeRotation.Pitch = p->rotation.y;
-		ThisTimeRotation.Roll = p->rotation.z;
+        ThisTimeRotation.Yaw = p->rotation.x;
+        ThisTimeRotation.Pitch = p->rotation.y;
+        ThisTimeRotation.Roll = p->rotation.z;
 
-		for (int i = p->timestate; i < TIMESIZE; ++i) {
-			GravityBox->timestate_location[i].X = p->location.x;
-			GravityBox->timestate_location[i].Y = p->location.y;
-			GravityBox->timestate_location[i].Z = p->location.z;
+        for (int i = p->timestate; i < TIMESIZE; ++i) {
+            GravityBox->timestate_location[i].X = p->location.x;
+            GravityBox->timestate_location[i].Y = p->location.y;
+            GravityBox->timestate_location[i].Z = p->location.z;
 
-			GravityBox->timestate_rotation[i].Yaw = p->rotation.x;
-			GravityBox->timestate_rotation[i].Pitch = p->rotation.y;
-			GravityBox->timestate_rotation[i].Roll = p->rotation.z;
+            GravityBox->timestate_rotation[i].Yaw = p->rotation.x;
+            GravityBox->timestate_rotation[i].Pitch = p->rotation.y;
+            GravityBox->timestate_rotation[i].Roll = p->rotation.z;
 
-		}
+        }
 
-		ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
-		if (MyPlayerCharacter->my_time >= p->timestate) {
-			GravityBox->SetActorLocation(ThisTimeLocation);
-			GravityBox->SetActorRotation(ThisTimeRotation);
-		}
-	}
-								 break;
+        if (MyPlayerCharacter->my_time >= p->timestate) {
+            GravityBox->SetActorLocation(ThisTimeLocation);
+            GravityBox->SetActorRotation(ThisTimeRotation);
+        }
+    }
+                                 break;
+    case SC_TEAM_CHANGE: {
+
+    }
+                       break;
     }
 }
 
@@ -440,7 +450,7 @@ void UTIMERUNGameInstance::SendPlayerupdatePakcet()
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 
-void UTIMERUNGameInstance::UpdateNewPlayer(int c_id, FVector location)
+void UTIMERUNGameInstance::UpdateNewPlayer(int c_id, FVector location, FString nickname)
 {
     UWorld* const world = GetWorld();
 
@@ -448,6 +458,8 @@ void UTIMERUNGameInstance::UpdateNewPlayer(int c_id, FVector location)
 
     SpawnCharacter->SpawnDefaultController();
     SpawnCharacter->id = c_id;
+    SpawnCharacter->nickname = nickname;
+
 
     IsEnterNewPlayer = false;
 }
@@ -608,7 +620,7 @@ void UTIMERUNGameInstance::SendPlayerJumpPacket()
     packet.size = sizeof CS_PLAYER_JUMP_PACKET;
     packet.type = CS_PLAYER_JUMP;
     packet.id = my_id;
- 
+
     if (ingame_socket == NULL) return;
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 }

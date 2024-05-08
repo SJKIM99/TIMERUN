@@ -83,30 +83,44 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
             delete ex_over;
         }
                     break;
+        case OP_TEAM_CHANGE: {
+            delete ex_over;
+            for (auto& cl : clients) {
+                if (cl.m_state == ST_FREE) break;
+                cl.send_team_change_packet();
+            }
+        }
+                           break;
         }
     }
 }
 
-//void WorkerThread::timer_thread()
-//{
-//   IngameMain ingameMain{};
-//
-//   while (true) {
-//      TIMER_EVENT event;
-//      auto current_time = std::chrono::system_clock::now();
-//      if (true == timer_queue.try_pop(event)) {
-//         if (event.wakeup_time > current_time) {
-//            timer_queue.push(event);
-//            std::this_thread::sleep_for(std::chrono::milliseconds(1));
-//            continue;
-//         }
-//         switch (event.event) {
-//         }
-//         continue;
-//      }
-//      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-//   }
-//}
+void WorkerThread::timer()
+{
+    while (true) {
+        TIMER_EVENT timer_event;
+        auto current_time = std::chrono::system_clock::now();
+        if (true == timer_queue.try_pop(timer_event)) {
+            if (timer_event.wakeup_time > current_time) {
+                timer_queue.push(timer_event);
+                continue;
+            }
+            switch (timer_event.event) {
+            case EV_TEAM_CHANGE: {
+                OVER_EXP* ov = new OVER_EXP;
+                ov->comp_type = OP_TEAM_CHANGE;
+                if (TeamChangeOn == false) {
+                    PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
+                    TeamChangeOn = true;
+                }
+            }
+                               break;
+            }
+            continue;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+}
 
 
 
@@ -144,7 +158,10 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
     case CS_INGAME_LOGIN: {
         CS_INGAME_LOGIN_PACKET* p = reinterpret_cast<CS_INGAME_LOGIN_PACKET*>(packet);
         std::cout << c_id << "번 클라이언트 인게임 로그인 성공" << std::endl;
-
+        {
+            std::lock_guard<std::mutex> updatelock(clients[c_id].m_enter_lock);
+            strcpy_s(clients[c_id].m_name, p->nickname);
+        }
         clients[c_id].send_ingame_login_sucess_packet(c_id);
 
         //다른 클라이언트한테 내가 로그인했다고 보내기
@@ -159,6 +176,8 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
             if (pl.m_id == c_id) continue;
             clients[c_id].send_add_player_packet(pl.m_id);
         }
+        TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::minutes(PLAYTIME),EV_TEAM_CHANGE,0 };
+        timer_queue.push(event);
     }
                         break;
     case CS_PLAYER_UPDATE: {
@@ -249,7 +268,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
                              break;
     case CS_PLAYER_JUMP: {
         CS_PLAYER_JUMP_PACKET* p = reinterpret_cast<CS_PLAYER_JUMP_PACKET*>(packet);
-      
+
         for (auto& cl : clients) {
             if (cl.m_state == ST_FREE) break;
             if (cl.m_id == c_id) continue;
@@ -322,6 +341,14 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
         }
     }
                                  break;
+    case CS_TEAM_CHANGE: {
+        CS_TEAM_CHANGE_PACKET* p = reinterpret_cast<CS_TEAM_CHANGE_PACKET*>(packet);
+        {
+            std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
+
+        }
+    }
+                       break;
     }
 }
 
