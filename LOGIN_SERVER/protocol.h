@@ -6,7 +6,7 @@
 #define LOGIN_SERVERIP "210.99.254.132"    //포트포워딩주소
 
 //#define INGAME_SERVERIP "25.58.12.4"
-#define INGAME_SERVERIP "210.99.254.132"  //하마치 내주소
+#define INGAME_SERVERIP "210.99.254.132"  //포트포워딩주소
 
 //#define LOGIN_SERVERIP "127.0.0.1"
 //
@@ -15,10 +15,10 @@
 enum COMP_TYPE {
     OP_ACCEPT,
     OP_RECV, OP_SEND,
-    OP_GAME_START
+    OP_GAME_START, OP_TEAM_CHANGE
 };
 
-enum TIMER_EVENT_TYPE { EV_GAME_START };
+enum TIMER_EVENT_TYPE { EV_GAME_START, EV_TEAM_CHANGE };
 
 struct vector_d3 {
     float x;
@@ -43,6 +43,8 @@ constexpr int MAX_GRAVITYBOX = 100;
 
 constexpr int TIMESIZE = 11;
 
+constexpr int PLAYTIME = 5;
+
 
 //C2S
 constexpr char CS_LOGIN = 0;
@@ -59,6 +61,7 @@ constexpr char CS_GRAVITYBOX_DROPPED = 10;
 constexpr char CS_TIME_CHANGE = 11;
 constexpr char CS_READY = 12;
 constexpr char CS_GRAVITYBOX_TIME_STATE = 13;
+constexpr char CS_TEAM_CHANGE = 14;
 
 
 //S2C
@@ -80,7 +83,7 @@ constexpr char SC_SIGNUP_FAIL = 15;
 constexpr char SC_READY = 16;
 constexpr char SC_GAME_START = 17;
 constexpr char SC_GRAVITYBOX_TIME_STATE = 18;
-
+constexpr char SC_TEAM_CHANGE = 19;
 
 
 #pragma pack (push, 1)
@@ -197,6 +200,11 @@ struct CS_GRAVITYBOX_TIME_STATE_PACKET {
     int my_time;
     vector_d3 location;
     vector_d3 rotation;
+};
+
+struct CS_TEAM_CHANGE_PACKET {
+    unsigned char size;
+    char type;
 };
 
 //S2C
@@ -335,5 +343,10 @@ struct SC_GRAVITYBOX_TIME_STATE_PACKET {
     int timestate;
     vector_d3 location;
     vector_d3 rotation;
+};
+
+struct SC_TEAM_CHANGE_PACKET {
+    unsigned char size;
+    char type;
 };
 #pragma pack(pop)

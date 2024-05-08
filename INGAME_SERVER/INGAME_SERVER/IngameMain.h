@@ -12,7 +12,7 @@ class IngameMain
 	WorkerThread workerThread;
 	OVER_EXP g_a_over;
 public:
-	HANDLE h_iocp;
+	//HANDLE h_iocp;
 public:
 	IngameMain();
 	~IngameMain();

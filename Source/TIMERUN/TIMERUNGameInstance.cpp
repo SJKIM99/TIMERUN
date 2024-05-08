@@ -353,6 +353,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
             }
         }
+        
     }
                        break;
     case SC_GAME_START: {

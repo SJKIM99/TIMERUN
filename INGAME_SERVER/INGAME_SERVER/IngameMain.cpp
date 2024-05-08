@@ -20,8 +20,8 @@ bool IngameMain::InitSocket()
     bind(g_server_socket, reinterpret_cast<sockaddr*>(&server_addr), sizeof(server_addr));
     listen(g_server_socket, SOMAXCONN);
 
-    h_iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, 0, 0, 0);
-    CreateIoCompletionPort(reinterpret_cast<HANDLE>(g_server_socket), h_iocp, 9999, 0);
+    workerThread.h_iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, 0, 0, 0);
+    CreateIoCompletionPort(reinterpret_cast<HANDLE>(g_server_socket), workerThread.h_iocp, 9999, 0);
     g_client_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
     int addr_size = sizeof(client_addr);
     g_a_over.comp_type = OP_ACCEPT;
@@ -37,14 +37,12 @@ void IngameMain::ServeurRun()
     worker_threads.reserve(num_threads);
 
     for (int i = 0; i < num_threads - 2; ++i)
-        worker_threads.emplace_back([this]() {workerThread.woker_thread(h_iocp); });
+        worker_threads.emplace_back([this]() {workerThread.woker_thread(workerThread.h_iocp); });
 
-    //std::thread timer_threads([&]() { workerThread.timer_thread(); });
-    //std::thread update_thread([&]() { workerThread.world_update_thread(); });
+    std::thread timerThread{ [this]() { workerThread.timer(); } };
 
     std::cout << "ServerRun" << std::endl;
     for (auto& th : worker_threads)
         th.join();
-    //timer_threads.join();
-    //update_thread.join();
+    timerThread.join();
 }

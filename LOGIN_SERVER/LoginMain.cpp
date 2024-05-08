@@ -39,7 +39,7 @@ void LoginMain::ServerRun()
 	worker_threads.reserve(num_threads);
 
 	for (int i = 0; i < num_threads; ++i)
-		worker_threads.emplace_back([this]() {/* WorkerThread workerThread;*/ workerThread.woker_thread(workerThread.h_iocp); });
+		worker_threads.emplace_back([this]() { workerThread.woker_thread(workerThread.h_iocp); });
 	
 	std::thread timerThread{ [this]() { workerThread.timer(); } };
 

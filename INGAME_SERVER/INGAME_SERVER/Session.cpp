@@ -168,6 +168,14 @@ void Session::send_gravitybox_time_state_packet(int c_id, int box_id)
     SendPacket(&packet);
 }
 
+void Session::send_team_change_packet()
+{
+    SC_TEAM_CHANGE_PACKET packet;
+    packet.type = SC_TEAM_CHANGE;
+    packet.size = sizeof SC_TEAM_CHANGE_PACKET;
+    SendPacket(&packet);
+}
+
 
 void Session::SendPacket(void* packet)
 {
