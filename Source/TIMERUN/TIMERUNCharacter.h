@@ -84,8 +84,8 @@ public:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int id;
-
-	char nickname[NAME_SIZE];
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FString nickname;
 	//보간때 쓰이는 변수들
 	FVector current_location;
 	FRotator current_rotation;

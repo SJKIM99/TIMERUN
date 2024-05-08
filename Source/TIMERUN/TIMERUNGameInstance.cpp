@@ -147,6 +147,8 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         characterRotation.Pitch = 0;
         characterRotation.Roll = 0;
 
+        MyPlayerCharacter->nickname = FString(ANSI_TO_TCHAR(p->nickname));
+
         //MyPlayerCharacter->AddMovementInput(characterVelocity);
         MyPlayerCharacter->SetActorLocation(characterLocation);
         MyPlayerCharacter->SetActorRotation(characterRotation);
@@ -165,7 +167,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         OtherPlayerLocation.Y = p->location.y;
         OtherPlayerLocation.Z = p->location.z;
 
-        UpdateNewPlayer(other_id, OtherPlayerLocation);
+        UpdateNewPlayer(other_id, OtherPlayerLocation, FString(ANSI_TO_TCHAR(p->nickname)));
     }
                       break;
     case SC_LOGIN_FAIL: {
@@ -361,9 +363,12 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         socketmgr.ConnectIngameServer();
         ingame_socket = socketmgr.GetIngameSocket();
 
+        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
         CS_INGAME_LOGIN_PACKET login_packet;
         login_packet.size = sizeof CS_INGAME_LOGIN_PACKET;
         login_packet.type = CS_INGAME_LOGIN;
+        strcpy_s(login_packet.nickname, TCHAR_TO_ANSI(*MyPlayerCharacter->nickname));
 
         int ret = send(*ingame_socket, reinterpret_cast<char*>(&login_packet), sizeof(login_packet), 0);
 
@@ -411,6 +416,10 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 		}
 	}
 								 break;
+    case SC_TEAM_CHANGE: {
+
+    }
+                       break;
     }
 }
 
@@ -441,7 +450,7 @@ void UTIMERUNGameInstance::SendPlayerupdatePakcet()
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 
-void UTIMERUNGameInstance::UpdateNewPlayer(int c_id, FVector location)
+void UTIMERUNGameInstance::UpdateNewPlayer(int c_id, FVector location,FString nickname)
 {
     UWorld* const world = GetWorld();
 
@@ -449,6 +458,8 @@ void UTIMERUNGameInstance::UpdateNewPlayer(int c_id, FVector location)
 
     SpawnCharacter->SpawnDefaultController();
     SpawnCharacter->id = c_id;
+    SpawnCharacter->nickname = nickname;
+
 
     IsEnterNewPlayer = false;
 }

@@ -28,7 +28,10 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	bool READY;
+	UPROPERTY(BlueprintReadWrite)
+	FString OtherNICKNAME;
 
+	FString OtherReadyPlayerNickName;
 public:
 	UFUNCTION(BlueprintCallable)
 	bool SendLoginPacket();

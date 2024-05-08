@@ -15,6 +15,8 @@ void Session::send_add_player_packet(int c_id)
     packet.location.x = clients[c_id].m_location.x;
     packet.location.y = clients[c_id].m_location.y;
     packet.location.z = clients[c_id].m_location.z;
+    strcpy_s(packet.nickname, clients[c_id].m_name);
+    std::cout << packet.nickname << std::endl;
 
     SendPacket(&packet);
 }
@@ -32,6 +34,7 @@ void Session::send_ingame_login_sucess_packet(int c_id)
     packet.velocity.x = clients[c_id].m_velocity.x;
     packet.velocity.y = clients[c_id].m_velocity.y;
     packet.velocity.z = clients[c_id].m_velocity.z;
+    strcpy_s(packet.nickname, clients[c_id].m_name);
 
 
     SendPacket(&packet);

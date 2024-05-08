@@ -89,7 +89,6 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
 				if (cl.m_state == ST_FREE) break;
 				cl.send_team_change_packet();
 			}
-			std::cout << "팀체인지 패킷 몇번 보내?" << std::endl;
 		}
 						   break;
 		}
@@ -159,7 +158,10 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
     case CS_INGAME_LOGIN: {
         CS_INGAME_LOGIN_PACKET* p = reinterpret_cast<CS_INGAME_LOGIN_PACKET*>(packet);
         std::cout << c_id << "번 클라이언트 인게임 로그인 성공" << std::endl;
-
+        {
+            std::lock_guard<std::mutex> updatelock(clients[c_id].m_enter_lock);
+            strcpy_s(clients[c_id].m_name, p->nickname);
+        }
         clients[c_id].send_ingame_login_sucess_packet(c_id);
 
         //다른 클라이언트한테 내가 로그인했다고 보내기

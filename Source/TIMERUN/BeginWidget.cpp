@@ -34,9 +34,9 @@ bool UBeginWidget::SendLoginPacket()
 	switch (recv_buf[1]) {
 	case SC_LOGIN_SUCCESS: {
 		SC_LOGIN_SUCCESS_PACKET* p = reinterpret_cast<SC_LOGIN_SUCCESS_PACKET*>(recv_buf);
-		NICKNAME = p->nickname;
+		NICKNAME = FString(ANSI_TO_TCHAR(p->nickname));
 		auto myplayer = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-		memcpy(myplayer->nickname, p->nickname, sizeof p->nickname);
+		myplayer->nickname = FString(ANSI_TO_TCHAR(p->nickname));
 
 		/*instance->socketmgr.ConnectIngameServer();
 		instance->ingame_socket = instance->socketmgr.GetIngameSocket();
@@ -110,7 +110,13 @@ void UBeginWidget::SendReadyPacket()
 	switch (recv_buf[1]) {
 	case SC_READY: {
 		SC_READY_PACKET* p = reinterpret_cast<SC_READY_PACKET*>(recv_buf);
-		READY = p->ready;
+		OtherReadyPlayerNickName = p->nickname;
+		if (strcmp(TCHAR_TO_ANSI(*NICKNAME), TCHAR_TO_ANSI (*OtherReadyPlayerNickName)) == 0) {
+			READY = p->ready;
+		}
+		else {
+			OtherNICKNAME = p->nickname;
+		}
 	}
 				 break;
 	}

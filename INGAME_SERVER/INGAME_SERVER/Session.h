@@ -55,6 +55,7 @@ public:
     std::mutex m_channel_lock;
     std::mutex m_update_lock;
     std::mutex m_gravitybox_lock;
+    std::mutex m_enter_lock;
     int m_channel;
     int m_client_in_channel_id;
     int m_id;

@@ -121,6 +121,7 @@ struct CS_SELECT_CHANNEL_PACKET {
 struct CS_INGAME_LOGIN_PACKET {
     unsigned char size;
     char type;
+    char nickname[NAMESIZE];
 };
 
 struct CS_PLAYER_UPDATE_PACKET {
@@ -242,6 +243,7 @@ struct SC_ADD_PLAYER_PACKET {
     char type;
     int id;
     vector_d3 location;
+    char nickname[NAMESIZE];
 };
 
 struct SC_INGAME_SUCCESS_PACKET {
@@ -251,6 +253,7 @@ struct SC_INGAME_SUCCESS_PACKET {
     vector_d3 location;
     vector_d3 velocity;
     float yaw;
+    char nickname[NAMESIZE];
 };
 
 struct SC_WORLD_UPDATE_PACKET {
@@ -328,7 +331,9 @@ struct SC_SIGNUP_FAIL_PACKET {
 struct SC_READY_PACKET {
     unsigned char size;
     char type;
+    int id;
     bool ready;
+    char nickname[NAMESIZE];
 };
 
 struct SC_GAME_START_PACKET {
