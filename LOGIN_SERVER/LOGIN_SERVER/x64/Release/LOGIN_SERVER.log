@@ -1,4 +1,8 @@
 ﻿  pch.cpp
+C:\Users\user\Desktop\TIMERUN\LOGIN_SERVER\protocol.h(11,1): warning C4005: 'LOGIN_SERVERIP': 매크로 재정의
+C:\Users\user\Desktop\TIMERUN\LOGIN_SERVER\protocol.h(6,1): message : 'LOGIN_SERVERIP'의 이전 정의를 참조하십시오.
+C:\Users\user\Desktop\TIMERUN\LOGIN_SERVER\protocol.h(13,1): warning C4005: 'INGAME_SERVERIP': 매크로 재정의
+C:\Users\user\Desktop\TIMERUN\LOGIN_SERVER\protocol.h(9,1): message : 'INGAME_SERVERIP'의 이전 정의를 참조하십시오.
   DBThread.cpp
   DataBase.cpp
   LOGIN_SERVER.cpp

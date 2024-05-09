@@ -3,10 +3,10 @@
 #define   BUF_SIZE      8192
 #define MAX_CLIENTS      100
 //#define LOGIN_SERVERIP "25.52.149.86"   //하마치 내주소
-//#define LOGIN_SERVERIP "210.99.254.132"    //포트포워딩주소
+#define LOGIN_SERVERIP "210.99.254.132"    //포트포워딩주소
 
 //#define INGAME_SERVERIP "25.58.12.4"
-//#define INGAME_SERVERIP "210.99.254.132"  //포트포워딩주소
+#define INGAME_SERVERIP "210.99.254.132"  //포트포워딩주소
 
 #define LOGIN_SERVERIP "127.0.0.1"
 
