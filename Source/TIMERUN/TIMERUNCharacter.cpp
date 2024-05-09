@@ -64,6 +64,7 @@ ATIMERUNCharacter::ATIMERUNCharacter() : my_time(0)
     IsGrabbingObject = false;
 
     HaveCameraShot = false;
+    MyScore = false;
 
     HaveTimeMachine = false;
     DoingTimeTravel = false;
