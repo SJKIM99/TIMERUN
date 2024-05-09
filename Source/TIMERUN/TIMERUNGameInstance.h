@@ -101,4 +101,8 @@ public:
     int TIMESIZE;*/
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool GameStart = false;
+public:
+    //카메라 동기화
+    UFUNCTION(BlueprintCallable)
+    void SendCameraScorePacket();
 };

@@ -179,6 +179,25 @@ void Session::send_team_change_packet()
     SendPacket(&packet);
 }
 
+void Session::send_calculate_score_packet(int c_id)
+{
+    SC_CALCULATE_SCORE_PACKET packet;
+    packet.type = SC_CALCULATE_SCORE;
+    packet.size = sizeof SC_CALCULATE_SCORE_PACKET;
+    packet.id = c_id;
+    packet.score = clients[c_id].m_score;
+    SendPacket(&packet);
+}
+
+void Session::send_can_take_picture_packet(int c_id)
+{
+    SC_CAN_TAKE_PICTURE_PACKET packet;
+    packet.type = SC_CAN_TAKE_PICTURE;
+    packet.size = sizeof SC_CAN_TAKE_PICTURE_PACKET;
+    packet.cantakepicture = clients[c_id].m_cantakepicture;
+    SendPacket(&packet);
+}
+
 
 void Session::SendPacket(void* packet)
 {
