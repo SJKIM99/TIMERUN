@@ -72,6 +72,18 @@ void AGravityBox::BeginPlay()
     instance->GetSocketMgr()->GetIngameSocket();
 
     GetWorld()->GetTimerManager().SetTimer(SendGravityBoxInfoHandle, this, &AGravityBox::SendGravityBoxMovePacket, 0.1f, true);
+
+    ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+    for (int i = 0; i < MyPlayerCharacter->my_time; ++i) {
+        timestate_location[i].X = BoxLocation.X;
+        timestate_location[i].Y = BoxLocation.Y;
+        timestate_location[i].Z = BoxLocation.Z;
+
+        timestate_rotation[i].Yaw = BoxRotation.Yaw;
+        timestate_rotation[i].Pitch = BoxRotation.Pitch;
+        timestate_rotation[i].Roll = BoxRotation.Roll;
+    }
 }
 
 // Called every frame
