@@ -73,6 +73,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int MyScore;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool CanTakePicture;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool HaveTimeMachine;

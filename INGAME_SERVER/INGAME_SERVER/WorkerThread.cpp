@@ -91,6 +91,11 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
             }
         }
                            break;
+        case OP_CAN_TAKE_PICTURE: {
+            delete ex_over;
+            clients[key].send_can_take_picture_packet(key);
+        }
+                                break;
         }
     }
 }
@@ -115,6 +120,14 @@ void WorkerThread::timer()
                 }
             }
                                break;
+            case EV_CAN_TAKE_PICTURE:
+            {
+                OVER_EXP* ov = new OVER_EXP;
+                ov->comp_type = OP_CAN_TAKE_PICTURE;
+                clients[timer_event.object_id].m_cantakepicture = true;
+                PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
+            }
+            break;
             }
             continue;
         }
@@ -150,6 +163,7 @@ void WorkerThread::InitPlayerInfo(int player_id)
     clients[player_id].m_velocity.y = 0;
     clients[player_id].m_velocity.z = 0;
     clients[player_id].m_HaveGrabityGun = false;
+    clients[player_id].m_score = 0;
 }
 
 void WorkerThread::ProcessPacket(int c_id, char* packet)
@@ -349,6 +363,24 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
         }
     }
                        break;
+    case CS_TAKE_PICTURE: {
+        CS_TAKE_PICTURE_PACKET* p = reinterpret_cast<CS_TAKE_PICTURE_PACKET*>(packet);
+        {
+            std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
+            clients[c_id].m_score += p->score;
+            clients[c_id].m_cantakepicture = false;
+        }
+
+        TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::minutes(TAKE_PICTURE_COOLTIME),EV_CAN_TAKE_PICTURE,0 };
+        timer_queue.push(event);
+
+        for (auto& cl : clients) {
+            if (cl.m_state == ST_FREE) break;
+            if (cl.m_id == c_id) continue;
+            cl.send_calculate_score_packet(c_id);
+        }
+    }
+                        break;
     }
 }
 

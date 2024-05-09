@@ -15,10 +15,10 @@
 enum COMP_TYPE {
     OP_ACCEPT,
     OP_RECV, OP_SEND,
-    OP_GAME_START, OP_TEAM_CHANGE
+    OP_GAME_START, OP_TEAM_CHANGE, OP_CAN_TAKE_PICTURE
 };
 
-enum TIMER_EVENT_TYPE { EV_GAME_START, EV_TEAM_CHANGE };
+enum TIMER_EVENT_TYPE { EV_GAME_START, EV_TEAM_CHANGE, EV_CAN_TAKE_PICTURE };
 
 struct vector_d3 {
     float x;
@@ -44,6 +44,7 @@ constexpr int MAX_GRAVITYBOX = 100;
 constexpr int TIMESIZE = 11;
 
 constexpr int PLAYTIME = 5;
+constexpr int TAKE_PICTURE_COOLTIME = 3;
 
 
 //C2S
@@ -62,6 +63,7 @@ constexpr char CS_TIME_CHANGE = 11;
 constexpr char CS_READY = 12;
 constexpr char CS_GRAVITYBOX_TIME_STATE = 13;
 constexpr char CS_TEAM_CHANGE = 14;
+constexpr char CS_TAKE_PICTURE = 15;
 
 
 //S2C
@@ -84,6 +86,8 @@ constexpr char SC_READY = 16;
 constexpr char SC_GAME_START = 17;
 constexpr char SC_GRAVITYBOX_TIME_STATE = 18;
 constexpr char SC_TEAM_CHANGE = 19;
+constexpr char SC_CALCULATE_SCORE = 20;
+constexpr char SC_CAN_TAKE_PICTURE = 21;
 
 
 #pragma pack (push, 1)
@@ -206,6 +210,12 @@ struct CS_GRAVITYBOX_TIME_STATE_PACKET {
 struct CS_TEAM_CHANGE_PACKET {
     unsigned char size;
     char type;
+};
+
+struct CS_TAKE_PICTURE_PACKET {
+    unsigned char size;
+    char type;
+    int score;
 };
 
 //S2C
@@ -353,5 +363,18 @@ struct SC_GRAVITYBOX_TIME_STATE_PACKET {
 struct SC_TEAM_CHANGE_PACKET {
     unsigned char size;
     char type;
+};
+
+struct SC_CALCULATE_SCORE_PACKET {
+    unsigned char size;
+    char type;
+    int id;
+    int score;
+};
+
+struct SC_CAN_TAKE_PICTURE_PACKET {
+    unsigned char size;
+    char type;
+    bool cantakepicture;
 };
 #pragma pack(pop)

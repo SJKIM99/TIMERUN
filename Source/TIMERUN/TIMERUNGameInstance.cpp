@@ -420,6 +420,25 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
     }
                        break;
+    case SC_CALCULATE_SCORE: {
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
+        SortPlayerIndex();
+
+        SC_CALCULATE_SCORE_PACKET* p = reinterpret_cast<SC_CALCULATE_SCORE_PACKET*>(packet);
+        
+        ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
+
+        OtherPlayer->MyScore = p->score;
+    }
+                           break;
+    case SC_CAN_TAKE_PICTURE: {
+        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+        SC_CAN_TAKE_PICTURE_PACKET* p = reinterpret_cast<SC_CAN_TAKE_PICTURE_PACKET*>(packet);
+        
+        MyPlayerCharacter->CanTakePicture = p->cantakepicture;
+    }
+                            break;
     }
 }
 
@@ -642,5 +661,17 @@ void UTIMERUNGameInstance::SendTimeChangePacket()
     packet.time = MyPlayerCharacter->my_time;
 
     if (ingame_socket == NULL) return;
+    int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
+}
+
+void UTIMERUNGameInstance::SendCameraScorePacket()
+{
+    ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+    CS_TAKE_PICTURE_PACKET packet;
+    packet.size = sizeof CS_TAKE_PICTURE_PACKET;
+    packet.type = CS_TAKE_PICTURE;
+    packet.score = MyPlayerCharacter->MyScore;
+
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 }
