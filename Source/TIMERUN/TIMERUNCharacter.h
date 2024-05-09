@@ -70,6 +70,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool HaveCameraShot;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int MyScore;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
