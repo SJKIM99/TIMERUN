@@ -56,7 +56,7 @@ AGravityBox::AGravityBox()
     timestate_location.Init(FVector::ZeroVector, TIMESIZE);
     timestate_rotation.Init(FRotator::ZeroRotator, TIMESIZE);
 
-    StaticMeshComponent->BodyInstance.bOverrideMass = true; 
+    StaticMeshComponent->BodyInstance.bOverrideMass = true;
     StaticMeshComponent->BodyInstance.SetMassOverride(10.f);
 }
 
@@ -72,18 +72,6 @@ void AGravityBox::BeginPlay()
     instance->GetSocketMgr()->GetIngameSocket();
 
     GetWorld()->GetTimerManager().SetTimer(SendGravityBoxInfoHandle, this, &AGravityBox::SendGravityBoxMovePacket, 0.1f, true);
-
-    ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-
-    for (int i = 0; i < MyPlayerCharacter->my_time; ++i) {
-        timestate_location[i].X = BoxLocation.X;
-        timestate_location[i].Y = BoxLocation.Y;
-        timestate_location[i].Z = BoxLocation.Z;
-
-        timestate_rotation[i].Yaw = BoxRotation.Yaw;
-        timestate_rotation[i].Pitch = BoxRotation.Pitch;
-        timestate_rotation[i].Roll = BoxRotation.Roll;
-    }
 }
 
 // Called every frame
@@ -319,4 +307,3 @@ void AGravityBox::SendGravityBoxDroppedPacket()
     if (instance->ingame_socket == NULL) return;
     int ret = send(*instance->ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
-

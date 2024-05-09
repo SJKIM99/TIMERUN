@@ -425,7 +425,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         SortPlayerIndex();
 
         SC_CALCULATE_SCORE_PACKET* p = reinterpret_cast<SC_CALCULATE_SCORE_PACKET*>(packet);
-        
+
         ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
 
         OtherPlayer->MyScore = p->score;
@@ -435,7 +435,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
         SC_CAN_TAKE_PICTURE_PACKET* p = reinterpret_cast<SC_CAN_TAKE_PICTURE_PACKET*>(packet);
-        
+
         MyPlayerCharacter->CanTakePicture = p->cantakepicture;
     }
                             break;
