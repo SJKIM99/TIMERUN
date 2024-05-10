@@ -71,6 +71,7 @@ public:
     bool m_cantakepicture;
     int m_score;
     bool m_canspawngravitybox;
+    bool m_timechangestart;
 public:
     bool m_online;
 public:
@@ -114,6 +115,7 @@ public:
     void send_calculate_score_packet(int c_id);
     void send_can_take_picture_packet(int c_id);
     void send_can_spawn_gravitybox(int c_id);
+    void send_time_change_start_packet(int c_id);
 public:
     void SendPacket(void* packet);
     void RecvPacket();

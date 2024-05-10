@@ -338,6 +338,9 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         //이 작업은 월드에 있는 모든 클라이언트가 실행해야해
         //p->id는 시간이동을 한 클라이언트야
         if (TimeChangePlayer->id == my_id) {
+
+            TimeChangePlayer->TimeChangeStart = p->timechangestart;
+
             for (int i = 0; i < spawnedGravityBox.Num(); ++i) {
                 AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[i]);
                 FVector ThisTimeLocation;
@@ -447,6 +450,14 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         MyPlayerCharacter->CanSpawnGravityBox = p->canspawngravitybox;
     }
                                 break;
+    case SC_TIME_CHANGE_START: {
+        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+        SC_TIME_CHANGE_START_PACKET* p = reinterpret_cast<SC_TIME_CHANGE_START_PACKET*>(packet);
+
+        MyPlayerCharacter->TimeChangeStart = p->timechangestart;
+    }
+                             break;
     }
 }
 
@@ -669,6 +680,15 @@ void UTIMERUNGameInstance::SendTimeChangePacket()
     packet.time = MyPlayerCharacter->my_time;
 
     if (ingame_socket == NULL) return;
+    int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
+}
+
+void UTIMERUNGameInstance::SendTimeChangeStartPacket()
+{
+    CS_TIME_CHANGE_START_PACKET packet;
+    packet.size = sizeof CS_TIME_CHANGE_START_PACKET;
+    packet.type = CS_TIME_CHANGE_START;
+
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 }
 

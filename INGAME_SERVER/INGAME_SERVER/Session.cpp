@@ -151,6 +151,7 @@ void Session::send_player_time_change_packet(int c_id)
     packet.size = sizeof SC_TIME_CHANGE_PACKET;
     packet.id = c_id;
     packet.time = clients[c_id].m_time;
+    packet.timechangestart = clients[c_id].m_timechangestart;
     SendPacket(&packet);
 }
 
@@ -203,6 +204,15 @@ void Session::send_can_spawn_gravitybox(int c_id)
     packet.type = SC_CAN_SPAWN_GRAVITYBOX;
     packet.size = sizeof SC_CAN_SPAWN_GRAVITYBOX_PACKET;
     packet.canspawngravitybox = clients[c_id].m_canspawngravitybox;
+    SendPacket(&packet);
+}
+
+void Session::send_time_change_start_packet(int c_id)
+{
+    SC_TIME_CHANGE_START_PACKET packet;
+    packet.type = SC_TIME_CHANGE_START;
+    packet.size = sizeof SC_TIME_CHANGE_START_PACKET;
+    packet.timechangestart = clients[c_id].m_timechangestart;
     SendPacket(&packet);
 }
 

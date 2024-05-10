@@ -66,6 +66,7 @@ constexpr char CS_READY = 12;
 constexpr char CS_GRAVITYBOX_TIME_STATE = 13;
 constexpr char CS_TEAM_CHANGE = 14;
 constexpr char CS_TAKE_PICTURE = 15;
+constexpr char CS_TIME_CHANGE_START = 16;
 
 
 //S2C
@@ -91,6 +92,7 @@ constexpr char SC_TEAM_CHANGE = 19;
 constexpr char SC_CALCULATE_SCORE = 20;
 constexpr char SC_CAN_TAKE_PICTURE = 21;
 constexpr char SC_CAN_SPAWN_GRAVITYBOX = 22;
+constexpr char SC_TIME_CHANGE_START = 23;
 
 
 #pragma pack (push, 1)
@@ -221,6 +223,11 @@ struct CS_TAKE_PICTURE_PACKET {
     int score;
 };
 
+struct CS_TIME_CHANGE_START_PACKET {
+    unsigned char size;
+    char type;
+};
+
 //S2C
 struct SC_SIGNUP_PACKET {
     unsigned char size;
@@ -334,6 +341,7 @@ struct SC_TIME_CHANGE_PACKET {
     char type;
     int id;
     int time;
+    bool timechangestart;
 };
 
 struct SC_SIGNUP_FAIL_PACKET {
@@ -385,5 +393,11 @@ struct SC_CAN_SPAWN_GRAVITYBOX_PACKET {
     unsigned char size;
     char type;
     bool canspawngravitybox;
+};
+
+struct SC_TIME_CHANGE_START_PACKET {
+    unsigned char size;
+    char type;
+    bool timechangestart;
 };
 #pragma pack(pop)

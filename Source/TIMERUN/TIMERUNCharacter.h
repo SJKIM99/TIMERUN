@@ -79,7 +79,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool CanSpawnGravityBox;
 
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool HaveTimeMachine;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -87,6 +86,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool isLanded = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool TimeChangeStart;
 
 
 public:
