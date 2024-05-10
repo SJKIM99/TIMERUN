@@ -398,7 +398,11 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
             std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
             clients[c_id].m_timechangestart = true;
         }
-        clients[c_id]
+        for (auto& cl : clients) {
+            if (cl.m_state == ST_FREE) break;
+            if (cl.m_id == c_id) continue;
+            cl.send_time_change_start_packet(c_id);
+        }
     }
                              break;
     }
