@@ -338,9 +338,6 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         //이 작업은 월드에 있는 모든 클라이언트가 실행해야해
         //p->id는 시간이동을 한 클라이언트야
         if (TimeChangePlayer->id == my_id) {
-
-            TimeChangePlayer->TimeChangeStart = p->timechangestart;
-
             for (int i = 0; i < spawnedGravityBox.Num(); ++i) {
                 AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[i]);
                 FVector ThisTimeLocation;
@@ -358,7 +355,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
             }
         }
-
+        TimeChangePlayer->TimeChangeStart = p->timechangestart;
     }
                        break;
     case SC_GAME_START: {
