@@ -72,6 +72,25 @@ void AGravityBox::BeginPlay()
     instance->GetSocketMgr()->GetIngameSocket();
 
     GetWorld()->GetTimerManager().SetTimer(SendGravityBoxInfoHandle, this, &AGravityBox::SendGravityBoxMovePacket, 0.1f, true);
+
+    TimeLevel = 0.f;
+    SkeletalMeshComponent = FindComponentByClass<USkeletalMeshComponent>();
+    if (SkeletalMeshComponent)
+    {
+        // Assuming the material index is 0, change it according to your setup
+        UMaterialInterface* Material = SkeletalMeshComponent->GetMaterial(0);
+        if (Material)
+        {
+            // Check if the material is dynamic
+            DynamicMaterial = Cast<UMaterialInstanceDynamic>(Material);
+            if (!DynamicMaterial)
+            {
+                // If not dynamic, create a dynamic instance
+                DynamicMaterial = UMaterialInstanceDynamic::Create(Material, this);
+                SkeletalMeshComponent->SetMaterial(0, DynamicMaterial);
+            }
+        }
+    }
 }
 
 // Called every frame
@@ -85,6 +104,9 @@ void AGravityBox::Tick(float DeltaTime)
     IsMoving = IsMovingCheck();
     CanFallCheck();
     DoGrabbingRotate(isGrabbed);
+
+    FName ParameterName = FName("MaskSpread"); // Name of the parameter
+    DynamicMaterial->SetScalarParameterValue(ParameterName, TimeLevel);
 
     CanFixPos = CanFixPosCheck();
     if (CanFixPos == true) {
