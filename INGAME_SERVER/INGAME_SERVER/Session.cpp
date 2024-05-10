@@ -16,7 +16,6 @@ void Session::send_add_player_packet(int c_id)
     packet.location.y = clients[c_id].m_location.y;
     packet.location.z = clients[c_id].m_location.z;
     strcpy_s(packet.nickname, clients[c_id].m_name);
-    std::cout << packet.nickname << std::endl;
 
     SendPacket(&packet);
 }
@@ -195,6 +194,15 @@ void Session::send_can_take_picture_packet(int c_id)
     packet.type = SC_CAN_TAKE_PICTURE;
     packet.size = sizeof SC_CAN_TAKE_PICTURE_PACKET;
     packet.cantakepicture = clients[c_id].m_cantakepicture;
+    SendPacket(&packet);
+}
+
+void Session::send_can_spawn_gravitybox(int c_id)
+{
+    SC_CAN_SPAWN_GRAVITYBOX_PACKET packet;
+    packet.type = SC_CAN_SPAWN_GRAVITYBOX;
+    packet.size = sizeof SC_CAN_SPAWN_GRAVITYBOX_PACKET;
+    packet.canspawngravitybox = clients[c_id].m_canspawngravitybox;
     SendPacket(&packet);
 }
 
