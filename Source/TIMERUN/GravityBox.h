@@ -55,6 +55,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USkeletalMeshComponent* SkeletalMeshComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UMaterialInstanceDynamic* DynamicMaterial;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float TimeLevel;
 
 	//이 엑터가 움직이고 있는지 확인해주는 함수
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
