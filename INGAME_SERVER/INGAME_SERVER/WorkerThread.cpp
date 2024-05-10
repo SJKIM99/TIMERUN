@@ -92,6 +92,7 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
         }
                            break;
         case OP_CAN_TAKE_PICTURE: {
+            std::cout << "Can Take Picture" << std::endl;
             delete ex_over;
             clients[key].send_can_take_picture_packet(key);
         }
@@ -103,36 +104,36 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
 void WorkerThread::timer()
 {
     while (true) {
-        TIMER_EVENT timer_event;
-        auto current_time = std::chrono::system_clock::now();
-        if (true == timer_queue.try_pop(timer_event)) {
-            if (timer_event.wakeup_time > current_time) {
-                timer_queue.push(timer_event);
-                continue;
-            }
-            switch (timer_event.event) {
-            case EV_TEAM_CHANGE: {
-                OVER_EXP* ov = new OVER_EXP;
-                ov->comp_type = OP_TEAM_CHANGE;
-                if (TeamChangeOn == false) {
-                    PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
-                    TeamChangeOn = true;
-                }
-            }
-                               break;
-            case EV_CAN_TAKE_PICTURE:
-            {
-                OVER_EXP* ov = new OVER_EXP;
-                ov->comp_type = OP_CAN_TAKE_PICTURE;
-                clients[timer_event.object_id].m_cantakepicture = true;
-                PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
-            }
-            break;
-            }
-            continue;
-        }
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
+		TIMER_EVENT timer_event;
+		auto current_time = std::chrono::system_clock::now();
+		if (true == timer_queue.try_pop(timer_event)) {
+			if (timer_event.wakeup_time > current_time) {
+				timer_queue.push(timer_event);
+				continue;
+			}
+			switch (timer_event.event) {
+			case EV_TEAM_CHANGE: {
+				OVER_EXP* ov = new OVER_EXP;
+				ov->comp_type = OP_TEAM_CHANGE;
+				if (TeamChangeOn == false) {
+					PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
+					TeamChangeOn = true;
+				}
+			}
+							   break;
+			case EV_CAN_TAKE_PICTURE: {
+				std::cout << "여기와??????????" << std::endl;
+				OVER_EXP* ov = new OVER_EXP;
+				ov->comp_type = OP_CAN_TAKE_PICTURE;
+				clients[timer_event.object_id].m_cantakepicture = true;
+				PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
+			}
+									break;
+			}
+			continue;
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
 }
 
 
@@ -314,23 +315,23 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
         }
         for (auto& cl : clients) {
             if (cl.m_state == ST_FREE) break;
-            if (cl.m_id == c_id) continue;
-            cl.send_gravitybox_dropped_packet(c_id, p->boxid);
-        }
-        break;
-    }
-    case CS_TIME_CHANGE: {
-        CS_TIME_CHANGE_PACKET* p = reinterpret_cast<CS_TIME_CHANGE_PACKET*>(packet);
-        {
-            std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
-            clients[c_id].m_time = p->time;
-            std::cout << c_id << "번 클라이언트 " << p->time << "으로 타임 이동" << std::endl;
-        }
-        for (auto& cl : clients) {
-            if (cl.m_state == ST_FREE) break;
-            //if (cl.m_id == c_id) continue;
-            cl.send_player_time_change_packet(c_id);
-        }
+			if (cl.m_id == c_id) continue;
+			cl.send_gravitybox_dropped_packet(c_id, p->boxid);
+		}
+	}
+							  break;
+	case CS_TIME_CHANGE: {
+		CS_TIME_CHANGE_PACKET* p = reinterpret_cast<CS_TIME_CHANGE_PACKET*>(packet);
+		{
+			std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
+			clients[c_id].m_time = p->time;
+			std::cout << c_id << "번 클라이언트 " << p->time << "으로 타임 이동" << std::endl;
+		}
+		for (auto& cl : clients) {
+			if (cl.m_state == ST_FREE) break;
+			//if (cl.m_id == c_id) continue;
+			cl.send_player_time_change_packet(c_id);
+		}
     }
                        break;
     case CS_GRAVITYBOX_TIME_STATE: {
@@ -367,11 +368,11 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
         CS_TAKE_PICTURE_PACKET* p = reinterpret_cast<CS_TAKE_PICTURE_PACKET*>(packet);
         {
             std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
-            clients[c_id].m_score += p->score;
+            clients[c_id].m_score =  p->score;
             clients[c_id].m_cantakepicture = false;
         }
 
-        TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::minutes(TAKE_PICTURE_COOLTIME),EV_CAN_TAKE_PICTURE,0 };
+        TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(TAKE_PICTURE_COOLTIME),EV_CAN_TAKE_PICTURE,0 };
         timer_queue.push(event);
 
         for (auto& cl : clients) {
