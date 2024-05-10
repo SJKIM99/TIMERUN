@@ -32,7 +32,8 @@ ATIMERUNCharacter::ATIMERUNCharacter() : my_time(0)
         //애니메이션 블루프린트 클래스를 가져와서 설정
         GetMesh()->SetAnimInstanceClass(AnimationClass.Class);
     }
-
+    GetMesh()->bRenderCustomDepth = true;
+    GetMesh()->CustomDepthStencilValue = 1;
 
     // 중력총
     GravityGunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GravityGun"));
