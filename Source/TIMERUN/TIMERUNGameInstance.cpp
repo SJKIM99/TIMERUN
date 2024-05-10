@@ -439,6 +439,14 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         MyPlayerCharacter->CanTakePicture = p->cantakepicture;
     }
                             break;
+    case SC_CAN_SPAWN_GRAVITYBOX: {
+        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+        SC_CAN_SPAWN_GRAVITYBOX_PACKET* p = reinterpret_cast<SC_CAN_SPAWN_GRAVITYBOX_PACKET*>(packet);
+
+        MyPlayerCharacter->CanSpawnGravityBox = p->canspawngravitybox;
+    }
+                                break;
     }
 }
 

@@ -76,6 +76,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool CanTakePicture;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool CanSpawnGravityBox;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool HaveTimeMachine;

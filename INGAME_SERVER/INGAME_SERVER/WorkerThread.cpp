@@ -84,20 +84,24 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
         }
                     break;
         case OP_TEAM_CHANGE: {
-            delete ex_over;
-            for (auto& cl : clients) {
-                if (cl.m_state == ST_FREE) break;
-                cl.send_team_change_packet();
-            }
-        }
-                           break;
-        case OP_CAN_TAKE_PICTURE: {
-            std::cout << "Can Take Picture" << std::endl;
-            delete ex_over;
-            clients[key].send_can_take_picture_packet(key);
-        }
-                                break;
-        }
+			delete ex_over;
+			for (auto& cl : clients) {
+				if (cl.m_state == ST_FREE) break;
+				cl.send_team_change_packet();
+			}
+		}
+						   break;
+		case OP_CAN_TAKE_PICTURE: {
+			delete ex_over;
+			clients[key].send_can_take_picture_packet(key);
+		}
+								break;
+		case OP_CAN_SPAWN_GRAVITYBOX: {
+			delete ex_over;
+            clients[key].send_can_spawn_gravitybox(key);
+		}
+									break;
+		}
     }
 }
 
@@ -122,13 +126,19 @@ void WorkerThread::timer()
 			}
 							   break;
 			case EV_CAN_TAKE_PICTURE: {
-				std::cout << "여기와??????????" << std::endl;
 				OVER_EXP* ov = new OVER_EXP;
 				ov->comp_type = OP_CAN_TAKE_PICTURE;
 				clients[timer_event.object_id].m_cantakepicture = true;
 				PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
 			}
 									break;
+            case EV_CAN_SPAWN_GRAVITYBOX: {
+                OVER_EXP* ov = new OVER_EXP;
+                ov->comp_type = OP_CAN_SPAWN_GRAVITYBOX;
+                clients[timer_event.object_id].m_canspawngravitybox = true;
+                PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
+            }
+                                        break;
 			}
 			continue;
 		}
@@ -207,8 +217,6 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
             clients[p->id].m_velocity.y = p->velocity.y;
             clients[p->id].m_velocity.z = p->velocity.z;
 
-            //std::cout << sqrt(p->velocity.x * p->velocity.x + p->velocity.y * p->velocity.y + p->velocity.z * p->velocity.z) << std::endl;
-
             clients[p->id].m_yaw = p->yaw;
             clients[p->id].m_HaveGrabityGun = p->HaveGravityGun;
 
@@ -218,6 +226,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 
             clients[p->id].m_HaveTimeMachine = p->HaveTimeMachine;
         }
+
         for (auto& cl : clients) {
             if (cl.m_state == ST_FREE) break;
             if (cl.m_id == p->id) continue;
@@ -225,28 +234,32 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
         }
     }
                          break;
-    case CS_GRAVITYBOX_ADD: {
-        CS_GRAVITYBOX_ADD_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_ADD_PACKET*>(packet);
-        {
-            std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
-            int BoxId = get_new_gravitybox_id();
-            std::cout << "중력박스 아이디 : " << BoxId << std::endl;
-            gravitybox[BoxId].location.x = p->location.x;
-            gravitybox[BoxId].location.y = p->location.y;
-            gravitybox[BoxId].location.z = p->location.z;
+	case CS_GRAVITYBOX_ADD: {
+		CS_GRAVITYBOX_ADD_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_ADD_PACKET*>(packet);
+		{
+			std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
+			int BoxId = get_new_gravitybox_id();
+			std::cout << "중력박스 아이디 : " << BoxId << std::endl;
+			gravitybox[BoxId].location.x = p->location.x;
+			gravitybox[BoxId].location.y = p->location.y;
+			gravitybox[BoxId].location.z = p->location.z;
 
-            gravitybox[BoxId].rotation.x = p->rotation.x;
-            gravitybox[BoxId].rotation.y = p->rotation.y;
-            gravitybox[BoxId].rotation.z = p->rotation.z;
+			gravitybox[BoxId].rotation.x = p->rotation.x;
+			gravitybox[BoxId].rotation.y = p->rotation.y;
+			gravitybox[BoxId].rotation.z = p->rotation.z;
 
-            gravitybox[BoxId].time = p->time;
+			gravitybox[BoxId].time = p->time;
+			
+            clients[c_id].m_canspawngravitybox = false;
 
-            for (auto& cl : clients) {
-                if (cl.m_state == ST_FREE) break;
-                cl.send_gravitybox_add_packet(c_id, BoxId);
-            }
-        }
-    }
+			for (auto& cl : clients) {
+				if (cl.m_state == ST_FREE) break;
+				cl.send_gravitybox_add_packet(c_id, BoxId);
+			}
+		}
+		TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(SPAWN_GRAVITYBOX_COOLTIME),EV_CAN_SPAWN_GRAVITYBOX,0 };
+		timer_queue.push(event);
+	}
                           break;
     case CS_GRAVITYBOX_UPDATE: {
         CS_GRAVITYBOX_UPDATE_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_UPDATE_PACKET*>(packet);
@@ -294,7 +307,6 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
     case CS_GRAVITYBOX_GRABBED: {
         CS_GRAVITYBOX_GRABBED_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_GRABBED_PACKET*>(packet);
         {
-            std::cout << p->boxid << "번 박스 그랩 " << std::endl;
             std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
             gravitybox[p->boxid].isGrabbed = p->isGrabbed;
 
@@ -309,7 +321,6 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
     case CS_GRAVITYBOX_DROPPED: {
         CS_GRAVITYBOX_DROPPED_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_DROPPED_PACKET*>(packet);
         {
-            std::cout << p->boxid << "번 박스 드롭 " << std::endl;
             std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
             gravitybox[p->boxid].isGrabbed = p->isGrabbed;
         }
@@ -325,7 +336,6 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 		{
 			std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
 			clients[c_id].m_time = p->time;
-			std::cout << c_id << "번 클라이언트 " << p->time << "으로 타임 이동" << std::endl;
 		}
 		for (auto& cl : clients) {
 			if (cl.m_state == ST_FREE) break;
@@ -337,7 +347,6 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
     case CS_GRAVITYBOX_TIME_STATE: {
         CS_GRAVITYBOX_TIME_STATE_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_TIME_STATE_PACKET*>(packet);
         {
-            std::cout << "여기는 와?" << std::endl;
             std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
             gravitybox[p->boxid].timestate = p->my_time;
 

@@ -3,22 +3,23 @@
 #define   BUF_SIZE      8192
 #define MAX_CLIENTS      100
 //#define LOGIN_SERVERIP "25.52.149.86"   //하마치 내주소
-//#define LOGIN_SERVERIP "210.99.254.132"    //포트포워딩주소
+#define LOGIN_SERVERIP "210.99.254.132"    //포트포워딩주소
 
 //#define INGAME_SERVERIP "25.58.12.4"
-//#define INGAME_SERVERIP "210.99.254.132"  //포트포워딩주소
+#define INGAME_SERVERIP "210.99.254.132"  //포트포워딩주소
 
-#define LOGIN_SERVERIP "127.0.0.1"
-
-#define INGAME_SERVERIP "127.0.0.1"
+//#define LOGIN_SERVERIP "127.0.0.1"
+//
+//#define INGAME_SERVERIP "127.0.0.1"
 
 enum COMP_TYPE {
     OP_ACCEPT,
     OP_RECV, OP_SEND,
-    OP_GAME_START, OP_TEAM_CHANGE, OP_CAN_TAKE_PICTURE
+    OP_GAME_START, OP_TEAM_CHANGE, OP_CAN_TAKE_PICTURE,
+    OP_CAN_SPAWN_GRAVITYBOX
 };
 
-enum TIMER_EVENT_TYPE { EV_GAME_START, EV_TEAM_CHANGE, EV_CAN_TAKE_PICTURE };
+enum TIMER_EVENT_TYPE { EV_GAME_START, EV_TEAM_CHANGE, EV_CAN_TAKE_PICTURE, EV_CAN_SPAWN_GRAVITYBOX };
 
 struct vector_d3 {
     float x;
@@ -45,6 +46,7 @@ constexpr int TIMESIZE = 11;
 
 constexpr int PLAYTIME = 5;
 constexpr int TAKE_PICTURE_COOLTIME = 3;
+constexpr int SPAWN_GRAVITYBOX_COOLTIME = 2;
 
 
 //C2S
@@ -88,6 +90,7 @@ constexpr char SC_GRAVITYBOX_TIME_STATE = 18;
 constexpr char SC_TEAM_CHANGE = 19;
 constexpr char SC_CALCULATE_SCORE = 20;
 constexpr char SC_CAN_TAKE_PICTURE = 21;
+constexpr char SC_CAN_SPAWN_GRAVITYBOX = 22;
 
 
 #pragma pack (push, 1)
@@ -376,5 +379,11 @@ struct SC_CAN_TAKE_PICTURE_PACKET {
     unsigned char size;
     char type;
     bool cantakepicture;
+};
+
+struct SC_CAN_SPAWN_GRAVITYBOX_PACKET {
+    unsigned char size;
+    char type;
+    bool canspawngravitybox;
 };
 #pragma pack(pop)
