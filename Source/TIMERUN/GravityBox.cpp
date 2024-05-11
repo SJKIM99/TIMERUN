@@ -254,6 +254,7 @@ void AGravityBox::DoGrabbingRotate(bool when)
         StaticMeshComponent->SetCollisionProfileName("BlockAll");
         StaticMeshComponent->SetSimulatePhysics(true);
 
+
     
     }
 }
