@@ -96,8 +96,6 @@ public:
 public:
     UFUNCTION(BlueprintCallable)
     void SendTimeChangePacket();
-    UFUNCTION(BlueprintCallable)
-    void SendTimeChangeStartPacket();
 public:
     /*UPROPERTY(EditAnywhere, BlueprintReadOnly)
     int TIMESIZE;*/

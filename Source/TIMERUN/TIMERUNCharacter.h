@@ -87,10 +87,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool isLanded = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool TimeChangeStart;
-
-
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int id;

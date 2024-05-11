@@ -137,7 +137,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         FVector characterLocation;
 
         //characterLocation.X = p->location.x;
-        characterLocation.X = static_cast<float>(rand() % 200);
+        characterLocation.X = p->location.x;
         characterLocation.Y = p->location.y;
         characterLocation.Z = p->location.z;
 
@@ -213,6 +213,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         OtherPlayer->HaveGravityGun = p->HaveGravityGun;
         OtherPlayer->isLanded = p->isLanded;
         OtherPlayer->HaveTimeMachine = p->HaveTimeMachine;
+        OtherPlayer->DoingTimeTravel = p->DoingTimeTravel;
 
         //UE_LOG(LogTemp, Warning, TEXT("%f"), vec_size);
     }
@@ -355,7 +356,6 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
             }
         }
-        TimeChangePlayer->TimeChangeStart = p->timechangestart;
     }
                        break;
     case SC_GAME_START: {
@@ -447,14 +447,6 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         MyPlayerCharacter->CanSpawnGravityBox = p->canspawngravitybox;
     }
                                 break;
-    case SC_TIME_CHANGE_START: {
-        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-
-        SC_TIME_CHANGE_START_PACKET* p = reinterpret_cast<SC_TIME_CHANGE_START_PACKET*>(packet);
-
-        MyPlayerCharacter->TimeChangeStart = p->timechangestart;
-    }
-                             break;
     }
 }
 
@@ -480,6 +472,7 @@ void UTIMERUNGameInstance::SendPlayerupdatePakcet()
     packet.time = MyPlayerCharacter->my_time;
     packet.isLanded = MyPlayerCharacter->isLanded;
     packet.HaveTimeMachine = MyPlayerCharacter->HaveTimeMachine;
+    packet.DoingTimeTravel = MyPlayerCharacter->DoingTimeTravel;
 
     if (ingame_socket == NULL) return;
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
@@ -677,15 +670,6 @@ void UTIMERUNGameInstance::SendTimeChangePacket()
     packet.time = MyPlayerCharacter->my_time;
 
     if (ingame_socket == NULL) return;
-    int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
-}
-
-void UTIMERUNGameInstance::SendTimeChangeStartPacket()
-{
-    CS_TIME_CHANGE_START_PACKET packet;
-    packet.size = sizeof CS_TIME_CHANGE_START_PACKET;
-    packet.type = CS_TIME_CHANGE_START;
-
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 }
 
