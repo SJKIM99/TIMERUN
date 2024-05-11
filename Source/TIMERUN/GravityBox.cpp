@@ -49,6 +49,9 @@ AGravityBox::AGravityBox()
     StaticMeshComponent->SetHiddenInGame(true, true);
     StaticMeshComponent->SetCastShadow(false);
 
+    SkeletalMeshComponent->bRenderCustomDepth = true;
+    SkeletalMeshComponent->CustomDepthStencilValue = 0;
+
     //StaticMeshComponent->SetMassScale(NAME_None, 10.f);
     StaticMeshComponent->SetSimulatePhysics(true); // Enable physics simulation for the static mesh
     StaticMeshComponent->SetLinearDamping(1.f);
@@ -228,6 +231,7 @@ bool AGravityBox::CanFixPosCheck()
 
 void AGravityBox::DoGrabbingRotate(bool when)
 {
+    
     if (StaticMeshComponent && when)
     {
         StaticMeshComponent->SetEnableGravity(false);
@@ -243,11 +247,14 @@ void AGravityBox::DoGrabbingRotate(bool when)
             StaticMeshComponent->SetSimulatePhysics(false);
         }
 
+       
     }
     else if (StaticMeshComponent && !when) {
         StaticMeshComponent->SetEnableGravity(true);
         StaticMeshComponent->SetCollisionProfileName("BlockAll");
         StaticMeshComponent->SetSimulatePhysics(true);
+
+    
     }
 }
 
