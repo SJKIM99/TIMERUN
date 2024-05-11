@@ -137,11 +137,11 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         FVector characterLocation;
 
         //characterLocation.X = p->location.x;
-        characterLocation.X = -1910 + rand() % 50;
+        characterLocation.X = -240;
         //characterLocation.Y = p->location.y;
-        characterLocation.Y = rand()%200;
+        characterLocation.Y = 1410 + (rand() % 200);
         //characterLocation.Z = p->location.z;
-        characterLocation.Z = 620;
+        characterLocation.Z = 320;
 
         FRotator characterRotation;
 
