@@ -141,7 +141,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         //characterLocation.Y = p->location.y;
         characterLocation.Y = 0;
         //characterLocation.Z = p->location.z;
-        characterLocation.Z = 320;
+        characterLocation.Z = 620;
 
         FRotator characterRotation;
 
