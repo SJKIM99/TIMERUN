@@ -128,10 +128,6 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
         UE_LOG(LogTemp, Warning, TEXT("My Id : %d"), my_id);
 
-        MyPlayerCharacter->my_time = p->my_time;
-
-        UE_LOG(LogTemp, Warning, TEXT("My Time : %d"), MyPlayerCharacter->my_time);
-
         FVector characterVelocity;
 
         characterVelocity.X = p->velocity.x;
