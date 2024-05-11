@@ -175,6 +175,7 @@ void WorkerThread::InitPlayerInfo(int player_id)
     clients[player_id].m_velocity.z = 0;
     clients[player_id].m_HaveGrabityGun = false;
     clients[player_id].m_score = 0;
+    clients[player_id].m_time = rand() % 11;
 }
 
 void WorkerThread::ProcessPacket(int c_id, char* packet)

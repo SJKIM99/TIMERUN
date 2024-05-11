@@ -266,6 +266,7 @@ struct SC_INGAME_SUCCESS_PACKET {
     vector_d3 velocity;
     float yaw;
     char nickname[NAMESIZE];
+    int my_time;
 };
 
 struct SC_WORLD_UPDATE_PACKET {
