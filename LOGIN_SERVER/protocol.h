@@ -128,6 +128,7 @@ struct CS_INGAME_LOGIN_PACKET {
     char type;
     char nickname[NAMESIZE];
     int my_time;
+    vector_d3 location;
 };
 
 struct CS_PLAYER_UPDATE_PACKET {

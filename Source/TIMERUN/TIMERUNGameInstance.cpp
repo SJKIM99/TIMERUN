@@ -136,12 +136,9 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
         FVector characterLocation;
 
-        //characterLocation.X = p->location.x;
-        characterLocation.X = -240;
-        //characterLocation.Y = p->location.y;
-        characterLocation.Y = 1410 + (rand() % 200);
-        //characterLocation.Z = p->location.z;
-        characterLocation.Z = 320;
+        characterLocation.X = p->location.x;
+        characterLocation.Y = p->location.y;
+        characterLocation.Z = p->location.z;
 
         FRotator characterRotation;
 
@@ -371,6 +368,9 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         login_packet.size = sizeof CS_INGAME_LOGIN_PACKET;
         login_packet.type = CS_INGAME_LOGIN;
         strcpy_s(login_packet.nickname, TCHAR_TO_ANSI(*MyPlayerCharacter->nickname));
+        login_packet.location.x = -240;
+        login_packet.location.y = -1410 + rand() % 200;
+        login_packet.location.z = -320;
         login_packet.my_time = MyPlayerCharacter->my_time;
 
         int ret = send(*ingame_socket, reinterpret_cast<char*>(&login_packet), sizeof(login_packet), 0);
