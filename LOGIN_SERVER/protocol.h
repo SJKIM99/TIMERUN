@@ -127,6 +127,7 @@ struct CS_INGAME_LOGIN_PACKET {
     unsigned char size;
     char type;
     char nickname[NAMESIZE];
+    int my_time;
 };
 
 struct CS_PLAYER_UPDATE_PACKET {
@@ -256,6 +257,7 @@ struct SC_ADD_PLAYER_PACKET {
     int id;
     vector_d3 location;
     char nickname[NAMESIZE];
+    int time;
 };
 
 struct SC_INGAME_SUCCESS_PACKET {

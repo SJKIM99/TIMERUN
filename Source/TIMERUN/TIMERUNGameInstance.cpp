@@ -167,7 +167,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         OtherPlayerLocation.Y = p->location.y;
         OtherPlayerLocation.Z = p->location.z;
 
-        UpdateNewPlayer(other_id, OtherPlayerLocation, FString(ANSI_TO_TCHAR(p->nickname)));
+        UpdateNewPlayer(other_id, OtherPlayerLocation, FString(ANSI_TO_TCHAR(p->nickname)),p->time);
     }
                       break;
     case SC_LOGIN_FAIL: {
@@ -369,6 +369,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         login_packet.size = sizeof CS_INGAME_LOGIN_PACKET;
         login_packet.type = CS_INGAME_LOGIN;
         strcpy_s(login_packet.nickname, TCHAR_TO_ANSI(*MyPlayerCharacter->nickname));
+        login_packet.my_time = MyPlayerCharacter->my_time;
 
         int ret = send(*ingame_socket, reinterpret_cast<char*>(&login_packet), sizeof(login_packet), 0);
 
@@ -478,7 +479,7 @@ void UTIMERUNGameInstance::SendPlayerupdatePakcet()
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 
-void UTIMERUNGameInstance::UpdateNewPlayer(int c_id, FVector location, FString nickname)
+void UTIMERUNGameInstance::UpdateNewPlayer(int c_id, FVector location, FString nickname, int time)
 {
     UWorld* const world = GetWorld();
 
@@ -487,6 +488,7 @@ void UTIMERUNGameInstance::UpdateNewPlayer(int c_id, FVector location, FString n
     SpawnCharacter->SpawnDefaultController();
     SpawnCharacter->id = c_id;
     SpawnCharacter->nickname = nickname;
+    SpawnCharacter->my_time = time;
 
 
     IsEnterNewPlayer = false;

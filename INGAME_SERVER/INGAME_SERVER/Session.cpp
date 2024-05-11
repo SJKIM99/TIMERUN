@@ -16,6 +16,7 @@ void Session::send_add_player_packet(int c_id)
     packet.location.y = clients[c_id].m_location.y;
     packet.location.z = clients[c_id].m_location.z;
     strcpy_s(packet.nickname, clients[c_id].m_name);
+    packet.time = clients[c_id].m_time;
 
     SendPacket(&packet);
 }

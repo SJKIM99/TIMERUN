@@ -186,6 +186,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
         {
             std::lock_guard<std::mutex> updatelock(clients[c_id].m_enter_lock);
             strcpy_s(clients[c_id].m_name, p->nickname);
+            clients[c_id].m_time = p->my_time;
         }
         clients[c_id].send_ingame_login_sucess_packet(c_id);
 
