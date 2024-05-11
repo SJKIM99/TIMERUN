@@ -537,6 +537,15 @@ void UTIMERUNGameInstance::UpdateNewGravityBox(FVector location, FRotator rotati
 {
     UWorld* const world = GetWorld();
     AGravityBox* SpawnGravityBox = world->SpawnActor<AGravityBox>(location, rotation);
+    if (!SpawnGravityBox)
+    {   
+        FVector newLocation;
+        newLocation.X = location.X;
+        newLocation.Y = location.Y;
+        newLocation.Z = location.Z - 1000;
+
+        SpawnGravityBox = world->SpawnActor<AGravityBox>(newLocation, rotation);
+    }
     SpawnGravityBox->BoxId = box_id;
     SpawnGravityBox->ByWhoID = bywhoid;
     SpawnGravityBox->box_time = box_time;
