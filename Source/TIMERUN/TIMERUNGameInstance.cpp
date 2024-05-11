@@ -370,7 +370,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         strcpy_s(login_packet.nickname, TCHAR_TO_ANSI(*MyPlayerCharacter->nickname));
         login_packet.location.x = -240;
         login_packet.location.y = -1410 + rand() % 200;
-        login_packet.location.z = -320;
+        login_packet.location.z = 230;
         login_packet.my_time = MyPlayerCharacter->my_time;
 
         int ret = send(*ingame_socket, reinterpret_cast<char*>(&login_packet), sizeof(login_packet), 0);
