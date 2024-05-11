@@ -139,7 +139,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         //characterLocation.X = p->location.x;
         characterLocation.X = -1910 + rand() % 50;
         //characterLocation.Y = p->location.y;
-        characterLocation.Y = 0;
+        characterLocation.Y = rand()%100;
         //characterLocation.Z = p->location.z;
         characterLocation.Z = 620;
 
