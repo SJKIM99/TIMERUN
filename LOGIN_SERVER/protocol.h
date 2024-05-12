@@ -47,7 +47,7 @@ constexpr int TIMESIZE = 11;
 constexpr int PLAYTIME = 5;
 constexpr int TAKE_PICTURE_COOLTIME = 3;
 constexpr int SPAWN_GRAVITYBOX_COOLTIME = 15;
-constexpr int GMAE_START_COOLTIME = 5;
+constexpr int GMAE_START_COOLTIME = 6;
 
 
 //C2S
