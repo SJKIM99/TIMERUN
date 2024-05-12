@@ -177,6 +177,10 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 
             if (true == clients[0].m_ready && true == clients[1].m_ready) {
                 TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(GMAE_START_COOLTIME),EV_GAME_START,0 };
+                for (auto& cl : clients) {
+                    if (cl.m_state == ST_FREE) break;
+                    cl.send_all_player_ready_packet();
+                }
                 timer_queue.push(event);
             }
         }

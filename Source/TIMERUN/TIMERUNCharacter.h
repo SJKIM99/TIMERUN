@@ -90,6 +90,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool isChaser;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool GameStartCountDown;
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int id;

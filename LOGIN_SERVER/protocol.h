@@ -91,6 +91,7 @@ constexpr char SC_TEAM_CHANGE = 19;
 constexpr char SC_CALCULATE_SCORE = 20;
 constexpr char SC_CAN_TAKE_PICTURE = 21;
 constexpr char SC_CAN_SPAWN_GRAVITYBOX = 22;
+constexpr char SC_ALL_PLAYER_READY = 23;
 
 #pragma pack (push, 1)
 
@@ -391,5 +392,10 @@ struct SC_CAN_SPAWN_GRAVITYBOX_PACKET {
     unsigned char size;
     char type;
     bool canspawngravitybox;
+};
+
+struct SC_ALL_PLAYER_READY_PACKET {
+    unsigned char size;
+    char type;
 };
 #pragma pack(pop)

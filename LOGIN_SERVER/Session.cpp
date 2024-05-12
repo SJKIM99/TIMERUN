@@ -71,6 +71,14 @@ void Session::send_ready_packet(int c_id)
     SendPacket(&packet);
 }
 
+void Session::send_all_player_ready_packet()
+{
+    SC_ALL_PLAYER_READY_PACKET packet;
+    packet.size = sizeof SC_ALL_PLAYER_READY_PACKET;
+    packet.type = SC_ALL_PLAYER_READY;
+    SendPacket(&packet);
+}
+
 void Session::send_game_start_packet(int c_id)
 {
     SC_GAME_START_PACKET packet;

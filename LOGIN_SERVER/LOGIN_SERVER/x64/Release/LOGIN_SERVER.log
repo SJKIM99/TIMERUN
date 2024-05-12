@@ -1,10 +1,13 @@
-﻿  LOGIN_SERVER.cpp
+﻿  pch.cpp
+  DBThread.cpp
+  DataBase.cpp
+  LOGIN_SERVER.cpp
   LoginMain.cpp
   Session.cpp
   WorkerThread.cpp
   코드를 생성하고 있습니다.
-  11 of 474 functions ( 2.3%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    16 functions had inline decision re-evaluated but remain unchanged
+  3 of 475 functions ( 0.6%) were compiled, the rest were copied from previous compilation.
+    1 functions were new in current compilation
+    7 functions had inline decision re-evaluated but remain unchanged
   코드를 생성했습니다.
   LOGIN_SERVER.vcxproj -> C:\Users\user\Desktop\TIMERUN\LOGIN_SERVER\x64\Release\LOGIN_SERVER.exe

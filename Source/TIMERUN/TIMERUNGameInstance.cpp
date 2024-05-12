@@ -365,6 +365,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
         ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
+        MyPlayerCharacter->GameStartCountDown = false;
         MyPlayerCharacter->isChaser = p->ischaser;
 
         UE_LOG(LogTemp, Warning, TEXT("MyPlayerCharacter->isChaser %d"), MyPlayerCharacter->isChaser);
@@ -455,6 +456,11 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         MyPlayerCharacter->CanSpawnGravityBox = p->canspawngravitybox;
     }
                                 break;
+    case SC_ALL_PLAYER_READY: {
+        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+        MyPlayerCharacter->GameStartCountDown = true;
+    }
+                            break;
     }
 }
 
