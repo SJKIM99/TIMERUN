@@ -84,7 +84,7 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
 
             for (auto& cl : clients) {
                 if (ST_FREE == cl.m_state) break;
-                cl.send_game_start_packet();
+                cl.send_game_start_packet(cl.m_id);
             }
             delete ex_over;
         }
@@ -107,6 +107,9 @@ void WorkerThread::timer()
             case EV_GAME_START: {
                 OVER_EXP* ov = new OVER_EXP;
                 ov->comp_type = OP_GAME_START;
+                clients[0].m_ischaser = rand() % 2;
+                if (clients[0].m_ischaser) clients[1].m_ischaser = false;
+                else clients[1].m_ischaser = true;
                 PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
             }
                               break;
@@ -173,7 +176,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
             else clients[c_id].m_ready = false;
 
             if (true == clients[0].m_ready && true == clients[1].m_ready) {
-                TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_GAME_START,0 };
+                TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(GMAE_START_COOLTIME),EV_GAME_START,0 };
                 timer_queue.push(event);
             }
         }

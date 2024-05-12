@@ -24,6 +24,7 @@
 #include <cwchar>
 #include <thread>
 #include <unordered_map>
+#include <atomic>
 
 #pragma comment(lib, "WS2_32.lib")
 #pragma comment(lib, "MSWSock.lib")

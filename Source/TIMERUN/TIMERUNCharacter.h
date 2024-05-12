@@ -87,6 +87,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool isLanded = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool isChaser;
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int id;

@@ -38,6 +38,7 @@ public:
     char m_name[NAMESIZE];
     bool m_ready = false;
     int m_prev_remain_data;
+    bool m_ischaser;
 public:
     bool m_online;
 
@@ -56,7 +57,7 @@ public:
     void send_login_fail_packet();
     void send_signup_fail_packet();
     void send_ready_packet(int c_id);
-    void send_game_start_packet();
+    void send_game_start_packet(int c_id);
 public:
     void SendPacket(void* packet);
     void RecvPacket();

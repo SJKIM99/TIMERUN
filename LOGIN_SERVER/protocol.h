@@ -46,7 +46,8 @@ constexpr int TIMESIZE = 11;
 
 constexpr int PLAYTIME = 5;
 constexpr int TAKE_PICTURE_COOLTIME = 3;
-constexpr int SPAWN_GRAVITYBOX_COOLTIME = 2;
+constexpr int SPAWN_GRAVITYBOX_COOLTIME = 15;
+constexpr int GMAE_START_COOLTIME = 5;
 
 
 //C2S
@@ -356,6 +357,7 @@ struct SC_READY_PACKET {
 struct SC_GAME_START_PACKET {
     unsigned char size;
     char type;
+    bool ischaser;
 };
 
 struct SC_GRAVITYBOX_TIME_STATE_PACKET {

@@ -358,11 +358,16 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
     }
                        break;
     case SC_GAME_START: {
-        UE_LOG(LogTemp, Warning, TEXT("GameStart"));
+        SC_GAME_START_PACKET* p = reinterpret_cast<SC_GAME_START_PACKET*>(packet);
+
         socketmgr.ConnectIngameServer();
         ingame_socket = socketmgr.GetIngameSocket();
 
         ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+        MyPlayerCharacter->isChaser = p->ischaser;
+
+        UE_LOG(LogTemp, Warning, TEXT("MyPlayerCharacter->isChaser %d"), MyPlayerCharacter->isChaser);
 
         CS_INGAME_LOGIN_PACKET login_packet;
         login_packet.size = sizeof CS_INGAME_LOGIN_PACKET;
