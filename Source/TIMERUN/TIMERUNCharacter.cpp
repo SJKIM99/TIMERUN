@@ -99,7 +99,7 @@ void ATIMERUNCharacter::BeginPlay()
     instance = Cast<UTIMERUNGameInstance>(GetWorld()->GetGameInstance());
     instance->GetSocketMgr()->GetIngameSocket();
 
-    SkillCoolTime = 15.f;
+    SkillCoolTime = SPAWN_GRAVITYBOX_COOLTIME;
 }
 
 // Called every frame
