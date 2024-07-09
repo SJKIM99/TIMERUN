@@ -98,6 +98,8 @@ void ATIMERUNCharacter::BeginPlay()
 
     instance = Cast<UTIMERUNGameInstance>(GetWorld()->GetGameInstance());
     instance->GetSocketMgr()->GetIngameSocket();
+
+    SkillCoolTime = 15.f;
 }
 
 // Called every frame

@@ -93,6 +93,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool GameStartCountDown;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float SkillCoolTime;
+
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int id;
