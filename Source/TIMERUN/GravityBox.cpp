@@ -260,7 +260,10 @@ void AGravityBox::DoGrabbingRotate(bool when)
     }
 }
 
+void AGravityBox::ConnectLaser()
+{
 
+}
 
 void AGravityBox::SendGravityBoxMovePacket()
 {

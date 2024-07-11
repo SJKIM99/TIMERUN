@@ -47,6 +47,8 @@ public:
 	bool CanFixPosCheck();
 	void DoGrabbingRotate(bool when);
 
+	void ConnectLaser();
+
 	//스테틱 메쉬 컴포넌트 선언
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* StaticMeshComponent;
@@ -76,6 +78,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) // 에디터, 블루프린트 안에서 수정 가능
 		int ByWhoID;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ATIMERUNCharacter* ByWho;
 
 
 	FVector BoxLocation;
