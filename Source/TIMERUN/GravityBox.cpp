@@ -24,6 +24,23 @@ AGravityBox::AGravityBox()
 
     SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
     SkeletalMeshComponent->SetupAttachment(StaticMeshComponent); // Attach to Static Mesh Component
+   
+    LazerEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LazerEffect"));
+    if (LazerEffect)
+    {
+        // Load the Niagara system from the specified path
+        static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NiagaraSystemAsset(TEXT("/Game/Effects/Laser.Laser"));
+
+        if (NiagaraSystemAsset.Succeeded())
+        {
+            LazerEffect->SetAsset(NiagaraSystemAsset.Object);
+            LazerEffect->Activate(true);  // Optionally activate the component
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Failed to load Niagara system asset."));
+        }
+    }
 
     // Load Skeletal Mesh Asset
     static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMeshAsset(TEXT("SkeletalMesh'/Game/GravityBox/Resource/GravityBox_Rigged'"));
@@ -40,6 +57,7 @@ AGravityBox::AGravityBox()
         //애니메이션 블루프린트 클래스를 가져와서 설정
         SkeletalMeshComponent->SetAnimInstanceClass(AnimationClass.Class);
     }
+
 
 
     isGrabbed = false;
@@ -68,6 +86,7 @@ void AGravityBox::BeginPlay()
 {
     Super::BeginPlay();
 
+    //ConnectLaser();
 
     StaticMeshComponent = FindComponentByClass<UStaticMeshComponent>();
 
@@ -262,7 +281,7 @@ void AGravityBox::DoGrabbingRotate(bool when)
 
 void AGravityBox::ConnectLaser()
 {
-
+    LazerEffect->SetVariableVec3(FName("Beam End"), GetActorLocation());
 }
 
 void AGravityBox::SendGravityBoxMovePacket()

@@ -15,9 +15,14 @@
 
 #include "TIMERUNCharacter.h"
 
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "GravityBox.generated.h"
+
+
 
 class UTIMERUNGameInstance;
 
@@ -81,6 +86,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ATIMERUNCharacter* ByWho;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Effects")
+	UNiagaraComponent* LazerEffect;
 
 
 	FVector BoxLocation;
