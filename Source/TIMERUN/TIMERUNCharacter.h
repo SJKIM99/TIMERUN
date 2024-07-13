@@ -35,6 +35,7 @@ public:
 
 	void DoJump();
 
+	void InitializeDynamicMaterials();
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh")
@@ -43,6 +44,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Arrow_REF")
 	UArrowComponent* Muzzle;
 
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Materials")
+	TArray<UMaterialInstanceDynamic*> DMIs_Character;
 
 public:
 	/*UPROPERTY(EditAnywhere, BlueprintReadWrite)

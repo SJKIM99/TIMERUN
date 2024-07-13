@@ -5,7 +5,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/ArrowComponent.h"
 #include "TIMERUNGameInstance.h"
-
+#include "Materials/MaterialInstanceDynamic.h"
 
 
 
@@ -100,6 +100,8 @@ void ATIMERUNCharacter::BeginPlay()
     instance->GetSocketMgr()->GetIngameSocket();
 
     SkillCoolTime = SPAWN_GRAVITYBOX_COOLTIME;
+
+    InitializeDynamicMaterials();
 }
 
 // Called every frame
@@ -145,5 +147,22 @@ void ATIMERUNCharacter::DoJump()
     }
 
     IsJump = false;*/
+}
+
+void ATIMERUNCharacter::InitializeDynamicMaterials()
+{
+    const int32 MaterialCount = GetMesh()->GetNumMaterials();
+    DMIs_Character.SetNum(MaterialCount);
+
+    // Create dynamic material instances for each material slot
+    for (int32 i = 0; i < MaterialCount; ++i)
+    {
+        UMaterialInterface* Material = GetMesh()->GetMaterial(i);
+        if (Material)
+        {
+            DMIs_Character[i] = UMaterialInstanceDynamic::Create(Material, this);
+            GetMesh()->SetMaterial(i, DMIs_Character[i]);
+        }
+    }
 }
 
