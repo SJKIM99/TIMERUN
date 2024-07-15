@@ -102,6 +102,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float SkillCoolTime;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float TimeChangeCoolTime;
+
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

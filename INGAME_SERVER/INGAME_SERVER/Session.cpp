@@ -17,6 +17,7 @@ void Session::send_add_player_packet(int c_id)
     packet.location.z = clients[c_id].m_location.z;
     strcpy_s(packet.nickname, clients[c_id].m_name);
     packet.time = clients[c_id].m_time;
+    packet.ischaser = clients[c_id].m_ture_chaser_false_runner;
 
     SendPacket(&packet);
 }
@@ -226,6 +227,15 @@ void Session::send_can_spawn_gravitybox(int c_id)
     packet.type = SC_CAN_SPAWN_GRAVITYBOX;
     packet.size = sizeof SC_CAN_SPAWN_GRAVITYBOX_PACKET;
     packet.canspawngravitybox = clients[c_id].m_canspawngravitybox;
+    SendPacket(&packet);
+}
+
+void Session::send_can_time_change_packet(int c_id)
+{
+    SC_CAN_TIME_CHANGE_PACKET packet;
+    packet.type = SC_CAN_TIME_CHANGE;
+    packet.size = sizeof SC_CAN_TIME_CHANGE_PACKET;
+    packet.cantimechange = clients[c_id].can_time_change;
     SendPacket(&packet);
 }
 

@@ -16,10 +16,10 @@ enum COMP_TYPE {
     OP_ACCEPT,
     OP_RECV, OP_SEND,
     OP_GAME_START, OP_TEAM_CHANGE, OP_CAN_TAKE_PICTURE,
-    OP_CAN_SPAWN_GRAVITYBOX, OP_GAME_TIMER_ON
+    OP_CAN_SPAWN_GRAVITYBOX, OP_GAME_TIMER_ON, OP_TIME_CHANGE
 };
 
-enum TIMER_EVENT_TYPE { EV_GAME_START, EV_TEAM_CHANGE, EV_CAN_TAKE_PICTURE, EV_CAN_SPAWN_GRAVITYBOX, EV_GAME_TIMER_ON };
+enum TIMER_EVENT_TYPE { EV_GAME_START, EV_TEAM_CHANGE, EV_CAN_TAKE_PICTURE, EV_CAN_SPAWN_GRAVITYBOX, EV_GAME_TIMER_ON, EV_TIME_CHANGE };
 
 struct vector_d3 {
     float x;
@@ -50,6 +50,8 @@ constexpr int TAKE_PICTURE_COOLTIME = 3;
 constexpr int SPAWN_GRAVITYBOX_COOLTIME = 15;
 constexpr int GMAE_START_COOLTIME = 6;
 
+constexpr int CHASER_TIME_CHANGE_COOLTIME = 5000;
+constexpr int RUNNER_TIME_CHANGE_COOLTIME = 8000;
 
 //C2S
 constexpr char CS_LOGIN = 0;
@@ -95,6 +97,7 @@ constexpr char SC_CAN_SPAWN_GRAVITYBOX = 22;
 constexpr char SC_ALL_PLAYER_READY = 23;
 constexpr char SC_GAME_TIMER = 24;
 constexpr char SC_CHANGE_ATTACK_DEFFENSE = 25;
+constexpr char SC_CAN_TIME_CHANGE = 26;
 
 #pragma pack (push, 1)
 
@@ -200,6 +203,7 @@ struct CS_TIME_CHANGE_PACKET {
     char type;
     int id;
     int time;
+    unsigned int time_change_time;
 };
 
 struct CS_READY_PACKET {
@@ -264,6 +268,7 @@ struct SC_ADD_PLAYER_PACKET {
     vector_d3 location;
     char nickname[NAMESIZE];
     int time;
+    bool ischaser;
 };
 
 struct SC_INGAME_SUCCESS_PACKET {
@@ -416,5 +421,11 @@ struct SC_CAN_SPAWN_GRAVITYBOX_PACKET {
 struct SC_ALL_PLAYER_READY_PACKET {
     unsigned char size;
     char type;
+};
+
+struct SC_CAN_TIME_CHANGE_PACKET {
+    unsigned char size;
+    char type;
+    bool cantimechange;
 };
 #pragma pack(pop)

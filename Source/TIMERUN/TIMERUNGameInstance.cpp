@@ -130,6 +130,9 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
         MyPlayerCharacter->isChaser = p->ischaser;
 
+        if (MyPlayerCharacter->isChaser) MyPlayerCharacter->TimeChangeCoolTime = CHASER_TIME_CHANGE_COOLTIME;
+        else MyPlayerCharacter->TimeChangeCoolTime = RUNNER_TIME_CHANGE_COOLTIME;
+
         FVector characterVelocity;
 
         characterVelocity.X = p->velocity.x;
@@ -168,7 +171,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         OtherPlayerLocation.Y = p->location.y;
         OtherPlayerLocation.Z = p->location.z;
 
-        UpdateNewPlayer(other_id, OtherPlayerLocation, FString(ANSI_TO_TCHAR(p->nickname)), p->time);
+        UpdateNewPlayer(other_id, OtherPlayerLocation, FString(ANSI_TO_TCHAR(p->nickname)), p->time, p->ischaser);
     }
                       break;
     case SC_LOGIN_FAIL: {
@@ -434,9 +437,19 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
     case SC_TEAM_CHANGE: {
         SC_TEAM_CHANGE_PACKET* p = reinterpret_cast<SC_TEAM_CHANGE_PACKET*>(packet);
 
-        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
+        SortPlayerIndex();
 
-        MyPlayerCharacter->isChaser = p->ischaser;
+        ATIMERUNCharacter* Myplayer = Cast<ATIMERUNCharacter>(spawnedCharacters[my_id]);
+        Myplayer->isChaser = p->ischaser;
+
+      /*  if (Myplayer->TimeChangeCoolTime == CHASER_TIME_CHANGE_COOLTIME) Myplayer->TimeChangeCoolTime = RUNNER_TIME_CHANGE_COOLTIME;
+        else  Myplayer->TimeChangeCoolTime = CHASER_TIME_CHANGE_COOLTIME;*/
+
+ 
+        ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[other_id]);
+        OtherPlayer->isChaser = !p->ischaser;
+
     }
                        break;
     case SC_CALCULATE_SCORE: {
@@ -471,6 +484,13 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         MyPlayerCharacter->GameStartCountDown = true;
     }
                             break;
+    case SC_CAN_TIME_CHANGE: {
+        SC_CAN_TIME_CHANGE_PACKET* p = reinterpret_cast<SC_CAN_TIME_CHANGE_PACKET*>(packet);
+        
+        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+        MyPlayerCharacter->TimeChangeCoolTime = p->cantimechange;
+    }
+                           break;
     }
 }
 
@@ -502,7 +522,7 @@ void UTIMERUNGameInstance::SendPlayerupdatePakcet()
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 
-void UTIMERUNGameInstance::UpdateNewPlayer(int c_id, FVector location, FString nickname, int time)
+void UTIMERUNGameInstance::UpdateNewPlayer(int c_id, FVector location, FString nickname, int time, bool role)
 {
     UWorld* const world = GetWorld();
 
@@ -512,6 +532,7 @@ void UTIMERUNGameInstance::UpdateNewPlayer(int c_id, FVector location, FString n
     SpawnCharacter->id = c_id;
     SpawnCharacter->nickname = nickname;
     SpawnCharacter->my_time = time;
+    SpawnCharacter->isChaser = role;
 
 
     IsEnterNewPlayer = false;
@@ -702,6 +723,7 @@ void UTIMERUNGameInstance::SendTimeChangePacket()
     packet.type = CS_TIME_CHANGE;
     packet.id = my_id;
     packet.time = MyPlayerCharacter->my_time;
+    packet.time_change_time = static_cast<unsigned>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count());
 
     if (ingame_socket == NULL) return;
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
