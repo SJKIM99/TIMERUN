@@ -1,25 +1,20 @@
-﻿  pch.cpp
-  INGAME_SERVER.cpp
-  IngameMain.cpp
-  Session.cpp
+﻿  Session.cpp
 C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\Session.cpp(34,31): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   WorkerThread.cpp
 C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(99,40): warning C4838: 'ULONG_PTR'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
 C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(99,40): warning C4244: '초기화 중': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(108,32): warning C4838: 'ULONG_PTR'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
 C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(108,32): warning C4244: '초기화 중': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(141,36): warning C4838: 'ULONG_PTR'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
-C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(141,36): warning C4244: '초기화 중': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(144,32): warning C4838: 'ULONG_PTR'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
-C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(144,32): warning C4244: '초기화 중': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(150,55): warning C4244: '인수': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(155,52): warning C4244: '인수': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(160,54): warning C4244: '인수': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(430,26): warning C4018: '>': signed 또는 unsigned가 일치하지 않습니다.
-C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(451,26): warning C4018: '>': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(140,36): warning C4838: 'ULONG_PTR'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(140,36): warning C4244: '초기화 중': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(143,32): warning C4838: 'ULONG_PTR'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(143,32): warning C4244: '초기화 중': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(149,55): warning C4244: '인수': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(154,52): warning C4244: '인수': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(159,54): warning C4244: '인수': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   코드를 생성하고 있습니다.
-  13 of 440 functions ( 3.0%) were compiled, the rest were copied from previous compilation.
-    1 functions were new in current compilation
-    24 functions had inline decision re-evaluated but remain unchanged
+  3 of 440 functions ( 0.7%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
   코드를 생성했습니다.
   INGAME_SERVER.vcxproj -> C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\x64\Release\INGAME_SERVER.exe

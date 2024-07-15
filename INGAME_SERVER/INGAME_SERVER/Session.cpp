@@ -198,7 +198,6 @@ void Session::send_team_change_packet(int c_id)
     packet.type = SC_TEAM_CHANGE;
     packet.size = sizeof SC_TEAM_CHANGE_PACKET;
     packet.ischaser = clients[c_id].m_ture_chaser_false_runner;
-    packet.time = clients[c_id].m_time;
     SendPacket(&packet);
 }
 
