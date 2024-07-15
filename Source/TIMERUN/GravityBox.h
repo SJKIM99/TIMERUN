@@ -91,6 +91,8 @@ public:
 	UNiagaraComponent* LazerEffect;
 
 
+	float SpawnTime;
+
 	FVector BoxLocation;
 	FRotator BoxRotation;
 	int BoxId;

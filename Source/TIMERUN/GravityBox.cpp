@@ -62,6 +62,8 @@ AGravityBox::AGravityBox()
 
     isGrabbed = false;
     CanFixPos = false;
+    SpawnTime = 1.f;
+
 
     //기본 스테틱 메쉬 설정
     StaticMeshComponent->SetHiddenInGame(true, true);
@@ -129,6 +131,10 @@ void AGravityBox::Tick(float DeltaTime)
 
     FName ParameterName = FName("MaskSpread"); // Name of the parameter
     DynamicMaterial->SetScalarParameterValue(ParameterName, TimeLevel);
+
+    ParameterName = FName("ShowDown Value"); // Name of the parameter
+    DynamicMaterial->SetScalarParameterValue(ParameterName, SpawnTime);
+    if (SpawnTime > -1) SpawnTime -= GetWorld()->DeltaTimeSeconds * 0.5;
 
     CanFixPos = CanFixPosCheck();
     if (CanFixPos == true) {
