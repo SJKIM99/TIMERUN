@@ -128,6 +128,8 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
         UE_LOG(LogTemp, Warning, TEXT("My Id : %d"), my_id);
 
+        MyPlayerCharacter->isChaser = p->ischaser;
+
         FVector characterVelocity;
 
         characterVelocity.X = p->velocity.x;
@@ -366,9 +368,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
         MyPlayerCharacter->GameStartCountDown = false;
-        MyPlayerCharacter->isChaser = p->ischaser;
-
-        UE_LOG(LogTemp, Warning, TEXT("MyPlayerCharacter->isChaser %d"), MyPlayerCharacter->isChaser);
+       // MyPlayerCharacter->isChaser = p->ischaser;
 
         CS_INGAME_LOGIN_PACKET login_packet;
         login_packet.size = sizeof CS_INGAME_LOGIN_PACKET;
@@ -425,8 +425,18 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         }
     }
                                  break;
+    case SC_GAME_TIMER: {
+        SC_GAME_TIMER_ON_PACKET* p = reinterpret_cast<SC_GAME_TIMER_ON_PACKET*>(packet);
+        minutes = p->minutes;
+        seconds = p->seconds;
+    }
+                      break;
     case SC_TEAM_CHANGE: {
+        SC_TEAM_CHANGE_PACKET* p = reinterpret_cast<SC_TEAM_CHANGE_PACKET*>(packet);
+        
+        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
+        MyPlayerCharacter->isChaser = p->ischaser;
     }
                        break;
     case SC_CALCULATE_SCORE: {

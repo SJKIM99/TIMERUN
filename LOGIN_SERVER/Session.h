@@ -38,7 +38,7 @@ public:
     char m_name[NAMESIZE];
     bool m_ready = false;
     int m_prev_remain_data;
-    bool m_ischaser;
+   // bool m_ischaser;
 public:
     bool m_online;
 
