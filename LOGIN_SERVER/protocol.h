@@ -203,7 +203,6 @@ struct CS_TIME_CHANGE_PACKET {
     char type;
     int id;
     int time;
-    unsigned int time_change_time;
 };
 
 struct CS_READY_PACKET {

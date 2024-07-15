@@ -489,6 +489,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         
         ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
         MyPlayerCharacter->TimeChangeCoolTime = p->cantimechange;
+
     }
                            break;
     }
@@ -723,7 +724,6 @@ void UTIMERUNGameInstance::SendTimeChangePacket()
     packet.type = CS_TIME_CHANGE;
     packet.id = my_id;
     packet.time = MyPlayerCharacter->my_time;
-    packet.time_change_time = static_cast<unsigned>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count());
 
     if (ingame_socket == NULL) return;
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);

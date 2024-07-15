@@ -73,7 +73,6 @@ public:
     bool m_canspawngravitybox;
     bool m_doingtimetravel;
     bool m_ture_chaser_false_runner;
-    int last_time_change_time;
     bool can_time_change;
 public:
     bool m_online;

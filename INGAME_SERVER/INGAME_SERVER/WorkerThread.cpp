@@ -423,16 +423,14 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
     case CS_TIME_CHANGE: {
         CS_TIME_CHANGE_PACKET* p = reinterpret_cast<CS_TIME_CHANGE_PACKET*>(packet);
 
-		unsigned now_time = static_cast<unsigned>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count());
-
 		if (clients[c_id].m_ture_chaser_false_runner) {//체이서일때
 
+            std::cout << c_id << "번 클라이언트 " << p->time << "번 시간으로 이동" << std::endl;
 			TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::milliseconds(CHASER_TIME_CHANGE_COOLTIME),EV_TIME_CHANGE,0 };
 			timer_queue.push(event);
 
 			{
 				std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
-				clients[c_id].last_time_change_time = p->time_change_time;
 				clients[c_id].can_time_change = false;
 				clients[c_id].m_time = p->time;
 			}
@@ -445,13 +443,15 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 		}
 		else {  //러너일때
 
+            std::cout << c_id << "번 클라이언트 " << p->time << "번 시간으로 이동" << std::endl;
+
 			TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::milliseconds(RUNNER_TIME_CHANGE_COOLTIME),EV_TIME_CHANGE,0 };
 			timer_queue.push(event);
 
 			{
 				std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
-				clients[c_id].last_time_change_time = p->time_change_time;
 				clients[c_id].can_time_change = false;
+                clients[c_id].m_time = p->time;
 			}
 			for (auto& cl : clients) {
 				if (cl.m_state == ST_FREE) break;
