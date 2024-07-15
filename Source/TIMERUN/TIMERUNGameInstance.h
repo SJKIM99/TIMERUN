@@ -44,7 +44,6 @@ public:
     void RecvPacketFromIngameServer();
     void ProcessPakcet(char* packet);
     void SendPlayerupdatePakcet();
-    void MovePlayerNewTime();
 
     //RecvFromLoginn
     int login_prev_remain_data;
@@ -80,7 +79,6 @@ public:
     void UpdatePosition(FVector new_location, FRotator new_rotation, FVector new_velocity, int player_id);
     void InterpolatePosition(ATIMERUNCharacter* UpdatePlayer);
     FTimerHandle MoveTimerHandle;   // 동기화 타이머 핸들러
-    FTimerHandle TeamChangeHandle;   // 동기화 타이머 핸들러
 
     void UpdateGravityBoxPosition(FVector new_location, FRotator new_rotation, FVector new_velocity, int box_id);
     void InterporlateGravityBoxPosition(AGravityBox* UpdateGravityBox);
@@ -107,4 +105,10 @@ public:
     //카메라 동기화
     UFUNCTION(BlueprintCallable)
     void SendCameraScorePacket();
+public:
+    //월드시간 변수
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    int minutes;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    int seconds;
 };

@@ -84,7 +84,7 @@ void Session::send_game_start_packet(int c_id)
     SC_GAME_START_PACKET packet;
     packet.size = sizeof SC_GAME_START_PACKET;
     packet.type = SC_GAME_START;
-    packet.ischaser = clients[c_id].m_ischaser;
+    // packet.ischaser = clients[c_id].m_ischaser;
     SendPacket(&packet);
 }
 

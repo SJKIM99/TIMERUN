@@ -83,55 +83,117 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
             delete ex_over;
         }
                     break;
+        case OP_GAME_TIMER_ON: {
+            delete ex_over;
+
+            std::cout << "시간 - " << MINUTES << " : " << SECONDS << std::endl;
+            for (auto& cl : clients) {
+                if (cl.m_state == ST_FREE) break;
+                cl.send_game_time_packet(MINUTES, SECONDS);
+            }
+
+            //  timer_lock.lock();
+            SECONDS -= 1;
+            // timer_lock.unlock();
+            if (SECONDS < 0) {
+                if (MINUTES == 0) {
+                    TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_TEAM_CHANGE,0 };
+                    timer_queue.push(event);
+                    break;
+                }
+                else {
+                    MINUTES -= 1;
+                    SECONDS = 59;
+                }
+            }
+
+
+            TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_GAME_TIMER_ON,0 };
+            timer_queue.push(event);
+        }
+                             break;
         case OP_TEAM_CHANGE: {
-			delete ex_over;
-			for (auto& cl : clients) {
-				if (cl.m_state == ST_FREE) break;
-				cl.send_team_change_packet();
-			}
-		}
-						   break;
-		case OP_CAN_TAKE_PICTURE: {
-			delete ex_over;
-			clients[key].send_can_take_picture_packet(key);
-		}
-								break;
-		case OP_CAN_SPAWN_GRAVITYBOX: {
-			delete ex_over;
+            delete ex_over;
+            std::cout << "팀체인지" << std::endl;
+            for (auto& cl : clients) {
+                if (cl.m_state == ST_FREE) break;
+                cl.send_change_attack_deffense_timer_packet(time_change_count);
+            }
+
+            change_lock.lock();
+            --time_change_count;
+            change_lock.unlock();
+
+            if (time_change_count == 0) {
+
+                change_lock.lock();
+                for (auto& cl : clients) {
+                    if (cl.m_state == ST_FREE) break;
+                    cl.m_ture_chaser_false_runner = !cl.m_ture_chaser_false_runner;
+                    cl.m_time = rand() % 10;
+                }
+                change_lock.unlock();
+
+                for (auto& cl : clients) {
+                    if (cl.m_state == ST_FREE) break;
+                    cl.send_team_change_packet(cl.m_id);
+                }
+
+                MINUTES = 4;
+                SECONDS = 59;
+
+                TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::milliseconds(1),EV_GAME_TIMER_ON,0 };
+                timer_queue.push(event);
+            }
+            TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_TEAM_CHANGE,0 };
+            timer_queue.push(event);
+        }
+                           break;
+        case OP_CAN_TAKE_PICTURE: {
+            delete ex_over;
+            clients[key].send_can_take_picture_packet(key);
+        }
+                                break;
+        case OP_CAN_SPAWN_GRAVITYBOX: {
+            delete ex_over;
             clients[key].send_can_spawn_gravitybox(key);
-		}
-									break;
-		}
+        }
+                                    break;
+        }
     }
 }
 
 void WorkerThread::timer()
 {
     while (true) {
-		TIMER_EVENT timer_event;
-		auto current_time = std::chrono::system_clock::now();
-		if (true == timer_queue.try_pop(timer_event)) {
-			if (timer_event.wakeup_time > current_time) {
-				timer_queue.push(timer_event);
-				continue;
-			}
-			switch (timer_event.event) {
-			case EV_TEAM_CHANGE: {
-				OVER_EXP* ov = new OVER_EXP;
-				ov->comp_type = OP_TEAM_CHANGE;
-				if (TeamChangeOn == false) {
-					PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
-					TeamChangeOn = true;
-				}
-			}
-							   break;
-			case EV_CAN_TAKE_PICTURE: {
-				OVER_EXP* ov = new OVER_EXP;
-				ov->comp_type = OP_CAN_TAKE_PICTURE;
-				clients[timer_event.object_id].m_cantakepicture = true;
-				PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
-			}
-									break;
+        TIMER_EVENT timer_event;
+        auto current_time = std::chrono::system_clock::now();
+        if (true == timer_queue.try_pop(timer_event)) {
+            if (timer_event.wakeup_time > current_time) {
+                timer_queue.push(timer_event);
+                continue;
+            }
+            switch (timer_event.event) {
+            case EV_GAME_TIMER_ON: {
+                OVER_EXP* ov = new OVER_EXP;
+                ov->comp_type = OP_GAME_TIMER_ON;
+
+                PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
+            }
+                                 break;
+            case EV_TEAM_CHANGE: {
+                OVER_EXP* ov = new OVER_EXP;
+                ov->comp_type = OP_TEAM_CHANGE;
+                PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
+            }
+                               break;
+            case EV_CAN_TAKE_PICTURE: {
+                OVER_EXP* ov = new OVER_EXP;
+                ov->comp_type = OP_CAN_TAKE_PICTURE;
+                clients[timer_event.object_id].m_cantakepicture = true;
+                PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
+            }
+                                    break;
             case EV_CAN_SPAWN_GRAVITYBOX: {
                 OVER_EXP* ov = new OVER_EXP;
                 ov->comp_type = OP_CAN_SPAWN_GRAVITYBOX;
@@ -139,11 +201,11 @@ void WorkerThread::timer()
                 PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
             }
                                         break;
-			}
-			continue;
-		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
-	}
+            }
+            continue;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
 }
 
 
@@ -189,8 +251,17 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
             clients[c_id].m_location.x = p->location.x;
             clients[c_id].m_location.y = p->location.y;
             clients[c_id].m_location.z = p->location.z;
-
+            if (game_start_player_num % 2 == 0) {
+                clients[c_id].m_ture_chaser_false_runner = rand() % 2;
+            }
+            else {
+                clients[c_id].m_ture_chaser_false_runner = !clients[c_id - 1].m_ture_chaser_false_runner;
+            }
             clients[c_id].m_time = p->my_time;
+
+            ++game_start_player_num;
+
+            std::cout << c_id << "번 클라 역할 : " << clients[c_id].m_ture_chaser_false_runner << std::endl;
         }
         clients[c_id].send_ingame_login_sucess_packet(c_id);
 
@@ -206,8 +277,12 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
             if (pl.m_id == c_id) continue;
             clients[c_id].send_add_player_packet(pl.m_id);
         }
-        TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::minutes(PLAYTIME),EV_TEAM_CHANGE,0 };
-        timer_queue.push(event);
+        //여기서 일단 타이머이벤트를 통해 클라이언트들에게 월드시간을 보내도록 하자
+
+        if (game_start_player_num % 2 == 0) {
+            TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::milliseconds(1),EV_GAME_TIMER_ON,0 };
+            timer_queue.push(event);
+        }
     }
                         break;
     case CS_PLAYER_UPDATE: {
@@ -241,32 +316,32 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
         }
     }
                          break;
-	case CS_GRAVITYBOX_ADD: {
-		CS_GRAVITYBOX_ADD_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_ADD_PACKET*>(packet);
-		{
-			std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
-			int BoxId = get_new_gravitybox_id();
-			std::cout << "중력박스 아이디 : " << BoxId << std::endl;
-			gravitybox[BoxId].location.x = p->location.x;
-			gravitybox[BoxId].location.y = p->location.y;
-			gravitybox[BoxId].location.z = p->location.z;
+    case CS_GRAVITYBOX_ADD: {
+        CS_GRAVITYBOX_ADD_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_ADD_PACKET*>(packet);
+        {
+            std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
+            int BoxId = get_new_gravitybox_id();
+            std::cout << "중력박스 아이디 : " << BoxId << std::endl;
+            gravitybox[BoxId].location.x = p->location.x;
+            gravitybox[BoxId].location.y = p->location.y;
+            gravitybox[BoxId].location.z = p->location.z;
 
-			gravitybox[BoxId].rotation.x = p->rotation.x;
-			gravitybox[BoxId].rotation.y = p->rotation.y;
-			gravitybox[BoxId].rotation.z = p->rotation.z;
+            gravitybox[BoxId].rotation.x = p->rotation.x;
+            gravitybox[BoxId].rotation.y = p->rotation.y;
+            gravitybox[BoxId].rotation.z = p->rotation.z;
 
-			gravitybox[BoxId].time = p->time;
-			
+            gravitybox[BoxId].time = p->time;
+
             clients[c_id].m_canspawngravitybox = false;
 
-			for (auto& cl : clients) {
-				if (cl.m_state == ST_FREE) break;
-				cl.send_gravitybox_add_packet(c_id, BoxId);
-			}
-		}
-		TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(SPAWN_GRAVITYBOX_COOLTIME),EV_CAN_SPAWN_GRAVITYBOX,0 };
-		timer_queue.push(event);
-	}
+            for (auto& cl : clients) {
+                if (cl.m_state == ST_FREE) break;
+                cl.send_gravitybox_add_packet(c_id, BoxId);
+            }
+        }
+        TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(SPAWN_GRAVITYBOX_COOLTIME),EV_CAN_SPAWN_GRAVITYBOX,0 };
+        timer_queue.push(event);
+    }
                           break;
     case CS_GRAVITYBOX_UPDATE: {
         CS_GRAVITYBOX_UPDATE_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_UPDATE_PACKET*>(packet);
@@ -333,22 +408,22 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
         }
         for (auto& cl : clients) {
             if (cl.m_state == ST_FREE) break;
-			if (cl.m_id == c_id) continue;
-			cl.send_gravitybox_dropped_packet(c_id, p->boxid);
-		}
-	}
-							  break;
-	case CS_TIME_CHANGE: {
-		CS_TIME_CHANGE_PACKET* p = reinterpret_cast<CS_TIME_CHANGE_PACKET*>(packet);
-		{
-			std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
-			clients[c_id].m_time = p->time;
-		}
-		for (auto& cl : clients) {
-			if (cl.m_state == ST_FREE) break;
-			//if (cl.m_id == c_id) continue;
-			cl.send_player_time_change_packet(c_id);
-		}
+            if (cl.m_id == c_id) continue;
+            cl.send_gravitybox_dropped_packet(c_id, p->boxid);
+        }
+    }
+                              break;
+    case CS_TIME_CHANGE: {
+        CS_TIME_CHANGE_PACKET* p = reinterpret_cast<CS_TIME_CHANGE_PACKET*>(packet);
+        {
+            std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
+            clients[c_id].m_time = p->time;
+        }
+        for (auto& cl : clients) {
+            if (cl.m_state == ST_FREE) break;
+            //if (cl.m_id == c_id) continue;
+            cl.send_player_time_change_packet(c_id);
+        }
     }
                        break;
     case CS_GRAVITYBOX_TIME_STATE: {
@@ -384,7 +459,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
         CS_TAKE_PICTURE_PACKET* p = reinterpret_cast<CS_TAKE_PICTURE_PACKET*>(packet);
         {
             std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
-            clients[c_id].m_score =  p->score;
+            clients[c_id].m_score = p->score;
             clients[c_id].m_cantakepicture = false;
         }
 

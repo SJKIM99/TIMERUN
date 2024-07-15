@@ -124,9 +124,11 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
         ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
-        MyPlayerCharacter->id = my_id % 2;
+        MyPlayerCharacter->id = my_id;
 
         UE_LOG(LogTemp, Warning, TEXT("My Id : %d"), my_id);
+
+        MyPlayerCharacter->isChaser = p->ischaser;
 
         FVector characterVelocity;
 
@@ -159,7 +161,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
     case SC_ADD_PLAYER: {
         SC_ADD_PLAYER_PACKET* p = reinterpret_cast<SC_ADD_PLAYER_PACKET*>(packet);
         IsEnterNewPlayer = true;
-        other_id = p->id % 2;
+        other_id = p->id;
 
         FVector OtherPlayerLocation;
         OtherPlayerLocation.X = p->location.x;
@@ -199,13 +201,13 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         CharacterRotation.Pitch = 0;
         CharacterRotation.Roll = 0;
 
-        ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id % 2]);
+        ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
         /* UCharacterMovementComponent* CharacterMovement = OtherPlayer->GetCharacterMovement();
          FVector NewVelocity = FVector(p->velocity.x, p->velocity.y, OtherPlayer->GetVelocity().Z);
          CharacterMovement->Velocity = NewVelocity;
          OtherPlayer->AddMovementInput(CharacterVelocity);*/
 
-        UpdatePosition(CharacterLocation, CharacterRotation, CharacterVelocity, p->id % 2);
+        UpdatePosition(CharacterLocation, CharacterRotation, CharacterVelocity, p->id);
         //OtherPlayer->SetActorLocation(CharacterLocation);
         //OtherPlayer->SetActorRotation(CharacterRotation);
 
@@ -288,7 +290,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
         SortPlayerIndex();
 
-        ATIMERUNCharacter* JumpPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id % 2]);
+        ATIMERUNCharacter* JumpPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
         JumpPlayer->Jump();
         UE_LOG(LogTemp, Warning, TEXT("JumpPlayer->isLanded %d"), JumpPlayer->isLanded);
     }
@@ -300,7 +302,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
         UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
         SortPlayerIndex();
-        ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id % 2]);
+        ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
 
         if (MyPlayerCharacter->my_time == OtherPlayer->my_time) {
             AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[p->box_id]);
@@ -316,7 +318,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
         UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
         SortPlayerIndex();
-        ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id % 2]);
+        ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
         if (MyPlayerCharacter->my_time == OtherPlayer->my_time) {
             AGravityBox* GravityBox = Cast<AGravityBox>(spawnedGravityBox[p->box_id]);
             GravityBox->ByWhoID = p->id;
@@ -332,7 +334,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
         UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
 
-        ATIMERUNCharacter* TimeChangePlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id % 2]);
+        ATIMERUNCharacter* TimeChangePlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
 
         TimeChangePlayer->my_time = p->time;
         //이 작업은 월드에 있는 모든 클라이언트가 실행해야해
@@ -366,9 +368,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
         MyPlayerCharacter->GameStartCountDown = false;
-        MyPlayerCharacter->isChaser = p->ischaser;
-
-        UE_LOG(LogTemp, Warning, TEXT("MyPlayerCharacter->isChaser %d"), MyPlayerCharacter->isChaser);
+        // MyPlayerCharacter->isChaser = p->ischaser;
 
         CS_INGAME_LOGIN_PACKET login_packet;
         login_packet.size = sizeof CS_INGAME_LOGIN_PACKET;
@@ -425,17 +425,18 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         }
     }
                                  break;
+    case SC_GAME_TIMER: {
+        SC_GAME_TIMER_ON_PACKET* p = reinterpret_cast<SC_GAME_TIMER_ON_PACKET*>(packet);
+        minutes = p->minutes;
+        seconds = p->seconds;
+    }
+                      break;
     case SC_TEAM_CHANGE: {
-        UE_LOG(LogTemp, Warning, TEXT("SC_TEAM_CHANGE"));
-        //필드에 있는 모든 플레이어를 hidden처리를 하고 
-        //5초 뒤에 새로운 시간대로 이동을 시킨 뒤 다시 플레이를 진행시킨다.
-        UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
-        SortPlayerIndex();
+        SC_TEAM_CHANGE_PACKET* p = reinterpret_cast<SC_TEAM_CHANGE_PACKET*>(packet);
 
-        for (auto& character : spawnedCharacters) {
-            character->SetActorHiddenInGame(true);
-        }
-        GetWorld()->GetTimerManager().SetTimer(TeamChangeHandle, this, &UTIMERUNGameInstance::MovePlayerNewTime, 5.0f, false);
+        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+        MyPlayerCharacter->isChaser = p->ischaser;
     }
                        break;
     case SC_CALCULATE_SCORE: {
@@ -444,7 +445,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
         SC_CALCULATE_SCORE_PACKET* p = reinterpret_cast<SC_CALCULATE_SCORE_PACKET*>(packet);
 
-        ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id % 2]);
+        ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[p->id]);
 
         OtherPlayer->MyScore = p->score;
     }
@@ -499,16 +500,6 @@ void UTIMERUNGameInstance::SendPlayerupdatePakcet()
 
     if (ingame_socket == NULL) return;
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
-}
-
-void UTIMERUNGameInstance::MovePlayerNewTime()
-{
-    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
-    SortPlayerIndex();
-
-    for (auto& character : spawnedCharacters) {
-        character->SetActorHiddenInGame(false);
-    }
 }
 
 void UTIMERUNGameInstance::UpdateNewPlayer(int c_id, FVector location, FString nickname, int time)

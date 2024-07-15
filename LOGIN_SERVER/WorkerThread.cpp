@@ -107,9 +107,9 @@ void WorkerThread::timer()
             case EV_GAME_START: {
                 OVER_EXP* ov = new OVER_EXP;
                 ov->comp_type = OP_GAME_START;
-                clients[0].m_ischaser = rand() % 2;
-                if (clients[0].m_ischaser) clients[1].m_ischaser = false;
-                else clients[1].m_ischaser = true;
+                // clients[0].m_ischaser = rand() % 2;
+               //  if (clients[0].m_ischaser) clients[1].m_ischaser = false;
+               //  else clients[1].m_ischaser = true;
                 PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
             }
                               break;
@@ -165,31 +165,31 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
             clients[c_id].send_signup_fail_packet();
         }
     }
-				  break;
-	case CS_READY: {
-		CS_READY_PACKET* p = reinterpret_cast<CS_READY_PACKET*>(packet);
-		{
-			std::cout << c_id << "번 클라 레디패킷 전송" << std::endl;
-			std::lock_guard<std::mutex> readylock(clients[c_id].m_ready_lock);
+                  break;
+    case CS_READY: {
+        CS_READY_PACKET* p = reinterpret_cast<CS_READY_PACKET*>(packet);
+        {
+            std::cout << c_id << "번 클라 레디패킷 전송" << std::endl;
+            std::lock_guard<std::mutex> readylock(clients[c_id].m_ready_lock);
 
-			if (false == clients[c_id].m_ready)clients[c_id].m_ready = true;
-			else clients[c_id].m_ready = false;
+            if (false == clients[c_id].m_ready)clients[c_id].m_ready = true;
+            else clients[c_id].m_ready = false;
 
-			for (auto& cl : clients) {
-				if (cl.m_state == ST_FREE) break;
-				cl.send_ready_packet(c_id);
-			}
+            for (auto& cl : clients) {
+                if (cl.m_state == ST_FREE) break;
+                cl.send_ready_packet(c_id);
+            }
 
-			if (true == clients[0].m_ready && true == clients[1].m_ready) {
-				TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(GMAE_START_COOLTIME),EV_GAME_START,0 };
-				for (auto& cl : clients) {
-					if (cl.m_state == ST_FREE) break;
-					cl.send_all_player_ready_packet();
-				}
-				timer_queue.push(event);
-			}
-		}
-	}
-				 break;
+            if (true == clients[0].m_ready && true == clients[1].m_ready) {
+                TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(GMAE_START_COOLTIME),EV_GAME_START,0 };
+                for (auto& cl : clients) {
+                    if (cl.m_state == ST_FREE) break;
+                    cl.send_all_player_ready_packet();
+                }
+                timer_queue.push(event);
+            }
+        }
+    }
+                 break;
     }
 }
