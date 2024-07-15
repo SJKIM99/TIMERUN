@@ -86,7 +86,6 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
         case OP_GAME_TIMER_ON: {
             delete ex_over;
 
-            std::cout << "시간 - " << MINUTES << " : " << SECONDS << std::endl;
             for (auto& cl : clients) {
                 if (cl.m_state == ST_FREE) break;
                 cl.send_game_time_packet(MINUTES, SECONDS);
@@ -106,15 +105,12 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
                     SECONDS = 59;
                 }
             }
-
-
             TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_GAME_TIMER_ON,0 };
             timer_queue.push(event);
         }
                              break;
         case OP_TEAM_CHANGE: {
             delete ex_over;
-            std::cout << "팀체인지" << std::endl;
             for (auto& cl : clients) {
                 if (cl.m_state == ST_FREE) break;
                 cl.send_change_attack_deffense_timer_packet(time_change_count);
@@ -159,6 +155,11 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
             clients[key].send_can_spawn_gravitybox(key);
         }
                                     break;
+        case OP_TIME_CHANGE: {
+            delete ex_over;
+            clients[key].send_can_time_change_packet(key);
+        }
+                           break;
         }
     }
 }
@@ -201,6 +202,13 @@ void WorkerThread::timer()
                 PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
             }
                                         break;
+            case EV_TIME_CHANGE: {
+                OVER_EXP* ov = new OVER_EXP;
+                ov->comp_type = OP_TIME_CHANGE;
+                clients[timer_event.object_id].can_time_change = true;
+                PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
+            }
+                               break;
             }
             continue;
         }
@@ -415,17 +423,50 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
                               break;
     case CS_TIME_CHANGE: {
         CS_TIME_CHANGE_PACKET* p = reinterpret_cast<CS_TIME_CHANGE_PACKET*>(packet);
-        {
-            std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
-            clients[c_id].m_time = p->time;
+
+        unsigned now_time = static_cast<unsigned>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count());
+
+        if (clients[c_id].m_ture_chaser_false_runner) {//체이서일때
+            if (now_time > clients[c_id].last_time_change_time + 5000) {
+
+                TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::milliseconds(CHASER_TIME_CHANGE_COOLTIME),EV_TIME_CHANGE,0 };
+                timer_queue.push(event);
+
+                {
+                    std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
+                    clients[c_id].last_time_change_time = p->time_change_time;
+                    clients[c_id].can_time_change = false;
+                    clients[c_id].m_time = p->time;
+                }
+                for (auto& cl : clients) {
+                    if (cl.m_state == ST_FREE) break;
+                    //if (cl.m_id == c_id) continue;
+                    cl.send_player_time_change_packet(c_id);
+                }
+
+            }
+
         }
-        for (auto& cl : clients) {
-            if (cl.m_state == ST_FREE) break;
-            //if (cl.m_id == c_id) continue;
-            cl.send_player_time_change_packet(c_id);
+        else {  //러너일때
+            if (now_time > clients[c_id].last_time_change_time + 8000) {
+
+                TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::milliseconds(RUNNER_TIME_CHANGE_COOLTIME),EV_TIME_CHANGE,0 };
+                timer_queue.push(event);
+
+                {
+                    std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
+                    clients[c_id].last_time_change_time = p->time_change_time;
+                    clients[c_id].can_time_change = false;
+                }
+                for (auto& cl : clients) {
+                    if (cl.m_state == ST_FREE) break;
+                    //if (cl.m_id == c_id) continue;
+                    cl.send_player_time_change_packet(c_id);
+                }
+            }
         }
+        break;
     }
-                       break;
     case CS_GRAVITYBOX_TIME_STATE: {
         CS_GRAVITYBOX_TIME_STATE_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_TIME_STATE_PACKET*>(packet);
         {

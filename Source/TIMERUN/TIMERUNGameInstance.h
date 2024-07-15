@@ -19,6 +19,7 @@
 
 #include "CoreMinimal.h"
 
+#include <chrono>
 #include "SocketMgr.h"
 #include "Engine/GameInstance.h"
 #include "TIMERUNGameInstance.generated.h"
@@ -59,7 +60,7 @@ public:
 public:
     int nPlayers;
     bool IsEnterNewPlayer;
-    void UpdateNewPlayer(int c_id, FVector location, FString nickname, int time);
+    void UpdateNewPlayer(int c_id, FVector location, FString nickname, int time, bool role);
     void SortPlayerIndex();
 
     UFUNCTION(BlueprintCallable)

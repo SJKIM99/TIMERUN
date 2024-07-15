@@ -73,6 +73,8 @@ public:
     bool m_canspawngravitybox;
     bool m_doingtimetravel;
     bool m_ture_chaser_false_runner;
+    int last_time_change_time;
+    bool can_time_change;
 public:
     bool m_online;
 public:
@@ -118,6 +120,7 @@ public:
     void send_calculate_score_packet(int c_id);
     void send_can_take_picture_packet(int c_id);
     void send_can_spawn_gravitybox(int c_id);
+    void send_can_time_change_packet(int c_id);
 public:
     void SendPacket(void* packet);
     void RecvPacket();
