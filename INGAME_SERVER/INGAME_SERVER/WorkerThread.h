@@ -22,11 +22,9 @@ public:
 
 private:
     concurrency::concurrent_priority_queue<TIMER_EVENT> timer_queue;
+    bool TeamChangeOn = false;
 public:
     HANDLE h_iocp;
-
-    std::mutex timer_lock;
-    std::mutex change_lock;
 public:
     void woker_thread(HANDLE h_iocp);
     void timer();
@@ -35,13 +33,4 @@ public:
     void InitPlayerInfo(int player_id);
     void ProcessPacket(int c_id, char* packet);
     int get_new_gravitybox_id();
-
-    int MINUTES = 0;
-    int SECONDS = 3;
-
-    int time_change_count = 5;
 };
-
-static int game_start_player_num = 0;
-
-

@@ -107,9 +107,9 @@ void WorkerThread::timer()
             case EV_GAME_START: {
                 OVER_EXP* ov = new OVER_EXP;
                 ov->comp_type = OP_GAME_START;
-               // clients[0].m_ischaser = rand() % 2;
-              //  if (clients[0].m_ischaser) clients[1].m_ischaser = false;
-              //  else clients[1].m_ischaser = true;
+                clients[0].m_ischaser = rand() % 2;
+                if (clients[0].m_ischaser) clients[1].m_ischaser = false;
+                else clients[1].m_ischaser = true;
                 PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
             }
                               break;

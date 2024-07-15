@@ -35,7 +35,6 @@ void Session::send_ingame_login_sucess_packet(int c_id)
     packet.velocity.y = clients[c_id].m_velocity.y;
     packet.velocity.z = clients[c_id].m_velocity.z;
     strcpy_s(packet.nickname, clients[c_id].m_name);
-    packet.ischaser = clients[c_id].m_ture_chaser_false_runner;
 
     SendPacket(&packet);
 }
@@ -172,32 +171,11 @@ void Session::send_gravitybox_time_state_packet(int c_id, int box_id)
     SendPacket(&packet);
 }
 
-void Session::send_game_time_packet(int m, int s)
-{
-    SC_GAME_TIMER_ON_PACKET packet;
-    packet.type = SC_GAME_TIMER;
-    packet.size = sizeof SC_GAME_TIMER_ON_PACKET;
-    packet.minutes = m;
-    packet.seconds = s;
-    SendPacket(&packet);
-}
-
-void Session::send_change_attack_deffense_timer_packet(int s)
-{
-    SC_CHANGE_ATTACK_DEFFENSE_PACKET packet;
-    packet.type = SC_CHANGE_ATTACK_DEFFENSE;
-    packet.size = sizeof SC_CHANGE_ATTACK_DEFFENSE_PACKET;
-    packet.seconds = s;
-    SendPacket(&packet);
-}
-
-void Session::send_team_change_packet(int c_id)
+void Session::send_team_change_packet()
 {
     SC_TEAM_CHANGE_PACKET packet;
     packet.type = SC_TEAM_CHANGE;
     packet.size = sizeof SC_TEAM_CHANGE_PACKET;
-    packet.ischaser = clients[c_id].m_ture_chaser_false_runner;
-    packet.time = clients[c_id].m_time;
     SendPacket(&packet);
 }
 
