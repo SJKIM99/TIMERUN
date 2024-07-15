@@ -83,12 +83,70 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
             delete ex_over;
         }
                     break;
+        case OP_GAME_TIMER_ON: {
+            delete ex_over;
+
+            std::cout << "시간 - " << MINUTES << " : " << SECONDS << std::endl;
+            for (auto& cl : clients) {
+                if (cl.m_state == ST_FREE) break;
+                cl.send_game_time_packet(MINUTES, SECONDS);
+            }
+
+          //  timer_lock.lock();
+            SECONDS -= 1;
+           // timer_lock.unlock();
+            if (SECONDS < 0) {
+                if (MINUTES == 0) {
+                    TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_TEAM_CHANGE,0 };
+                    timer_queue.push(event);
+                    break;
+                }
+                else {
+                    MINUTES -= 1;
+                    SECONDS = 59;
+                } 
+            }
+
+
+            TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_GAME_TIMER_ON,0 };
+            timer_queue.push(event);
+        }
+                             break;
         case OP_TEAM_CHANGE: {
 			delete ex_over;
-			for (auto& cl : clients) {
-				if (cl.m_state == ST_FREE) break;
-				cl.send_team_change_packet();
-			}
+            std::cout << "팀체인지" << std::endl;
+            for (auto& cl : clients) {
+                if (cl.m_state == ST_FREE) break;
+                cl.send_change_attack_deffense_timer_packet(time_change_count);
+            }
+
+            change_lock.lock();
+            --time_change_count;
+            change_lock.unlock();
+
+            if (time_change_count == 0) {
+
+                change_lock.lock();
+                for (auto& cl : clients) {
+                    if (cl.m_state == ST_FREE) break;
+                    cl.m_ture_chaser_false_runner = !cl.m_ture_chaser_false_runner;
+                    cl.m_time = rand() % 10;
+                }
+                change_lock.unlock();
+
+                for (auto& cl : clients) {
+                    if (cl.m_state == ST_FREE) break;
+                    cl.send_team_change_packet(cl.m_id);
+                }
+
+                MINUTES = 4;
+                SECONDS = 59;
+
+                TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::milliseconds(1),EV_GAME_TIMER_ON,0 };
+                timer_queue.push(event);
+            }
+            TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_TEAM_CHANGE,0 };
+            timer_queue.push(event);
 		}
 						   break;
 		case OP_CAN_TAKE_PICTURE: {
@@ -116,13 +174,17 @@ void WorkerThread::timer()
 				continue;
 			}
 			switch (timer_event.event) {
+            case EV_GAME_TIMER_ON: {
+                OVER_EXP* ov = new OVER_EXP;
+                ov->comp_type = OP_GAME_TIMER_ON;
+
+                PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
+            }
+								 break;
 			case EV_TEAM_CHANGE: {
 				OVER_EXP* ov = new OVER_EXP;
 				ov->comp_type = OP_TEAM_CHANGE;
-				if (TeamChangeOn == false) {
-					PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
-					TeamChangeOn = true;
-				}
+				PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
 			}
 							   break;
 			case EV_CAN_TAKE_PICTURE: {
@@ -189,8 +251,17 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
             clients[c_id].m_location.x = p->location.x;
             clients[c_id].m_location.y = p->location.y;
             clients[c_id].m_location.z = p->location.z;
-
+            if (game_start_player_num %2== 0) {
+                clients[c_id].m_ture_chaser_false_runner = rand() % 2;
+            }
+            else {
+                clients[c_id].m_ture_chaser_false_runner = !clients[c_id - 1].m_ture_chaser_false_runner;
+            }
             clients[c_id].m_time = p->my_time;
+
+            ++game_start_player_num;
+
+            std::cout << c_id << "번 클라 역할 : " << clients[c_id].m_ture_chaser_false_runner << std::endl;
         }
         clients[c_id].send_ingame_login_sucess_packet(c_id);
 
@@ -206,8 +277,12 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
             if (pl.m_id == c_id) continue;
             clients[c_id].send_add_player_packet(pl.m_id);
         }
-        TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::minutes(PLAYTIME),EV_TEAM_CHANGE,0 };
-        timer_queue.push(event);
+        //여기서 일단 타이머이벤트를 통해 클라이언트들에게 월드시간을 보내도록 하자
+
+        if (game_start_player_num % 2 == 0) {
+            TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::milliseconds(1),EV_GAME_TIMER_ON,0 };
+            timer_queue.push(event);
+        }
     }
                         break;
     case CS_PLAYER_UPDATE: {

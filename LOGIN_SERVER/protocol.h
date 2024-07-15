@@ -16,10 +16,10 @@ enum COMP_TYPE {
     OP_ACCEPT,
     OP_RECV, OP_SEND,
     OP_GAME_START, OP_TEAM_CHANGE, OP_CAN_TAKE_PICTURE,
-    OP_CAN_SPAWN_GRAVITYBOX
+    OP_CAN_SPAWN_GRAVITYBOX, OP_GAME_TIMER_ON
 };
 
-enum TIMER_EVENT_TYPE { EV_GAME_START, EV_TEAM_CHANGE, EV_CAN_TAKE_PICTURE, EV_CAN_SPAWN_GRAVITYBOX };
+enum TIMER_EVENT_TYPE { EV_GAME_START, EV_TEAM_CHANGE, EV_CAN_TAKE_PICTURE, EV_CAN_SPAWN_GRAVITYBOX, EV_GAME_TIMER_ON };
 
 struct vector_d3 {
     float x;
@@ -45,6 +45,7 @@ constexpr int MAX_GRAVITYBOX = 100;
 constexpr int TIMESIZE = 11;
 
 constexpr int PLAYTIME = 5;
+
 constexpr int TAKE_PICTURE_COOLTIME = 3;
 constexpr int SPAWN_GRAVITYBOX_COOLTIME = 15;
 constexpr int GMAE_START_COOLTIME = 6;
@@ -92,6 +93,8 @@ constexpr char SC_CALCULATE_SCORE = 20;
 constexpr char SC_CAN_TAKE_PICTURE = 21;
 constexpr char SC_CAN_SPAWN_GRAVITYBOX = 22;
 constexpr char SC_ALL_PLAYER_READY = 23;
+constexpr char SC_GAME_TIMER = 24;
+constexpr char SC_CHANGE_ATTACK_DEFFENSE = 25;
 
 #pragma pack (push, 1)
 
@@ -271,6 +274,7 @@ struct SC_INGAME_SUCCESS_PACKET {
     vector_d3 velocity;
     float yaw;
     char nickname[NAMESIZE];
+    bool ischaser;
 };
 
 struct SC_WORLD_UPDATE_PACKET {
@@ -370,9 +374,24 @@ struct SC_GRAVITYBOX_TIME_STATE_PACKET {
     vector_d3 rotation;
 };
 
+struct SC_GAME_TIMER_ON_PACKET {
+    unsigned char size;
+    char type;
+    int minutes;
+    int seconds;
+};
+
+struct SC_CHANGE_ATTACK_DEFFENSE_PACKET {
+    unsigned char size;
+    char type;
+    int seconds;
+};
+
 struct SC_TEAM_CHANGE_PACKET {
     unsigned char size;
     char type;
+    bool ischaser;
+    int time;
 };
 
 struct SC_CALCULATE_SCORE_PACKET {

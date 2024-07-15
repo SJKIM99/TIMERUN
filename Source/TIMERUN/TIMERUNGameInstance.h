@@ -105,4 +105,10 @@ public:
     //카메라 동기화
     UFUNCTION(BlueprintCallable)
     void SendCameraScorePacket();
+public:
+    //월드시간 변수
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    int minutes;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    int seconds;
 };
