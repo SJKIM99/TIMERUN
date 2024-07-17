@@ -443,8 +443,8 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         ATIMERUNCharacter* Myplayer = Cast<ATIMERUNCharacter>(spawnedCharacters[my_id]);
         Myplayer->isChaser = p->ischaser;
 
-      /*  if (Myplayer->TimeChangeCoolTime == CHASER_TIME_CHANGE_COOLTIME) Myplayer->TimeChangeCoolTime = RUNNER_TIME_CHANGE_COOLTIME;
-        else  Myplayer->TimeChangeCoolTime = CHASER_TIME_CHANGE_COOLTIME;*/
+        if (Myplayer->TimeChangeCoolTime == CHASER_TIME_CHANGE_COOLTIME) Myplayer->TimeChangeCoolTime = RUNNER_TIME_CHANGE_COOLTIME;
+        else  Myplayer->TimeChangeCoolTime = CHASER_TIME_CHANGE_COOLTIME;
 
  
         ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[other_id]);
