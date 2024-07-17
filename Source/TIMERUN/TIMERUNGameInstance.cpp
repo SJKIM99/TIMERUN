@@ -447,6 +447,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         else  Myplayer->TimeChangeCoolTime = CHASER_TIME_CHANGE_COOLTIME;
 
  
+
         ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[other_id]);
         OtherPlayer->isChaser = !p->ischaser;
 
