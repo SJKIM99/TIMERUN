@@ -50,8 +50,8 @@ constexpr int TAKE_PICTURE_COOLTIME = 3;
 constexpr int SPAWN_GRAVITYBOX_COOLTIME = 15;
 constexpr int GMAE_START_COOLTIME = 6;
 
-constexpr int CHASER_TIME_CHANGE_COOLTIME = 5000;
-constexpr int RUNNER_TIME_CHANGE_COOLTIME = 8000;
+constexpr int CHASER_TIME_CHANGE_COOLTIME = 5;
+constexpr int RUNNER_TIME_CHANGE_COOLTIME = 8;
 
 //C2S
 constexpr char CS_LOGIN = 0;

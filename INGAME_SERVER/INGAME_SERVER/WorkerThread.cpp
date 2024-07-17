@@ -426,7 +426,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 		if (clients[c_id].m_ture_chaser_false_runner) {//체이서일때
 
             std::cout << c_id << "번 클라이언트 " << p->time << "번 시간으로 이동" << std::endl;
-			TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::milliseconds(CHASER_TIME_CHANGE_COOLTIME),EV_TIME_CHANGE,0 };
+			TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(CHASER_TIME_CHANGE_COOLTIME),EV_TIME_CHANGE,0 };
 			timer_queue.push(event);
 
 			{
@@ -445,7 +445,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 
             std::cout << c_id << "번 클라이언트 " << p->time << "번 시간으로 이동" << std::endl;
 
-			TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::milliseconds(RUNNER_TIME_CHANGE_COOLTIME),EV_TIME_CHANGE,0 };
+			TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(RUNNER_TIME_CHANGE_COOLTIME),EV_TIME_CHANGE,0 };
 			timer_queue.push(event);
 
 			{
