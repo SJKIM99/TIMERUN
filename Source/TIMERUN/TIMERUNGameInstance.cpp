@@ -488,7 +488,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         SC_CAN_TIME_CHANGE_PACKET* p = reinterpret_cast<SC_CAN_TIME_CHANGE_PACKET*>(packet);
         
         ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-        MyPlayerCharacter->TimeChangeCoolTime = p->cantimechange;
+        MyPlayerCharacter->CanTimeChange = p->cantimechange;
 
     }
                            break;
