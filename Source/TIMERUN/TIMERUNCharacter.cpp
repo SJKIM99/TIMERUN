@@ -69,6 +69,7 @@ ATIMERUNCharacter::ATIMERUNCharacter() : my_time(0)
 
     HaveTimeMachine = false;
     DoingTimeTravel = false;
+    CanTimeChange = true;
 
     //캐릭터 기본 세팅
     bUseControllerRotationPitch = false;
