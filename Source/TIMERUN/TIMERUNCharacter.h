@@ -105,6 +105,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float TimeChangeCoolTime;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool CanTimeChange;
+
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
