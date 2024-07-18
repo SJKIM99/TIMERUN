@@ -381,7 +381,6 @@ struct SC_GRAVITYBOX_TIME_STATE_PACKET {
 struct SC_GAME_TIMER_ON_PACKET {
     unsigned char size;
     char type;
-    int minutes;
     int seconds;
 };
 

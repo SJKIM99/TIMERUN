@@ -113,7 +113,7 @@ public:
     void send_gravitybox_dropped_packet(int c_id, int box_id);
     void send_player_time_change_packet(int c_id);
     void send_gravitybox_time_state_packet(int c_id, int box_id);
-    void send_game_time_packet(int m, int s);
+    void send_game_time_packet(int s);
     void send_change_attack_deffense_timer_packet(int s);
     void send_team_change_packet(int c_id);
     void send_calculate_score_packet(int c_id);

@@ -430,7 +430,6 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
                                  break;
     case SC_GAME_TIMER: {
         SC_GAME_TIMER_ON_PACKET* p = reinterpret_cast<SC_GAME_TIMER_ON_PACKET*>(packet);
-        minutes = p->minutes;
         seconds = p->seconds;
     }
                       break;
