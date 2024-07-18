@@ -92,51 +92,35 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
             }
 
             //  timer_lock.lock();
-            SECONDS -= 1;
+            ++world_timer;
 			// timer_lock.unlock();
-			if (SECONDS == 300) {
-				TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_TEAM_CHANGE,0 };
-				timer_queue.push(event);
-				break;
+			if (world_timer >= first_half && world_timer < first_half + half_time) {
+				for (auto& cl : clients) {
+					if (cl.m_state == ST_FREE) break;
+					cl.send_change_attack_deffense_timer_packet(SECONDS);
+				}
 
+                if (world_timer == first_half + half_time) {
+                    for (auto& cl : clients) {
+                        if (cl.m_state == ST_FREE) break;
+                        cl.m_ture_chaser_false_runner = !cl.m_ture_chaser_false_runner;
+                    }
+
+                    for (auto& cl : clients) {
+                        if (cl.m_state == ST_FREE) break;
+                        cl.send_team_change_packet(cl.m_id);
+                    }
+                }
 			}
+
+            if (world_timer >= SECONDS) {
+                //여기에 종료로직 추가
+            }
+
 			TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_GAME_TIMER_ON,0 };
             timer_queue.push(event);
         }
                              break;
-        case OP_TEAM_CHANGE: {
-            delete ex_over;
-            for (auto& cl : clients) {
-                if (cl.m_state == ST_FREE) break;
-                cl.send_change_attack_deffense_timer_packet(time_change_count);
-            }
-
-            change_lock.lock();
-            --time_change_count;
-            change_lock.unlock();
-
-            if (time_change_count == 0) {
-
-                change_lock.lock();
-                for (auto& cl : clients) {
-                    if (cl.m_state == ST_FREE) break;
-                    cl.m_ture_chaser_false_runner = !cl.m_ture_chaser_false_runner;
-                }
-                change_lock.unlock();
-
-                for (auto& cl : clients) {
-                    if (cl.m_state == ST_FREE) break;
-                    cl.send_team_change_packet(cl.m_id);
-                }
-
-                TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::milliseconds(1),EV_GAME_TIMER_ON,0 };
-                timer_queue.push(event);
-                break;
-            }
-            TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_TEAM_CHANGE,0 };
-            timer_queue.push(event);
-        }
-                           break;
         case OP_CAN_TAKE_PICTURE: {
             delete ex_over;
             clients[key].send_can_take_picture_packet(key);

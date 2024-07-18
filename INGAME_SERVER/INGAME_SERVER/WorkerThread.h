@@ -36,9 +36,14 @@ public:
     void ProcessPacket(int c_id, char* packet);
     int get_new_gravitybox_id();
 
-    int SECONDS = 600;
 
-    int time_change_count = 5;
+    int first_half = 60;
+    int second_half = 60;
+    int half_time = 5;
+
+    int SECONDS = first_half + second_half + half_time;
+
+    int world_timer = 0;
 };
 
 static int game_start_player_num = 0;
