@@ -173,12 +173,11 @@ void Session::send_gravitybox_time_state_packet(int c_id, int box_id)
     SendPacket(&packet);
 }
 
-void Session::send_game_time_packet(int m, int s)
+void Session::send_game_time_packet(int s)
 {
     SC_GAME_TIMER_ON_PACKET packet;
     packet.type = SC_GAME_TIMER;
     packet.size = sizeof SC_GAME_TIMER_ON_PACKET;
-    packet.minutes = m;
     packet.seconds = s;
     SendPacket(&packet);
 }

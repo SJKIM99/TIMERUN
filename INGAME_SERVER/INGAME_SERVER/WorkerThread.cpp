@@ -88,24 +88,19 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
 
             for (auto& cl : clients) {
                 if (cl.m_state == ST_FREE) break;
-                cl.send_game_time_packet(MINUTES, SECONDS);
+                cl.send_game_time_packet(SECONDS);
             }
 
             //  timer_lock.lock();
             SECONDS -= 1;
-            // timer_lock.unlock();
-            if (SECONDS < 0) {
-                if (MINUTES == 0) {
-                    TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_TEAM_CHANGE,0 };
-                    timer_queue.push(event);
-                    break;
-                }
-                else {
-                    MINUTES -= 1;
-                    SECONDS = 59;
-                }
-            }
-            TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_GAME_TIMER_ON,0 };
+			// timer_lock.unlock();
+			if (SECONDS == 300) {
+				TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_TEAM_CHANGE,0 };
+				timer_queue.push(event);
+				break;
+
+			}
+			TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_GAME_TIMER_ON,0 };
             timer_queue.push(event);
         }
                              break;
@@ -133,9 +128,6 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
                     if (cl.m_state == ST_FREE) break;
                     cl.send_team_change_packet(cl.m_id);
                 }
-
-                MINUTES = 4;
-                SECONDS = 59;
 
                 TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::milliseconds(1),EV_GAME_TIMER_ON,0 };
                 timer_queue.push(event);
