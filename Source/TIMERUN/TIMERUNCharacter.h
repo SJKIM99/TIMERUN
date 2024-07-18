@@ -108,7 +108,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool CanTimeChange;
 
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int TeamShiftCoolTime;
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int id;

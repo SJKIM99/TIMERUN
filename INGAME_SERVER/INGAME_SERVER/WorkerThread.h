@@ -36,7 +36,7 @@ public:
     void ProcessPacket(int c_id, char* packet);
     int get_new_gravitybox_id();
 
-    int MINUTES = 0;
+    int MINUTES = 1;
     int SECONDS = 3;
 
     int time_change_count = 5;
