@@ -139,6 +139,7 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
 
                 TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::milliseconds(1),EV_GAME_TIMER_ON,0 };
                 timer_queue.push(event);
+                break;
             }
             TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_TEAM_CHANGE,0 };
             timer_queue.push(event);
