@@ -53,6 +53,12 @@ constexpr int GMAE_START_COOLTIME = 6;
 constexpr int CHASER_TIME_CHANGE_COOLTIME = 5;
 constexpr int RUNNER_TIME_CHANGE_COOLTIME = 8;
 
+constexpr int first_half = 60;
+constexpr int second_half = 60;
+constexpr int half_time = 5;
+
+
+
 //C2S
 constexpr char CS_LOGIN = 0;
 constexpr char CS_SIGNUP = 1;
@@ -280,10 +286,6 @@ struct SC_INGAME_SUCCESS_PACKET {
     float yaw;
     char nickname[NAMESIZE];
     bool ischaser;
-    //나중에 지울것
-    short first_half;
-    short second_half;
-    short half_time;
 };
 
 struct SC_WORLD_UPDATE_PACKET {

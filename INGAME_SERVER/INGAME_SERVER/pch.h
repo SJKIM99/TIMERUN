@@ -34,5 +34,4 @@
 extern SOCKET g_server_socket;
 extern SOCKET g_client_socket;
 
-
 #endif //PCH_H

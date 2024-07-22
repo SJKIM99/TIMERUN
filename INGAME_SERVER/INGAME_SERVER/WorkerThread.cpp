@@ -4,6 +4,8 @@
 
 OVER_EXP g_over;
 
+int SECONDS = 60 + 60 + 5;
+
 WorkerThread::WorkerThread()
 {
 }
@@ -254,7 +256,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 
             std::cout << c_id << "번 클라 역할 : " << clients[c_id].m_ture_chaser_false_runner << std::endl;
         }
-        clients[c_id].send_ingame_login_sucess_packet(c_id,first_half,second_half,half_time);
+        clients[c_id].send_ingame_login_sucess_packet(c_id);
 
         //다른 클라이언트한테 내가 로그인했다고 보내기
         for (auto pl : clients) {
