@@ -4,7 +4,7 @@
 
 OVER_EXP g_over;
 
-int SECONDS = 60 + 60 + 5;
+int SECONDS = 90 + 90 + 5;
 
 WorkerThread::WorkerThread()
 {
