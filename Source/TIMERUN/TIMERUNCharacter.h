@@ -124,6 +124,14 @@ public:
 	FRotator prev_rotation;
 	FVector prev_velocity;
 public:
+		//플레이 시간 변수(나중에 삭제)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int first_half;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int second_half;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int half_time;
+public:
 	//시간이동할때 쓰이는 변수
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int my_time;

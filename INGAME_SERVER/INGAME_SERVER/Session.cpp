@@ -22,7 +22,7 @@ void Session::send_add_player_packet(int c_id)
     SendPacket(&packet);
 }
 
-void Session::send_ingame_login_sucess_packet(int c_id)
+void Session::send_ingame_login_sucess_packet(int c_id, short first_half, short second_half, short half_time)
 {
     SC_INGAME_SUCCESS_PACKET packet;
     packet.id = c_id;
@@ -37,7 +37,9 @@ void Session::send_ingame_login_sucess_packet(int c_id)
     packet.velocity.z = clients[c_id].m_velocity.z;
     strcpy_s(packet.nickname, clients[c_id].m_name);
     packet.ischaser = clients[c_id].m_ture_chaser_false_runner;
-
+    packet.first_half = first_half;
+    packet.second_half = second_half;
+    packet.half_time = half_time;
     SendPacket(&packet);
 }
 void Session::send_move_packet(int c_id)
@@ -235,6 +237,11 @@ void Session::send_can_time_change_packet(int c_id)
     packet.size = sizeof SC_CAN_TIME_CHANGE_PACKET;
     packet.cantimechange = clients[c_id].can_time_change;
     SendPacket(&packet);
+}
+
+void Session::send_game_end_packet()
+{
+
 }
 
 void Session::SendPacket(void* packet)

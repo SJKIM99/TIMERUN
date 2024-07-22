@@ -41,7 +41,7 @@ public:
     int second_half = 60;
     int half_time = 5;
 
-    int SECONDS = first_half + second_half + half_time;
+    int SECONDS = 60 + 60 + 5;
 
     int world_timer = 0;
 };

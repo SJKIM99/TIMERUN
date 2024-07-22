@@ -98,6 +98,7 @@ constexpr char SC_ALL_PLAYER_READY = 23;
 constexpr char SC_GAME_TIMER = 24;
 constexpr char SC_CHANGE_ATTACK_DEFFENSE = 25;
 constexpr char SC_CAN_TIME_CHANGE = 26;
+constexpr char SC_GAME_END = 27;
 
 #pragma pack (push, 1)
 
@@ -279,6 +280,10 @@ struct SC_INGAME_SUCCESS_PACKET {
     float yaw;
     char nickname[NAMESIZE];
     bool ischaser;
+    //나중에 지울것
+    short first_half;
+    short second_half;
+    short half_time;
 };
 
 struct SC_WORLD_UPDATE_PACKET {
@@ -425,5 +430,10 @@ struct SC_CAN_TIME_CHANGE_PACKET {
     unsigned char size;
     char type;
     bool cantimechange;
+};
+
+struct SC_GAME_END_PACKET {
+    unsigned char size;
+    char type;
 };
 #pragma pack(pop)
