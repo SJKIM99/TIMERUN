@@ -89,32 +89,39 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
             for (auto& cl : clients) {
                 if (cl.m_state == ST_FREE) break;
                 cl.send_game_time_packet(SECONDS);
-            }
+			}
 
-            //  timer_lock.lock();
-            ++world_timer;
-			// timer_lock.unlock();
+			timer_lock.lock();
+
+			++world_timer;
+			--SECONDS;
+
 			if (world_timer >= first_half && world_timer < first_half + half_time) {
 				for (auto& cl : clients) {
 					if (cl.m_state == ST_FREE) break;
 					cl.send_change_attack_deffense_timer_packet(SECONDS);
 				}
 
-                if (world_timer == first_half + half_time) {
-                    for (auto& cl : clients) {
-                        if (cl.m_state == ST_FREE) break;
-                        cl.m_ture_chaser_false_runner = !cl.m_ture_chaser_false_runner;
-                    }
-
-                    for (auto& cl : clients) {
-                        if (cl.m_state == ST_FREE) break;
-                        cl.send_team_change_packet(cl.m_id);
-                    }
-                }
+				if (world_timer == first_half + half_time) {
+					for (auto& cl : clients) {
+						if (cl.m_state == ST_FREE) break;
+						cl.m_ture_chaser_false_runner = !cl.m_ture_chaser_false_runner;
+					}
+					timer_lock.unlock();
+					for (auto& cl : clients) {
+						if (cl.m_state == ST_FREE) break;
+						cl.send_team_change_packet(cl.m_id);
+					}
+				}
 			}
 
+			timer_lock.unlock();
+
             if (world_timer >= SECONDS) {
-                //여기에 종료로직 추가
+                for (auto& cl : clients) {
+                    if (cl.m_state == ST_FREE) break;
+                    cl.send_game_end_packet();
+                }
             }
 
 			TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_GAME_TIMER_ON,0 };
@@ -247,7 +254,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 
             std::cout << c_id << "번 클라 역할 : " << clients[c_id].m_ture_chaser_false_runner << std::endl;
         }
-        clients[c_id].send_ingame_login_sucess_packet(c_id);
+        clients[c_id].send_ingame_login_sucess_packet(c_id,first_half,second_half,half_time);
 
         //다른 클라이언트한테 내가 로그인했다고 보내기
         for (auto pl : clients) {

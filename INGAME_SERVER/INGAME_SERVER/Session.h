@@ -103,7 +103,7 @@ public:
     ~Session() {}
 public:
     void send_add_player_packet(int c_id);
-    void send_ingame_login_sucess_packet(int c_id);
+    void send_ingame_login_sucess_packet(int c_id, short first_half, short second_half, short half_time);
     void send_move_packet(int c_id);
     void send_world_update_packet(int c_id);
     void send_gravitybox_add_packet(int c_id, int box_id);
@@ -120,6 +120,7 @@ public:
     void send_can_take_picture_packet(int c_id);
     void send_can_spawn_gravitybox(int c_id);
     void send_can_time_change_packet(int c_id);
+    void send_game_end_packet();
 public:
     void SendPacket(void* packet);
     void RecvPacket();

@@ -153,6 +153,10 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
         MyPlayerCharacter->nickname = FString(ANSI_TO_TCHAR(p->nickname));
 
+        MyPlayerCharacter->first_half = p->first_half;
+        MyPlayerCharacter->second_half = p->second_half;
+        MyPlayerCharacter->half_time = p->half_time;
+
         //MyPlayerCharacter->AddMovementInput(characterVelocity);
         MyPlayerCharacter->SetActorLocation(characterLocation);
         MyPlayerCharacter->SetActorRotation(characterRotation);
