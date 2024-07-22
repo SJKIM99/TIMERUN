@@ -492,13 +492,6 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
     }
                            break;
-    case SC_CHANGE_ATTACK_DEFFENSE: {
-        SC_CHANGE_ATTACK_DEFFENSE_PACKET* p = reinterpret_cast<SC_CHANGE_ATTACK_DEFFENSE_PACKET*>(packet);
-
-        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-        MyPlayerCharacter->TeamShiftCoolTime = p->seconds;
-    }
-                                  break;
     }
 }
 
