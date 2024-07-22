@@ -96,7 +96,7 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
 			timer_lock.lock();
 			++world_timer;
 			--SECONDS;
-			if (world_timer == first_half + half_time) {
+			if (world_timer == first_half + half_time + 1) {
 				for (auto& cl : clients) {
 					if (cl.m_state == ST_FREE) break;
 					cl.m_ture_chaser_false_runner = !cl.m_ture_chaser_false_runner;
