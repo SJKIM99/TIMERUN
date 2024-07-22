@@ -102,6 +102,10 @@ void ATIMERUNCharacter::BeginPlay()
 
     SkillCoolTime = SPAWN_GRAVITYBOX_COOLTIME;
 
+    first_time = first_half;
+    second_time = second_half;
+    break_time = half_time;
+
     InitializeDynamicMaterials();
 }
 

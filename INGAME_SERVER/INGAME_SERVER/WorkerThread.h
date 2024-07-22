@@ -37,11 +37,11 @@ public:
     int get_new_gravitybox_id();
 
 
-    int first_half = 60;
+  /*  int first_half = 60;
     int second_half = 60;
     int half_time = 5;
 
-    int SECONDS = 60 + 60 + 5;
+    int SECONDS = 60 + 60 + 5;*/
 
     int world_timer = 0;
 };
