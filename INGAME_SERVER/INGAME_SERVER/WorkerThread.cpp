@@ -4,7 +4,7 @@
 
 OVER_EXP g_over;
 
-int SECONDS = 90 + 90 + 5;
+int SECONDS = 10 + 10 + 5;
 
 WorkerThread::WorkerThread()
 {
@@ -94,29 +94,19 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
 			}
 
 			timer_lock.lock();
-
 			++world_timer;
 			--SECONDS;
-
-			if (world_timer >= first_half && world_timer < first_half + half_time) {
+			if (world_timer == first_half + half_time) {
 				for (auto& cl : clients) {
 					if (cl.m_state == ST_FREE) break;
-					cl.send_change_attack_deffense_timer_packet(SECONDS);
+					cl.m_ture_chaser_false_runner = !cl.m_ture_chaser_false_runner;
 				}
-
-				if (world_timer == first_half + half_time) {
-					for (auto& cl : clients) {
-						if (cl.m_state == ST_FREE) break;
-						cl.m_ture_chaser_false_runner = !cl.m_ture_chaser_false_runner;
-					}
-					timer_lock.unlock();
-					for (auto& cl : clients) {
-						if (cl.m_state == ST_FREE) break;
-						cl.send_team_change_packet(cl.m_id);
-					}
+				timer_lock.unlock();
+				for (auto& cl : clients) {
+					if (cl.m_state == ST_FREE) break;
+					cl.send_team_change_packet(cl.m_id);
 				}
 			}
-
 			timer_lock.unlock();
 
             if (world_timer >= SECONDS) {

@@ -181,15 +181,6 @@ void Session::send_game_time_packet(int s)
     SendPacket(&packet);
 }
 
-void Session::send_change_attack_deffense_timer_packet(int s)
-{
-    SC_CHANGE_ATTACK_DEFFENSE_PACKET packet;
-    packet.type = SC_CHANGE_ATTACK_DEFFENSE;
-    packet.size = sizeof SC_CHANGE_ATTACK_DEFFENSE_PACKET;
-    packet.seconds = s;
-    SendPacket(&packet);
-}
-
 void Session::send_team_change_packet(int c_id)
 {
     SC_TEAM_CHANGE_PACKET packet;

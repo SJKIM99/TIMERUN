@@ -53,8 +53,8 @@ constexpr int GMAE_START_COOLTIME = 6;
 constexpr int CHASER_TIME_CHANGE_COOLTIME = 5;
 constexpr int RUNNER_TIME_CHANGE_COOLTIME = 8;
 
-constexpr int first_half = 90;
-constexpr int second_half = 90;
+constexpr int first_half = 10;
+constexpr int second_half = 10;
 constexpr int half_time = 5;
 
 
@@ -102,7 +102,7 @@ constexpr char SC_CAN_TAKE_PICTURE = 21;
 constexpr char SC_CAN_SPAWN_GRAVITYBOX = 22;
 constexpr char SC_ALL_PLAYER_READY = 23;
 constexpr char SC_GAME_TIMER = 24;
-constexpr char SC_CHANGE_ATTACK_DEFFENSE = 25;
+//constexpr char SC_CHANGE_ATTACK_DEFFENSE = 25;
 constexpr char SC_CAN_TIME_CHANGE = 26;
 constexpr char SC_GAME_END = 27;
 
@@ -391,11 +391,6 @@ struct SC_GAME_TIMER_ON_PACKET {
     int seconds;
 };
 
-struct SC_CHANGE_ATTACK_DEFFENSE_PACKET {
-    unsigned char size;
-    char type;
-    int seconds;
-};
 
 struct SC_TEAM_CHANGE_PACKET {
     unsigned char size;
