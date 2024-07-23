@@ -91,32 +91,32 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
             for (auto& cl : clients) {
                 if (cl.m_state == ST_FREE) break;
                 cl.send_game_time_packet(SECONDS);
-			}
+            }
 
-			timer_lock.lock();
-			++world_timer;
-			--SECONDS;
-			if (world_timer == first_half + half_time + 1) {
-				for (auto& cl : clients) {
-					if (cl.m_state == ST_FREE) break;
-					cl.m_ture_chaser_false_runner = !cl.m_ture_chaser_false_runner;
-				}
-				timer_lock.unlock();
-				for (auto& cl : clients) {
-					if (cl.m_state == ST_FREE) break;
-					cl.send_team_change_packet(cl.m_id);
-				}
-			}
-			timer_lock.unlock();
+            timer_lock.lock();
+            ++world_timer;
+            --SECONDS;
+            if (world_timer == first_half + half_time + 1) {
+                for (auto& cl : clients) {
+                    if (cl.m_state == ST_FREE) break;
+                    cl.m_ture_chaser_false_runner = !cl.m_ture_chaser_false_runner;
+                }
+                timer_lock.unlock();
+                for (auto& cl : clients) {
+                    if (cl.m_state == ST_FREE) break;
+                    cl.send_team_change_packet(cl.m_id);
+                }
+            }
+            else timer_lock.unlock();
 
-            if (world_timer >= SECONDS) {
+            if (world_timer == PLAYTIME) {
                 for (auto& cl : clients) {
                     if (cl.m_state == ST_FREE) break;
                     cl.send_game_end_packet();
                 }
+                break;
             }
-
-			TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_GAME_TIMER_ON,0 };
+            TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_GAME_TIMER_ON,0 };
             timer_queue.push(event);
         }
                              break;
@@ -399,43 +399,43 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
     case CS_TIME_CHANGE: {
         CS_TIME_CHANGE_PACKET* p = reinterpret_cast<CS_TIME_CHANGE_PACKET*>(packet);
 
-		if (clients[c_id].m_ture_chaser_false_runner) {//체이서일때
+        if (clients[c_id].m_ture_chaser_false_runner) {//체이서일때
 
             std::cout << c_id << "번 클라이언트 " << p->time << "번 시간으로 이동" << std::endl;
-			TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(CHASER_TIME_CHANGE_COOLTIME),EV_TIME_CHANGE,0 };
-			timer_queue.push(event);
+            TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(CHASER_TIME_CHANGE_COOLTIME),EV_TIME_CHANGE,0 };
+            timer_queue.push(event);
 
-			{
-				std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
-				clients[c_id].can_time_change = false;
-				clients[c_id].m_time = p->time;
-			}
-			for (auto& cl : clients) {
-				if (cl.m_state == ST_FREE) break;
-				//if (cl.m_id == c_id) continue;
-				cl.send_player_time_change_packet(c_id);
-			}
-
-		}
-		else {  //러너일때
-
-            std::cout << c_id << "번 클라이언트 " << p->time << "번 시간으로 이동" << std::endl;
-
-			TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(RUNNER_TIME_CHANGE_COOLTIME),EV_TIME_CHANGE,0 };
-			timer_queue.push(event);
-
-			{
-				std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
-				clients[c_id].can_time_change = false;
+            {
+                std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
+                clients[c_id].can_time_change = false;
                 clients[c_id].m_time = p->time;
-			}
-			for (auto& cl : clients) {
-				if (cl.m_state == ST_FREE) break;
-				//if (cl.m_id == c_id) continue;
-				cl.send_player_time_change_packet(c_id);
-			}
-		}
-		break;
+            }
+            for (auto& cl : clients) {
+                if (cl.m_state == ST_FREE) break;
+                //if (cl.m_id == c_id) continue;
+                cl.send_player_time_change_packet(c_id);
+            }
+
+        }
+        else {  //러너일때
+
+            std::cout << c_id << "번 클라이언트 " << p->time << "번 시간으로 이동" << std::endl;
+
+            TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(RUNNER_TIME_CHANGE_COOLTIME),EV_TIME_CHANGE,0 };
+            timer_queue.push(event);
+
+            {
+                std::lock_guard<std::mutex> updatelock(clients[c_id].m_container_lock);
+                clients[c_id].can_time_change = false;
+                clients[c_id].m_time = p->time;
+            }
+            for (auto& cl : clients) {
+                if (cl.m_state == ST_FREE) break;
+                //if (cl.m_id == c_id) continue;
+                cl.send_player_time_change_packet(c_id);
+            }
+        }
+        break;
     }
     case CS_GRAVITYBOX_TIME_STATE: {
         CS_GRAVITYBOX_TIME_STATE_PACKET* p = reinterpret_cast<CS_GRAVITYBOX_TIME_STATE_PACKET*>(packet);

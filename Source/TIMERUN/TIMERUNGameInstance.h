@@ -110,4 +110,8 @@ public:
     //월드시간 변수
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int seconds;
+
+    //게임 종료 시 판단하는 변수
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    bool GameEnd;
 };

@@ -8,7 +8,7 @@
 
 UTIMERUNGameInstance::UTIMERUNGameInstance() : nGravityBox(0)
 {
-
+    GameEnd = false;
 }
 
 void UTIMERUNGameInstance::RecvPacketFromLoginServer()
@@ -445,7 +445,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
         if (Myplayer->TimeChangeCoolTime == CHASER_TIME_CHANGE_COOLTIME) Myplayer->TimeChangeCoolTime = RUNNER_TIME_CHANGE_COOLTIME;
         else  Myplayer->TimeChangeCoolTime = CHASER_TIME_CHANGE_COOLTIME;
 
- 
+
 
         ATIMERUNCharacter* OtherPlayer = Cast<ATIMERUNCharacter>(spawnedCharacters[other_id]);
         OtherPlayer->isChaser = !p->ischaser;
@@ -486,18 +486,37 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
                             break;
     case SC_CAN_TIME_CHANGE: {
         SC_CAN_TIME_CHANGE_PACKET* p = reinterpret_cast<SC_CAN_TIME_CHANGE_PACKET*>(packet);
-        
+
         ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
         MyPlayerCharacter->CanTimeChange = p->cantimechange;
 
     }
                            break;
+    case SC_GAME_END: {
+
+        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+        GameEnd = true;
+
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
+        SortPlayerIndex();
+
+        for (auto& character : spawnedCharacters) {
+            ATIMERUNCharacter* player = Cast<ATIMERUNCharacter>(character);
+            if (player != MyPlayerCharacter) {
+                player->Destroy();
+            }
+        }
+    }
+                    break;
     }
 }
 
 
 void UTIMERUNGameInstance::SendPlayerupdatePakcet()
 {
+    if (GameEnd) return;
+
     APlayerController* PlayerContoller = GetWorld()->GetFirstPlayerController();
     APawn* ControlledPawn = PlayerContoller->GetPawn();
     ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(ControlledPawn);
@@ -519,7 +538,6 @@ void UTIMERUNGameInstance::SendPlayerupdatePakcet()
     packet.HaveTimeMachine = MyPlayerCharacter->HaveTimeMachine;
     packet.DoingTimeTravel = MyPlayerCharacter->DoingTimeTravel;
 
-    if (ingame_socket == NULL) return;
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof packet, 0);
 }
 
@@ -555,6 +573,8 @@ void UTIMERUNGameInstance::SortPlayerIndex()
 
 void UTIMERUNGameInstance::SendGravityBoxSpawn(FVector location, FRotator rotation)
 {
+    if (GameEnd) return;
+
     ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
     CS_GRAVITYBOX_ADD_PACKET packet;
     packet.id = MyPlayerCharacter->id;
@@ -698,6 +718,8 @@ void UTIMERUNGameInstance::InitIngameSocket()
 
 void UTIMERUNGameInstance::SendPlayerJumpPacket()
 {
+    if (GameEnd) return;
+
     ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
     CS_PLAYER_JUMP_PACKET packet;
@@ -715,6 +737,8 @@ void UTIMERUNGameInstance::SendPlayerLandedPacket()
 
 void UTIMERUNGameInstance::SendTimeChangePacket()
 {
+    if (GameEnd) return;
+
     APlayerController* PlayerContoller = GetWorld()->GetFirstPlayerController();
     APawn* ControlledPawn = PlayerContoller->GetPawn();
     ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(ControlledPawn);
@@ -731,6 +755,8 @@ void UTIMERUNGameInstance::SendTimeChangePacket()
 
 void UTIMERUNGameInstance::SendCameraScorePacket()
 {
+    if (GameEnd) return;
+
     ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
     CS_TAKE_PICTURE_PACKET packet;

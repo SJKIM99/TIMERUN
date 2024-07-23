@@ -229,7 +229,10 @@ void Session::send_can_time_change_packet(int c_id)
 
 void Session::send_game_end_packet()
 {
-
+    SC_GAME_END_PACKET packet;
+    packet.type = SC_GAME_END;
+    packet.type = sizeof SC_GAME_END;
+    SendPacket(&packet);
 }
 
 void Session::SendPacket(void* packet)
