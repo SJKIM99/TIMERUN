@@ -4,7 +4,7 @@
 
 OVER_EXP g_over;
 
-int SECONDS = 10 + 10 + 5;
+int SECONDS = 300 + 300 + 5;
 
 WorkerThread::WorkerThread()
 {
@@ -92,7 +92,6 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
                 if (cl.m_state == ST_FREE) break;
                 cl.send_game_time_packet(SECONDS);
             }
-
             timer_lock.lock();
             ++world_timer;
             --SECONDS;
