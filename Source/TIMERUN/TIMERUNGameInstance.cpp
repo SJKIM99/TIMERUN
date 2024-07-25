@@ -494,31 +494,9 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
     case SC_GAME_END: {
         UE_LOG(LogTemp, Warning, TEXT("SC_GAME_END"));
 
-        GetWorld()->GetTimerManager().ClearTimer(SendPlayerInfoHandle);
-        GetWorld()->GetTimerManager().ClearTimer(MoveTimerHandle);
-
-        ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-
         GameStart = false;
 
-        UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
-        SortPlayerIndex();
-
-        for (auto& character : spawnedCharacters) {
-            ATIMERUNCharacter* player = Cast<ATIMERUNCharacter>(character);
-            if (player != MyPlayerCharacter) {
-                player->Destroy();
-            }
-        }
-
-        UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
-
-        for (auto& box : spawnedGravityBox) {
-            AGravityBox* g_box = Cast<AGravityBox>(box);
-            g_box->GetWorld()->GetTimerManager().ClearTimer(g_box->SendGravityBoxInfoHandle);
-            g_box->Destroy();
-                
-        }
+        GetWorld()->GetTimerManager().SetTimer(GameEndHandle, this, &UTIMERUNGameInstance::GameEnd, 3.0f, false);
     }
                     break;
     }
@@ -777,4 +755,33 @@ void UTIMERUNGameInstance::SendCameraScorePacket()
     packet.score = MyPlayerCharacter->MyScore;
 
     int ret = send(*ingame_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
+}
+
+void UTIMERUNGameInstance::GameEnd()
+{
+    GetWorld()->GetTimerManager().ClearTimer(GameEndHandle);
+
+    GetWorld()->GetTimerManager().ClearTimer(SendPlayerInfoHandle);
+    GetWorld()->GetTimerManager().ClearTimer(MoveTimerHandle);
+
+    ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
+    SortPlayerIndex();
+
+    for (auto& character : spawnedCharacters) {
+        ATIMERUNCharacter* player = Cast<ATIMERUNCharacter>(character);
+        if (player != MyPlayerCharacter) {
+            player->Destroy();
+        }
+    }
+
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
+
+    for (auto& box : spawnedGravityBox) {
+        AGravityBox* g_box = Cast<AGravityBox>(box);
+        g_box->GetWorld()->GetTimerManager().ClearTimer(g_box->SendGravityBoxInfoHandle);
+        g_box->Destroy();
+
+    }
 }
