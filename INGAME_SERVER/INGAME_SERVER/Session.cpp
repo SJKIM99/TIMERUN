@@ -231,8 +231,28 @@ void Session::send_game_end_packet()
 {
     SC_GAME_END_PACKET packet;
     packet.type = SC_GAME_END;
-    packet.type = sizeof SC_GAME_END;
+    packet.size = sizeof SC_GAME_END_PACKET;
     SendPacket(&packet);
+}
+
+void Session::reset_player_info(int c_id)
+{
+    //clients[c_id].m_state_lock.lock();
+    clients[c_id].m_state = ST_FREE;
+    clients[c_id].m_id = -99;
+    memset(clients[c_id].m_name, 0,sizeof clients[c_id].m_name);
+    clients[c_id].m_location.x = 0;
+    clients[c_id].m_location.y = 0;
+    clients[c_id].m_location.z = 0;
+    clients[c_id].m_velocity.x = 0;
+    clients[c_id].m_velocity.y = 0;
+    clients[c_id].m_velocity.z = 0;
+    clients[c_id].m_yaw = 0;
+    clients[c_id].m_time = 0;
+    clients[c_id].m_score = 0;
+    clients[c_id].m_prev_remain_data = 0;
+    clients[c_id].m_isjump = false;
+  //  clients[c_id].m_state_lock.unlock();
 }
 
 void Session::SendPacket(void* packet)

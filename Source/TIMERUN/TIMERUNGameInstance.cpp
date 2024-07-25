@@ -8,7 +8,6 @@
 
 UTIMERUNGameInstance::UTIMERUNGameInstance() : nGravityBox(0)
 {
-    GameEnd = false;
 }
 
 void UTIMERUNGameInstance::RecvPacketFromLoginServer()
@@ -384,7 +383,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
         int ret = send(*ingame_socket, reinterpret_cast<char*>(&login_packet), sizeof(login_packet), 0);
 
-        IsActiveIngameSocket = true;
+       // IsActiveIngameSocket = true;
 
         GameStart = true;
     }
@@ -493,10 +492,14 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
     }
                            break;
     case SC_GAME_END: {
+        UE_LOG(LogTemp, Warning, TEXT("SC_GAME_END"));
+
+        GetWorld()->GetTimerManager().ClearTimer(SendPlayerInfoHandle);
+        GetWorld()->GetTimerManager().ClearTimer(MoveTimerHandle);
 
         ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
-        GameEnd = true;
+        GameStart = false;
 
         UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), spawnedCharacters);
         SortPlayerIndex();
@@ -507,6 +510,15 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
                 player->Destroy();
             }
         }
+
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGravityBox::StaticClass(), spawnedGravityBox);
+
+        for (auto& box : spawnedGravityBox) {
+            AGravityBox* g_box = Cast<AGravityBox>(box);
+            g_box->GetWorld()->GetTimerManager().ClearTimer(g_box->SendGravityBoxInfoHandle);
+            g_box->Destroy();
+                
+        }
     }
                     break;
     }
@@ -515,7 +527,7 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
 void UTIMERUNGameInstance::SendPlayerupdatePakcet()
 {
-    if (GameEnd) return;
+    if (!GameStart) return;
 
     APlayerController* PlayerContoller = GetWorld()->GetFirstPlayerController();
     APawn* ControlledPawn = PlayerContoller->GetPawn();
@@ -573,7 +585,7 @@ void UTIMERUNGameInstance::SortPlayerIndex()
 
 void UTIMERUNGameInstance::SendGravityBoxSpawn(FVector location, FRotator rotation)
 {
-    if (GameEnd) return;
+    if (!GameStart) return;
 
     ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
     CS_GRAVITYBOX_ADD_PACKET packet;
@@ -718,7 +730,7 @@ void UTIMERUNGameInstance::InitIngameSocket()
 
 void UTIMERUNGameInstance::SendPlayerJumpPacket()
 {
-    if (GameEnd) return;
+    if (!GameStart) return;
 
     ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
@@ -737,7 +749,7 @@ void UTIMERUNGameInstance::SendPlayerLandedPacket()
 
 void UTIMERUNGameInstance::SendTimeChangePacket()
 {
-    if (GameEnd) return;
+    if (!GameStart) return;
 
     APlayerController* PlayerContoller = GetWorld()->GetFirstPlayerController();
     APawn* ControlledPawn = PlayerContoller->GetPawn();
@@ -755,7 +767,7 @@ void UTIMERUNGameInstance::SendTimeChangePacket()
 
 void UTIMERUNGameInstance::SendCameraScorePacket()
 {
-    if (GameEnd) return;
+    if (!GameStart) return;
 
     ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 

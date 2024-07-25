@@ -4,7 +4,8 @@
 
 OVER_EXP g_over;
 
-int SECONDS = 300 + 300 + 5;
+//int SECONDS = 300 + 300 + 5;
+int SECONDS = 10 + 10 + 5;
 
 WorkerThread::WorkerThread()
 {
@@ -88,9 +89,21 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
         case OP_GAME_TIMER_ON: {
             delete ex_over;
 
+            std::cout << world_timer << std::endl;
             for (auto& cl : clients) {
                 if (cl.m_state == ST_FREE) break;
                 cl.send_game_time_packet(SECONDS);
+            }
+
+            if (world_timer == PLAYTIME) {
+                for (auto& cl : clients) {
+                    if (cl.m_state == ST_FREE) break;
+                    cl.send_game_end_packet();
+                    TIMER_EVENT event{ cl.m_id,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_GAME_END,0 };
+                    timer_queue.push(event);
+                }
+
+                break;
             }
             timer_lock.lock();
             ++world_timer;
@@ -108,13 +121,6 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
             }
             else timer_lock.unlock();
 
-            if (world_timer == PLAYTIME) {
-                for (auto& cl : clients) {
-                    if (cl.m_state == ST_FREE) break;
-                    cl.send_game_end_packet();
-                }
-                break;
-            }
             TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_GAME_TIMER_ON,0 };
             timer_queue.push(event);
         }
@@ -134,6 +140,11 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
             clients[key].send_can_time_change_packet(key);
         }
                            break;
+        case OP_GAME_END: {
+            delete ex_over;
+            closesocket(clients[key].m_socket);
+        }
+                        break;       
         }
     }
 }
@@ -183,6 +194,13 @@ void WorkerThread::timer()
                 PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
             }
                                break;
+            case EV_GAME_END: {
+                OVER_EXP* ov = new OVER_EXP;
+                ov->comp_type = OP_GAME_END;
+                clients[timer_event.object_id].reset_player_info(timer_event.object_id);
+                PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
+            }
+                            break;
             }
             continue;
         }

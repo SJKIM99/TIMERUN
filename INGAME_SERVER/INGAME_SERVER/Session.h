@@ -56,8 +56,6 @@ public:
     std::mutex m_update_lock;
     std::mutex m_gravitybox_lock;
     std::mutex m_enter_lock;
-    int m_channel;
-    int m_client_in_channel_id;
     int m_id;
     char m_name[NAMESIZE];
     vector_d3 m_location;
@@ -85,13 +83,8 @@ public:
     }
 
     Session(const Session& other) {
-        // 여기에 필요한 멤버 변수들을 복사하는 코드를 추가하세요
         m_socket = other.m_socket;
         m_state = other.m_state;
-        //m_state_lock = other.m_state_lock;
-        //m_channel_lock = other.m_channel_lock;
-        m_channel = other.m_channel;
-        m_client_in_channel_id = other.m_client_in_channel_id;
         m_id = other.m_id;
         strcpy_s(m_name, other.m_name);
         m_location = other.m_location;
@@ -120,6 +113,7 @@ public:
     void send_can_spawn_gravitybox(int c_id);
     void send_can_time_change_packet(int c_id);
     void send_game_end_packet();
+    void reset_player_info(int c_id);
 public:
     void SendPacket(void* packet);
     void RecvPacket();
