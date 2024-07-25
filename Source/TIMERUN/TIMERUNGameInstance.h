@@ -56,7 +56,7 @@ public:
     int ingame_prev_packet_size;
     char ingame_prev_packet_buf[10000];
 
-    bool IsActiveIngameSocket = false;
+  //  bool IsActiveIngameSocket = false;
 public:
     int nPlayers;
     bool IsEnterNewPlayer;
@@ -110,8 +110,4 @@ public:
     //월드시간 변수
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int seconds;
-
-    //게임 종료 시 판단하는 변수
-    UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    bool GameEnd;
 };

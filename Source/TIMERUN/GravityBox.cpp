@@ -292,9 +292,7 @@ void AGravityBox::ConnectLaser()
 
 void AGravityBox::SendGravityBoxMovePacket()
 {
-    //UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), instance->spawnedCharacters);
-    //instance->SortPlayerIndex();
-    //ATIMERUNCharacter* OhterPlayerCharacter = Cast<ATIMERUNCharacter>(instance->spawnedCharacters[ByWhoID]);
+    if (!instance->GameStart) return;
     ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
     //if (MyPlayerCharacter->my_time != OhterPlayerCharacter->my_time) return;
@@ -331,12 +329,7 @@ void AGravityBox::SendGravityBoxMovePacket()
 
 void AGravityBox::SendGravityBoxGrabbedPacket()
 {
-    /*UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), instance->spawnedCharacters);
-    instance->SortPlayerIndex();
-    ATIMERUNCharacter* OhterPlayerCharacter = Cast<ATIMERUNCharacter>(instance->spawnedCharacters[ByWhoID]);
-    ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-
-    if (MyPlayerCharacter->my_time != OhterPlayerCharacter->my_time) return;*/
+    if (!instance->GameStart) return;
 
     CS_GRAVITYBOX_GRABBED_PACKET packet;
     packet.size = sizeof CS_GRAVITYBOX_GRABBED_PACKET;
@@ -350,12 +343,7 @@ void AGravityBox::SendGravityBoxGrabbedPacket()
 
 void AGravityBox::SendGravityBoxDroppedPacket()
 {
-    /*UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATIMERUNCharacter::StaticClass(), instance->spawnedCharacters);
-    instance->SortPlayerIndex();
-    ATIMERUNCharacter* OhterPlayerCharacter = Cast<ATIMERUNCharacter>(instance->spawnedCharacters[ByWhoID]);
-    ATIMERUNCharacter* MyPlayerCharacter = Cast<ATIMERUNCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-
-    if (MyPlayerCharacter->my_time != OhterPlayerCharacter->my_time) return;*/
+    if (!instance->GameStart) return; 
 
     CS_GRAVITYBOX_DROPPED_PACKET packet;
     packet.size = sizeof CS_GRAVITYBOX_DROPPED_PACKET;

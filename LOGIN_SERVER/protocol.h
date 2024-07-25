@@ -16,10 +16,10 @@ enum COMP_TYPE {
     OP_ACCEPT,
     OP_RECV, OP_SEND,
     OP_GAME_START, OP_TEAM_CHANGE, OP_CAN_TAKE_PICTURE,
-    OP_CAN_SPAWN_GRAVITYBOX, OP_GAME_TIMER_ON, OP_TIME_CHANGE
+    OP_CAN_SPAWN_GRAVITYBOX, OP_GAME_TIMER_ON, OP_TIME_CHANGE,OP_GAME_END
 };
 
-enum TIMER_EVENT_TYPE { EV_GAME_START, EV_TEAM_CHANGE, EV_CAN_TAKE_PICTURE, EV_CAN_SPAWN_GRAVITYBOX, EV_GAME_TIMER_ON, EV_TIME_CHANGE };
+enum TIMER_EVENT_TYPE { EV_GAME_START, EV_TEAM_CHANGE, EV_CAN_TAKE_PICTURE, EV_CAN_SPAWN_GRAVITYBOX, EV_GAME_TIMER_ON, EV_TIME_CHANGE,EV_GAME_END };
 
 struct vector_d3 {
     float x;
@@ -52,8 +52,12 @@ constexpr int GMAE_START_COOLTIME = 6;
 constexpr int CHASER_TIME_CHANGE_COOLTIME = 5;
 constexpr int RUNNER_TIME_CHANGE_COOLTIME = 8;
 
-constexpr int first_half = 300;
-constexpr int second_half = 300;
+//constexpr int first_half = 300;
+//constexpr int second_half = 300;
+//constexpr int half_time = 5;
+
+constexpr int first_half = 10;
+constexpr int second_half = 10;
 constexpr int half_time = 5;
 
 constexpr int PLAYTIME = first_half + second_half + half_time;
