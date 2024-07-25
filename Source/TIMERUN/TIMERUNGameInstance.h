@@ -110,4 +110,7 @@ public:
     //월드시간 변수
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int seconds;
+public:
+    FTimerHandle GameEndHandle;
+    void GameEnd();
 };
