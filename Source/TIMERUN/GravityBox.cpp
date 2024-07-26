@@ -221,16 +221,16 @@ void AGravityBox::CanFallCheck()
 
 
     // 디버깅용으로 충돌 검사 결과를 그릴 수 있습니다.
-    DrawDebugLine(
-        GetWorld(),
-        StartLocation,
-        EndLocation,
-        FColor::Red, // 선의 색상
-        true,// 지속적으로 그릴 것인지 여부
-        0.f, // 라인 두께
-        0, // DepthPriority
-        0.f // 지속시간 (0은 지속적으로 그림)
-    );
+    //DrawDebugLine(
+    //    GetWorld(),
+    //    StartLocation,
+    //    EndLocation,
+    //    FColor::Red, // 선의 색상
+    //    true,// 지속적으로 그릴 것인지 여부
+    //    0.f, // 라인 두께
+    //    0, // DepthPriority
+    //    0.f // 지속시간 (0은 지속적으로 그림)
+    //);
 
 }
 
