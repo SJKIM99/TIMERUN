@@ -1,5 +1,4 @@
-﻿  pch.cpp
-  INGAME_SERVER.cpp
+﻿  INGAME_SERVER.cpp
   IngameMain.cpp
   Session.cpp
 C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\Session.cpp(34,31): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
@@ -10,7 +9,8 @@ C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(130,5
 C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(135,52): warning C4244: '인수': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(140,54): warning C4244: '인수': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   코드를 생성하고 있습니다.
-  Previous IPDB and IOBJ mismatch, fall back to full compilation.
-  All 439 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  5 of 442 functions ( 1.1%) were compiled, the rest were copied from previous compilation.
+    3 functions were new in current compilation
+    2 functions had inline decision re-evaluated but remain unchanged
   코드를 생성했습니다.
   INGAME_SERVER.vcxproj -> C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\x64\Release\INGAME_SERVER.exe

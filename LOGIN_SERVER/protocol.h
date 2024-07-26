@@ -293,6 +293,7 @@ struct SC_INGAME_SUCCESS_PACKET {
     char nickname[NAMESIZE];
     bool ischaser;
     int score;
+    bool CanTimeChange;
 };
 
 struct SC_WORLD_UPDATE_PACKET {

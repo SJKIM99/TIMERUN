@@ -37,4 +37,4 @@ public:
 
 };
 
-static int game_start_player_num = 0;
+static int player_ready_num = 0;

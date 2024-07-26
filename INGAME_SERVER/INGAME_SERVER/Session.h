@@ -44,6 +44,8 @@ struct GravityBox {
     int timestate;
 };
 
+void reset_gravitybox_info();
+
 class Session
 {
     OVER_EXP over;
