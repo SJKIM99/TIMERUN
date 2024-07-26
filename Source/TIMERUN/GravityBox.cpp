@@ -134,7 +134,7 @@ void AGravityBox::Tick(float DeltaTime)
 
     ParameterName = FName("ShowDown Value"); // Name of the parameter
     DynamicMaterial->SetScalarParameterValue(ParameterName, SpawnTime);
-    if (SpawnTime > -1) SpawnTime -= GetWorld()->DeltaTimeSeconds * 0.5;
+    if (SpawnTime > 0) SpawnTime -= GetWorld()->DeltaTimeSeconds;
 
     CanFixPos = CanFixPosCheck();
     if (CanFixPos == true) {
