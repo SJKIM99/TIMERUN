@@ -290,6 +290,7 @@ struct SC_INGAME_SUCCESS_PACKET {
     float yaw;
     char nickname[NAMESIZE];
     bool ischaser;
+    int score;
 };
 
 struct SC_WORLD_UPDATE_PACKET {
