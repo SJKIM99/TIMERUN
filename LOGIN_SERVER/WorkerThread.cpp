@@ -37,6 +37,8 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
                 {
                     std::lock_guard<std::mutex> ll{ clients[client_id].m_state_lock };
                     clients[client_id].m_state = ST_ALLOC;
+                    //현재 로그인서버에 들어온 플레이어 수
+                    ++enter_player_num;
                 }
                 InitPlayerInfo(client_id);
                 CreateIoCompletionPort(reinterpret_cast<HANDLE>(g_client_socket), h_iocp, client_id, 0);
@@ -77,15 +79,14 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
         }
                     break;
         case OP_GAME_START: {
-
-            std::cout << "게임스타트 패킷 " << std::endl;
-
             std::cout << "Game Start" << std::endl;
-
+            clients[key].m_ready_lock.lock();
             for (auto& cl : clients) {
                 if (ST_FREE == cl.m_state) break;
+                cl.m_ready = false;
                 cl.send_game_start_packet(cl.m_id);
             }
+            clients[key].m_ready_lock.unlock();
             delete ex_over;
         }
                           break;
@@ -107,8 +108,6 @@ void WorkerThread::timer()
             case EV_GAME_START: {
                 OVER_EXP* ov = new OVER_EXP;
                 ov->comp_type = OP_GAME_START;
-                clients[timer_event.object_id].m_ready = false;
-                clients[timer_event.object_id-1].m_ready = false;
                 player_ready_num = 0;
                 PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
             }
@@ -181,13 +180,14 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
                 --player_ready_num;
             }
 
-            for (auto& cl : clients) {
+            /*for (auto& cl : clients) {
                 if (cl.m_state == ST_FREE) break;
                 cl.send_ready_packet(c_id);
-            }
-
-            if (player_ready_num % 2 == 0) {
-                TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(GMAE_START_COOLTIME),EV_GAME_START,0 };
+            }*/
+            clients[c_id].send_ready_packet(c_id);
+            std::cout << "레디한 플레이어 수 : " << player_ready_num << std::endl;
+            if (player_ready_num % 2 == 0 && player_ready_num !=0) {
+                TIMER_EVENT event{ enter_player_num,std::chrono::system_clock::now() + std::chrono::seconds(GMAE_START_COOLTIME),EV_GAME_START,0 };
                 for (auto& cl : clients) {
                     if (cl.m_state == ST_FREE) break;
                     cl.send_all_player_ready_packet();

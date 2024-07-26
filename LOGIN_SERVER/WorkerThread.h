@@ -38,3 +38,4 @@ public:
 };
 
 static int player_ready_num = 0;
+static int enter_player_num = 0;

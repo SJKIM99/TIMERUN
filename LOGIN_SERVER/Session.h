@@ -24,7 +24,7 @@ public:
     }
 };
 
-enum S_STATE { ST_FREE, ST_ALLOC, ST_INGAME };
+enum S_STATE { ST_FREE, ST_ALLOC, ST_INGAME,ST_GAME_END };
 
 class Session
 {
