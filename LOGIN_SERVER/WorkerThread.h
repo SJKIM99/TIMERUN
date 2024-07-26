@@ -36,3 +36,5 @@ public:
     void ProcessPacket(int c_id, char* packet);
 
 };
+
+static int game_start_player_num = 0;
