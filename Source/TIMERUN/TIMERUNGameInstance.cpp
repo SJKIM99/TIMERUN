@@ -156,6 +156,10 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
         MyPlayerCharacter->CanTimeChange = p->CanTimeChange;
 
+        MyPlayerCharacter->CanTakePicture = p->CanTakePicture;
+
+        MyPlayerCharacter->CanSpawnGravityBox = p->CanSpawnGravityBox;
+
         //MyPlayerCharacter->AddMovementInput(characterVelocity);
         MyPlayerCharacter->SetActorLocation(characterLocation);
         MyPlayerCharacter->SetActorRotation(characterRotation);

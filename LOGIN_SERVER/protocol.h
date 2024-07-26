@@ -294,6 +294,8 @@ struct SC_INGAME_SUCCESS_PACKET {
     bool ischaser;
     int score;
     bool CanTimeChange;
+    bool CanSpawnGravityBox;
+    bool CanTakePicture;
 };
 
 struct SC_WORLD_UPDATE_PACKET {

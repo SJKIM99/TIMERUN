@@ -39,6 +39,8 @@ void Session::send_ingame_login_sucess_packet(int c_id)
     packet.ischaser = clients[c_id].m_ture_chaser_false_runner;
     packet.score = clients[c_id].m_score;
     packet.CanTimeChange = clients[c_id].can_time_change;
+    packet.CanSpawnGravityBox = clients[c_id].m_canspawngravitybox;
+    packet.CanTakePicture = clients[c_id].m_cantakepicture;
     SendPacket(&packet);
 }
 void Session::send_move_packet(int c_id)
@@ -255,6 +257,8 @@ void Session::reset_player_info(int c_id)
     clients[c_id].m_prev_remain_data = 0;
     clients[c_id].m_isjump = false;
     clients[c_id].can_time_change = true;
+    clients[c_id].m_canspawngravitybox = true;
+    clients[c_id].m_cantakepicture = true;
   //  clients[c_id].m_state_lock.unlock();
 }
 
