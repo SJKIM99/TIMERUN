@@ -4,11 +4,11 @@
 #define MAX_CLIENTS      100
 //#define LOGIN_SERVERIP "25.52.149.86"   //하마치 내주소
 //#define LOGIN_SERVERIP "210.99.254.132"    //포트포워딩주소
-#define LOGIN_SERVERIP "172.30.1.72"    //포트포워딩주소
+#define LOGIN_SERVERIP "220.94.221.205"    //포트포워딩주소
 
 //#define INGAME_SERVERIP "25.58.12.4"
 //#define LOGIN_SERVERIP "210.99.254.132"    //포트포워딩주소
-#define INGAME_SERVERIP "172.30.1.72"  //포트포워딩주소
+#define INGAME_SERVERIP "220.94.221.205"  //포트포워딩주소
 
 //#define LOGIN_SERVERIP "127.0.0.1"
 //
