@@ -82,6 +82,7 @@ public:
         m_id = 1;
         m_name[0] = 0;
         m_prev_remain_data = 0;
+        can_time_change = true;
     }
 
     Session(const Session& other) {
