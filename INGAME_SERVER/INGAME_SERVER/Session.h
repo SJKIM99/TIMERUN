@@ -83,6 +83,8 @@ public:
         m_name[0] = 0;
         m_prev_remain_data = 0;
         can_time_change = true;
+        m_canspawngravitybox = true;
+        m_cantakepicture = true;
     }
 
     Session(const Session& other) {
