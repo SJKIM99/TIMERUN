@@ -154,6 +154,8 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
         MyPlayerCharacter->MyScore = p->score;
 
+        MyPlayerCharacter->CanTimeChange = p->CanTimeChange;
+
         //MyPlayerCharacter->AddMovementInput(characterVelocity);
         MyPlayerCharacter->SetActorLocation(characterLocation);
         MyPlayerCharacter->SetActorRotation(characterRotation);

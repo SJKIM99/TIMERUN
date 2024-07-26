@@ -107,8 +107,9 @@ void WorkerThread::timer()
             case EV_GAME_START: {
                 OVER_EXP* ov = new OVER_EXP;
                 ov->comp_type = OP_GAME_START;
-                clients[0].m_ready = false;
-                clients[1].m_ready = false;
+                clients[timer_event.object_id].m_ready = false;
+                clients[timer_event.object_id-1].m_ready = false;
+                player_ready_num = 0;
                 PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
             }
                               break;
@@ -171,15 +172,21 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
             std::cout << c_id << "번 클라 레디패킷 전송" << std::endl;
             std::lock_guard<std::mutex> readylock(clients[c_id].m_ready_lock);
 
-            if (false == clients[c_id].m_ready)clients[c_id].m_ready = true;
-            else clients[c_id].m_ready = false;
+            if (false == clients[c_id].m_ready) {
+                clients[c_id].m_ready = true;
+                ++player_ready_num;
+            }
+            else { 
+                clients[c_id].m_ready = false;
+                --player_ready_num;
+            }
 
             for (auto& cl : clients) {
                 if (cl.m_state == ST_FREE) break;
                 cl.send_ready_packet(c_id);
             }
 
-            if (true == clients[0].m_ready && true == clients[1].m_ready) {
+            if (player_ready_num % 2 == 0) {
                 TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(GMAE_START_COOLTIME),EV_GAME_START,0 };
                 for (auto& cl : clients) {
                     if (cl.m_state == ST_FREE) break;
@@ -187,7 +194,10 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
                 }
                 timer_queue.push(event);
             }
+
         }
+
+       
     }
                  break;
     }

@@ -36,3 +36,5 @@ public:
     void ProcessPacket(int c_id, char* packet);
 
 };
+
+static int player_ready_num = 0;

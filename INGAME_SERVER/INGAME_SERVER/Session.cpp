@@ -38,6 +38,7 @@ void Session::send_ingame_login_sucess_packet(int c_id)
     strcpy_s(packet.nickname, clients[c_id].m_name);
     packet.ischaser = clients[c_id].m_ture_chaser_false_runner;
     packet.score = clients[c_id].m_score;
+    packet.CanTimeChange = clients[c_id].can_time_change;
     SendPacket(&packet);
 }
 void Session::send_move_packet(int c_id)
@@ -253,6 +254,7 @@ void Session::reset_player_info(int c_id)
     clients[c_id].m_score = 0;
     clients[c_id].m_prev_remain_data = 0;
     clients[c_id].m_isjump = false;
+    clients[c_id].can_time_change = true;
   //  clients[c_id].m_state_lock.unlock();
 }
 
@@ -274,4 +276,33 @@ void Session::RecvPacket()
 
 void disconnect(int c_id)
 {
+}
+
+void reset_gravitybox_info()
+{
+    for (auto& box : gravitybox) {
+        if (box.gravitybox_state == GravityBox_STATE::ST_OCCUPY) {
+            box.gravitybox_state = GravityBox_STATE::ST_NULL;
+            box.BoxId = -1;
+            box.ByWhoId = -1;
+            box.CanFall = false;
+            box.CanFixPos = false;
+            box.grabbed_time = -1;
+            box.isGrabbed = false;
+            box.isGrabbed = false;
+            box.IsMoving = false;
+            box.location.x = 0;
+            box.location.y = 0;
+            box.location.z = 0;
+            box.rotation.x = 0;
+            box.rotation.y = 0;
+            box.rotation.z = 0;
+            box.time = -1;
+            box.timestate = -1;
+            box.velocity.x = 0;
+            box.velocity.y = 0;
+            box.velocity.z = 0;
+        }
+        else break;
+    }
 }
