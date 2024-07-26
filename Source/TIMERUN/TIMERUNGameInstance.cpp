@@ -152,6 +152,8 @@ void UTIMERUNGameInstance::ProcessPakcet(char* packet)
 
         MyPlayerCharacter->nickname = FString(ANSI_TO_TCHAR(p->nickname));
 
+        MyPlayerCharacter->MyScore = p->score;
+
         //MyPlayerCharacter->AddMovementInput(characterVelocity);
         MyPlayerCharacter->SetActorLocation(characterLocation);
         MyPlayerCharacter->SetActorRotation(characterRotation);

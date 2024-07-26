@@ -37,6 +37,7 @@ void Session::send_ingame_login_sucess_packet(int c_id)
     packet.velocity.z = clients[c_id].m_velocity.z;
     strcpy_s(packet.nickname, clients[c_id].m_name);
     packet.ischaser = clients[c_id].m_ture_chaser_false_runner;
+    packet.score = clients[c_id].m_score;
     SendPacket(&packet);
 }
 void Session::send_move_packet(int c_id)
