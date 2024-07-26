@@ -226,7 +226,7 @@ void AGravityBox::CanFallCheck()
         StartLocation,
         EndLocation,
         FColor::Red, // 선의 색상
-        false,// 지속적으로 그릴 것인지 여부
+        true,// 지속적으로 그릴 것인지 여부
         0.f, // 라인 두께
         0, // DepthPriority
         0.f // 지속시간 (0은 지속적으로 그림)
@@ -260,7 +260,7 @@ void AGravityBox::DoGrabbingRotate(bool when)
     
     if (StaticMeshComponent && when)
     {
-        StaticMeshComponent->SetEnableGravity(false);
+        //StaticMeshComponent->SetEnableGravity(false);
 
         if (instance->my_id == ByWhoID)
         {
@@ -269,18 +269,18 @@ void AGravityBox::DoGrabbingRotate(bool when)
         }
         else
         {
-            StaticMeshComponent->SetCollisionProfileName("NoCollision");
+         /*   StaticMeshComponent->SetCollisionProfileName("NoCollision");
+            StaticMeshComponent->SetSimulatePhysics(false);*/
             StaticMeshComponent->SetSimulatePhysics(false);
+            StaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
         }
-
-       
     }
     else if (StaticMeshComponent && !when) {
-        StaticMeshComponent->SetEnableGravity(true);
+     /*   StaticMeshComponent->SetEnableGravity(true);
         StaticMeshComponent->SetCollisionProfileName("BlockAll");
-        StaticMeshComponent->SetSimulatePhysics(true);
-
-
+        StaticMeshComponent->SetSimulatePhysics(true);*/
+        StaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+        //StaticMeshComponent->SetSimulatePhysics(true);
     
     }
 }
