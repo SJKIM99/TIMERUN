@@ -113,7 +113,7 @@ public:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int id;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString nickname;
 	//보간때 쓰이는 변수들
 	FVector current_location;
