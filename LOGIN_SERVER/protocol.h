@@ -48,18 +48,18 @@ constexpr int TIMESIZE = 11;
 
 
 constexpr int TAKE_PICTURE_COOLTIME = 3;
-constexpr int SPAWN_GRAVITYBOX_COOLTIME = 15;
+constexpr int SPAWN_GRAVITYBOX_COOLTIME = 10;
 constexpr int GMAE_START_COOLTIME = 6;
 
-constexpr int CHASER_TIME_CHANGE_COOLTIME = 5;
-constexpr int RUNNER_TIME_CHANGE_COOLTIME = 8;
+constexpr int CHASER_TIME_CHANGE_COOLTIME = 2;
+constexpr int RUNNER_TIME_CHANGE_COOLTIME = 20;
 
 //constexpr int first_half = 300;
 //constexpr int second_half = 300;
 //constexpr int half_time = 5;
 
-constexpr int first_half = 30;
-constexpr int second_half = 30;
+constexpr int first_half = 120;
+constexpr int second_half = 120;
 constexpr int half_time = 5;
 
 constexpr int PLAYTIME = first_half + second_half + half_time;

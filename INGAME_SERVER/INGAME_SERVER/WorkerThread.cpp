@@ -5,7 +5,7 @@
 OVER_EXP g_over;
 
 //int SECONDS = 300 + 300 + 5;
-int SECONDS = 30 + 30 + 5;
+int SECONDS = 120 + 120 + 5;
 
 WorkerThread::WorkerThread()
 {
@@ -197,7 +197,7 @@ void WorkerThread::timer()
                 ov->comp_type = OP_GAME_END;
                 clients[timer_event.object_id].reset_player_info(timer_event.object_id);
                 reset_gravitybox_info();
-                SECONDS = 60 + 60 + 5;
+                SECONDS = first_half + second_half + half_time;
                 world_timer = 0;
                 PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
             }
