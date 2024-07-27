@@ -52,7 +52,7 @@ constexpr int SPAWN_GRAVITYBOX_COOLTIME = 10;
 constexpr int GMAE_START_COOLTIME = 6;
 
 constexpr int CHASER_TIME_CHANGE_COOLTIME = 2;
-constexpr int RUNNER_TIME_CHANGE_COOLTIME = 20;
+constexpr int RUNNER_TIME_CHANGE_COOLTIME = 25;
 
 //constexpr int first_half = 300;
 //constexpr int second_half = 300;
