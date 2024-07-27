@@ -199,7 +199,7 @@ void WorkerThread::timer()
                 ov->comp_type = OP_GAME_END;
                 clients[timer_event.object_id].reset_player_info(timer_event.object_id);
                 reset_gravitybox_info();
-                SECONDS = 10 + 10 + 5;
+                SECONDS = 60 + 60 + 5;
                 world_timer = 0;
                 PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
             }

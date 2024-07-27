@@ -789,6 +789,7 @@ void UTIMERUNGameInstance::GameEnd()
     for (auto& box : spawnedGravityBox) {
         AGravityBox* g_box = Cast<AGravityBox>(box);
         g_box->GetWorld()->GetTimerManager().ClearTimer(g_box->SendGravityBoxInfoHandle);
+        g_box->GetWorld()->GetTimerManager().ClearTimer(g_box->MoveGravityBoxTimerHandle);
         g_box->Destroy();
 
     }
