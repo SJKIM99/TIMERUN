@@ -5,7 +5,7 @@
 OVER_EXP g_over;
 
 //int SECONDS = 300 + 300 + 5;
-int SECONDS = 60 + 60 + 5;
+int SECONDS = 30 + 30 + 5;
 
 WorkerThread::WorkerThread()
 {
@@ -42,7 +42,6 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
         switch (ex_over->comp_type) {
         case OP_ACCEPT: {
             int client_id = get_new_client_id();
-            std::cout << client_id << "번 클라이언트가 입장했습니다." << std::endl;
             if (client_id != -1) {
                 {
                     std::lock_guard<std::mutex> ll{ clients[client_id].m_state_lock };
@@ -89,7 +88,6 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
         case OP_GAME_TIMER_ON: {
             delete ex_over;
 
-            std::cout << world_timer << std::endl;
             for (auto& cl : clients) {
                 if (cl.m_state == ST_FREE) break;
                 cl.send_game_time_packet(SECONDS);
@@ -247,13 +245,13 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
     switch (packet[1]) {
     case CS_INGAME_LOGIN: {
         CS_INGAME_LOGIN_PACKET* p = reinterpret_cast<CS_INGAME_LOGIN_PACKET*>(packet);
-        std::cout << c_id << "번 클라이언트 인게임 로그인 성공" << std::endl;
         {
             std::lock_guard<std::mutex> updatelock(clients[c_id].m_enter_lock);
             strcpy_s(clients[c_id].m_name, p->nickname);
             clients[c_id].m_location.x = p->location.x;
             clients[c_id].m_location.y = p->location.y;
             clients[c_id].m_location.z = p->location.z;
+
             if (game_start_player_num % 2 == 0) {
                 clients[c_id].m_ture_chaser_false_runner = rand() % 2;
             }
@@ -324,7 +322,6 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
         {
             std::lock_guard<std::mutex> updatelock(clients[c_id].m_gravitybox_lock);
             int BoxId = get_new_gravitybox_id();
-            std::cout << "중력박스 아이디 : " << BoxId << std::endl;
             gravitybox[BoxId].location.x = p->location.x;
             gravitybox[BoxId].location.y = p->location.y;
             gravitybox[BoxId].location.z = p->location.z;
@@ -420,8 +417,6 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
         CS_TIME_CHANGE_PACKET* p = reinterpret_cast<CS_TIME_CHANGE_PACKET*>(packet);
 
         if (clients[c_id].m_ture_chaser_false_runner) {//체이서일때
-
-            std::cout << c_id << "번 클라이언트 " << p->time << "번 시간으로 이동" << std::endl;
             TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(CHASER_TIME_CHANGE_COOLTIME),EV_TIME_CHANGE,0 };
             timer_queue.push(event);
 
@@ -438,9 +433,6 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
 
         }
         else {  //러너일때
-
-            std::cout << c_id << "번 클라이언트 " << p->time << "번 시간으로 이동" << std::endl;
-
             TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::seconds(RUNNER_TIME_CHANGE_COOLTIME),EV_TIME_CHANGE,0 };
             timer_queue.push(event);
 

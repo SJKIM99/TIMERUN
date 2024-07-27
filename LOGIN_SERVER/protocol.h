@@ -58,8 +58,8 @@ constexpr int RUNNER_TIME_CHANGE_COOLTIME = 8;
 //constexpr int second_half = 300;
 //constexpr int half_time = 5;
 
-constexpr int first_half = 60;
-constexpr int second_half = 60;
+constexpr int first_half = 30;
+constexpr int second_half = 30;
 constexpr int half_time = 5;
 
 constexpr int PLAYTIME = first_half + second_half + half_time;
