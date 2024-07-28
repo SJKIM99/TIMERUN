@@ -4,7 +4,7 @@
 
 OVER_EXP g_over;
 
-int SECONDS = 120 + 120 + 5;
+int SECONDS = 0;
 
 WorkerThread::WorkerThread()
 {
@@ -161,7 +161,7 @@ void WorkerThread::timer()
             case EV_GAME_TIMER_ON: {
                 OVER_EXP* ov = new OVER_EXP;
                 ov->comp_type = OP_GAME_TIMER_ON;
-
+                SECONDS = 120 + 120 + 5;
                 PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
             }
                                  break;
@@ -281,6 +281,7 @@ void WorkerThread::ProcessPacket(int c_id, char* packet)
         //여기서 일단 타이머이벤트를 통해 클라이언트들에게 월드시간을 보내도록 하자
 
         if (game_start_player_num % 2 == 0) {
+
             TIMER_EVENT event{ c_id,std::chrono::system_clock::now() + std::chrono::milliseconds(1),EV_GAME_TIMER_ON,0 };
             timer_queue.push(event);
         }
