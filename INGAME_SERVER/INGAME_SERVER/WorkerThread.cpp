@@ -4,8 +4,6 @@
 
 OVER_EXP g_over;
 
-int SECONDS = 0;
-
 WorkerThread::WorkerThread()
 {
 }
@@ -119,6 +117,7 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
             }
             else timer_lock.unlock();
 
+            std::cout << "world_timer - " << world_timer << std::endl;
             TIMER_EVENT event{ key,std::chrono::system_clock::now() + std::chrono::seconds(1),EV_GAME_TIMER_ON,0 };
             timer_queue.push(event);
         }
@@ -161,7 +160,6 @@ void WorkerThread::timer()
             case EV_GAME_TIMER_ON: {
                 OVER_EXP* ov = new OVER_EXP;
                 ov->comp_type = OP_GAME_TIMER_ON;
-                SECONDS = 120 + 120 + 5;
                 PostQueuedCompletionStatus(h_iocp, 1, timer_event.object_id, &ov->over);
             }
                                  break;

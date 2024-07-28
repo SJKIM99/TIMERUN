@@ -35,6 +35,8 @@ public:
     void InitPlayerInfo(int player_id);
     void ProcessPacket(int c_id, char* packet);
 
+    int GMAE_START_COOLTIME = 6;
+
 };
 
 static int player_ready_num = 0;
