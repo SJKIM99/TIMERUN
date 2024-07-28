@@ -4,7 +4,6 @@
 
 OVER_EXP g_over;
 
-//int SECONDS = 300 + 300 + 5;
 int SECONDS = 120 + 120 + 5;
 
 WorkerThread::WorkerThread()
@@ -116,6 +115,7 @@ void WorkerThread::woker_thread(HANDLE h_iocp)
                     if (cl.m_state == ST_FREE) break;
                     cl.send_team_change_packet(cl.m_id);
                 }
+                std::cout << "공수교대" << std::endl;
             }
             else timer_lock.unlock();
 
