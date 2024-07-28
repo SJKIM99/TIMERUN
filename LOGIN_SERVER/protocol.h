@@ -47,6 +47,13 @@ constexpr int MAX_GRAVITYBOX = 100;
 constexpr int TIMESIZE = 11;
 
 
+constexpr int TAKE_PICTURE_COOLTIME = 3;
+constexpr int SPAWN_GRAVITYBOX_COOLTIME = 10;
+constexpr int GMAE_START_COOLTIME = 6;
+
+constexpr int CHASER_TIME_CHANGE_COOLTIME = 2;
+constexpr int RUNNER_TIME_CHANGE_COOLTIME = 25;
+
 //C2S
 constexpr char CS_LOGIN = 0;
 constexpr char CS_SIGNUP = 1;

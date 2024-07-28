@@ -52,12 +52,6 @@ public:
     int half_time = 5;
 
     int PLAYTIME = first_half + second_half + half_time;
-
-    int CHASER_TIME_CHANGE_COOLTIME = 2;
-    int RUNNER_TIME_CHANGE_COOLTIME = 25;
-
-    int TAKE_PICTURE_COOLTIME = 3;
-    int SPAWN_GRAVITYBOX_COOLTIME = 10;
 };
 
 static int game_start_player_num = 0;
