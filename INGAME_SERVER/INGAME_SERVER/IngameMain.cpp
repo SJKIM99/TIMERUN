@@ -3,6 +3,7 @@
 
 IngameMain::IngameMain()
 {
+   
 }
 
 IngameMain::~IngameMain()

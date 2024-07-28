@@ -54,6 +54,12 @@ constexpr int GMAE_START_COOLTIME = 6;
 constexpr int CHASER_TIME_CHANGE_COOLTIME = 2;
 constexpr int RUNNER_TIME_CHANGE_COOLTIME = 25;
 
+constexpr int first_half = 120;
+constexpr int second_half = 120;
+constexpr int half_time = 5;
+
+constexpr int PLAYTIME = first_half + second_half + half_time;
+
 //C2S
 constexpr char CS_LOGIN = 0;
 constexpr char CS_SIGNUP = 1;

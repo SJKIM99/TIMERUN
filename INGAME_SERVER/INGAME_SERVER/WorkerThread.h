@@ -46,12 +46,6 @@ public:
     int world_timer = 0;
 
     int SECONDS = 245;
-
-    int first_half = 120;
-    int second_half = 120;
-    int half_time = 5;
-
-    int PLAYTIME = first_half + second_half + half_time;
 };
 
 static int game_start_player_num = 0;
