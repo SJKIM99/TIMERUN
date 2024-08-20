@@ -1,0 +1,25 @@
+﻿  pch.cpp
+  IngameMain.cpp
+  INGAME_SERVER.cpp
+  Session.cpp
+  WorkerThread.cpp
+C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\Session.cpp(34,31): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 '/Session.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(122,32): warning C4838: 'ULONG_PTR'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+  (소스 파일 '/WorkerThread.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(122,32): warning C4244: '초기화 중': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 '/WorkerThread.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(128,55): warning C4244: '인수': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 '/WorkerThread.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(133,52): warning C4244: '인수': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 '/WorkerThread.cpp'을(를) 컴파일하는 중)
+  
+C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\INGAME_SERVER\WorkerThread.cpp(138,54): warning C4244: '인수': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  (소스 파일 '/WorkerThread.cpp'을(를) 컴파일하는 중)
+  
+  코드를 생성하고 있습니다...
+  INGAME_SERVER.vcxproj -> C:\Users\user\Desktop\TIMERUN\INGAME_SERVER\x64\Debug\INGAME_SERVER.exe
